@@ -94,5 +94,6 @@
     <orderEntry type="library" exported="" name="support-v4-21.0.3" level="project" />
     <orderEntry type="library" exported="" name="multidex-1.0.1" level="project" />
     <orderEntry type="module" module-name="base" exported="" />
+    <orderEntry type="module" module-name="qrcode" exported="" />
   </component>
 </module>

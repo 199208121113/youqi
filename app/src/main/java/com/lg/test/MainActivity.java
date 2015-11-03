@@ -2,8 +2,6 @@ package com.lg.test;
 
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
@@ -16,8 +14,8 @@ import com.lg.base.utils.NumberUtil;
 import com.lg.base.utils.StringUtil;
 import com.lg.base.utils.ToastUtil;
 import com.lg.test.account.CollectTask;
+import com.lg.test.activity.TestQrCodeActivity;
 import com.lg.test.db.UserOpActivity;
-
 
 import java.io.File;
 import java.util.HashMap;
@@ -39,6 +37,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @InjectView(R.id.act_main_test_file_download)
     TextView testDownloadFile;
 
+    @InjectView(R.id.act_main_test_qr_code)
+    TextView testQrCode;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +47,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         testDBView.setOnClickListener(this);
         testUploadFile.setOnClickListener(this);
         testDownloadFile.setOnClickListener(this);
+        testQrCode.setOnClickListener(this);
     }
 
     @Override
@@ -63,6 +65,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             upload();
         }else if(v == testDownloadFile){
             download();
+        }else if(v == testQrCode){
+            startActivity(TestQrCodeActivity.createIntent(this));
         }
     }
 
@@ -152,38 +156,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 });
             }
         }.execute();
-    }
-
-    /* @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        loge(TAG, "dispatchTouchEvent", ev);
-        return super.dispatchTouchEvent(ev);
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        MainActivity.loge(TAG,"onTouchEvent",event);
-        return true;
-    }*/
-
-    private static String getEventAction(MotionEvent me){
-        if(me.getAction() == MotionEvent.ACTION_DOWN){
-            return "ACTION_DOWN";
-        }
-        if(me.getAction() == MotionEvent.ACTION_UP){
-            return "ACTION_UP";
-        }
-        if(me.getAction() == MotionEvent.ACTION_MOVE){
-            return "ACTION_MOVE";
-        }
-        return ""+me.getAction();
-    }
-
-    public static void loge(String tag,String msg,MotionEvent event){
-        if(event.getAction() == MotionEvent.ACTION_MOVE){
-            return ;
-        }
-        Log.e(tag, msg +",action=" + MainActivity.getEventAction(event));
     }
 
     public static Map<String,String> getGenericParams(){

@@ -3,21 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.lg.test.widget.MyLinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <com.lg.test.widget.MyTextView
-            android:layout_width="match_parent"
-            android:background="@color/holo_blue"
-            android:gravity="center"
-            android:layout_height="50dp"
-            android:textSize="18sp"
-            android:text="事件传递机制测试" />
-
-    </com.lg.test.widget.MyLinearLayout>
-
     <TextView
         android:id="@+id/act_main_test_account_tv"
         android:layout_width="match_parent"
@@ -58,5 +43,14 @@
         android:textSize="18sp"
         android:text="文件下载测试" />
 
+    <TextView
+        android:id="@+id/act_main_test_qr_code"
+        android:layout_width="match_parent"
+        android:layout_marginTop="10dp"
+        android:background="@color/holo_blue"
+        android:gravity="center"
+        android:layout_height="50dp"
+        android:textSize="18sp"
+        android:text="二维码测试" />
 
 </LinearLayout>

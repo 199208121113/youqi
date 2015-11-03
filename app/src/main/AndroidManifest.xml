@@ -25,6 +25,10 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait">
         </activity>
+        <activity android:name=".activity.TestQrCodeActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait">
+        </activity>
         <service
             android:name=".account.MyAccountService"
             android:exported="false"
