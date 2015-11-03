@@ -27,7 +27,7 @@ import android.util.Log;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
-import com.lg.qrcode.sample.MipcaActivityCapture;
+import com.lg.qrcode.sample.CaptureActivity;
 import com.lg.qrcode.zxing.camera.CameraManager;
 import com.lg.qrcode.zxing.view.IdConstant;
 import com.lg.qrcode.zxing.view.ViewfinderResultPointCallback;
@@ -42,7 +42,7 @@ public final class CaptureActivityHandler extends Handler implements IdConstant 
 
   private static final String TAG = CaptureActivityHandler.class.getSimpleName();
 
-  private final MipcaActivityCapture activity;
+  private final CaptureActivity activity;
   private final DecodeThread decodeThread;
   private State state;
 
@@ -52,7 +52,7 @@ public final class CaptureActivityHandler extends Handler implements IdConstant 
     DONE
   }
 
-  public CaptureActivityHandler(MipcaActivityCapture activity, Vector<BarcodeFormat> decodeFormats,
+  public CaptureActivityHandler(CaptureActivity activity, Vector<BarcodeFormat> decodeFormats,
       String characterSet) {
     this.activity = activity;
     decodeThread = new DecodeThread(activity, decodeFormats, characterSet,

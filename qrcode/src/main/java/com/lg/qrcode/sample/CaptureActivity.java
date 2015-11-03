@@ -1,9 +1,11 @@
 package com.lg.qrcode.sample;
 
 import java.io.IOException;
+import java.util.Hashtable;
 import java.util.Vector;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
@@ -22,7 +24,11 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.Result;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
 import com.lg.qrcode.R;
 import com.lg.qrcode.zxing.camera.CameraManager;
 import com.lg.qrcode.zxing.decoding.CaptureActivityHandler;
@@ -33,7 +39,7 @@ import com.lg.qrcode.zxing.view.ViewfinderView;
  * Initial the camera
  * @author Ryan.Tang
  */
-public class MipcaActivityCapture extends Activity implements Callback {
+public class CaptureActivity extends Activity implements Callback {
 
 	private CaptureActivityHandler handler;
 	private ViewfinderView viewfinderView;
@@ -46,6 +52,10 @@ public class MipcaActivityCapture extends Activity implements Callback {
 	private static final float BEEP_VOLUME = 0.10f;
 	private boolean vibrate;
 
+	public static Intent createIntent(Context ctx){
+		Intent it = new Intent(ctx,CaptureActivity.class);
+		return it;
+	}
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -60,7 +70,7 @@ public class MipcaActivityCapture extends Activity implements Callback {
 			
 			@Override
 			public void onClick(View v) {
-				MipcaActivityCapture.this.finish();
+				CaptureActivity.this.finish();
 				
 			}
 		});
@@ -113,7 +123,7 @@ public class MipcaActivityCapture extends Activity implements Callback {
 		playBeepSoundAndVibrate();
 		String resultString = result.getText();
 		if (resultString.equals("")) {
-			Toast.makeText(MipcaActivityCapture.this, "Scan failed!", Toast.LENGTH_SHORT).show();
+			Toast.makeText(CaptureActivity.this, "Scan failed!", Toast.LENGTH_SHORT).show();
 		}else {
 			Intent resultIntent = new Intent();
 			Bundle bundle = new Bundle();
@@ -122,7 +132,7 @@ public class MipcaActivityCapture extends Activity implements Callback {
 			resultIntent.putExtras(bundle);
 			this.setResult(RESULT_OK, resultIntent);
 		}
-		MipcaActivityCapture.this.finish();
+		CaptureActivity.this.finish();
 	}
 	
 	private void initCamera(SurfaceHolder surfaceHolder) {
@@ -216,5 +226,28 @@ public class MipcaActivityCapture extends Activity implements Callback {
 			mediaPlayer.seekTo(0);
 		}
 	};
+
+	public static Bitmap createQRCode(String str, int widthAndHeight) throws WriterException {
+		final int BLACK = 0xff000000;
+		Hashtable<EncodeHintType, String> hints = new Hashtable<>();
+		hints.put(EncodeHintType.CHARACTER_SET, "utf-8");
+		BitMatrix matrix = new MultiFormatWriter().encode(str,
+				BarcodeFormat.QR_CODE, widthAndHeight, widthAndHeight);
+		int width = matrix.getWidth();
+		int height = matrix.getHeight();
+		int[] pixels = new int[width * height];
+
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				if (matrix.get(x, y)) {
+					pixels[y * width + x] = BLACK;
+				}
+			}
+		}
+		Bitmap bitmap = Bitmap.createBitmap(width, height,
+				Bitmap.Config.ARGB_8888);
+		bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
+		return bitmap;
+	}
 
 }
