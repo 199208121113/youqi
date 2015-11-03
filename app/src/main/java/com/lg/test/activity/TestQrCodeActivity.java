@@ -2,8 +2,11 @@ package com.lg.test.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.lg.base.core.BaseActivity;
@@ -25,6 +28,9 @@ public class TestQrCodeActivity extends BaseActivity implements View.OnClickList
 
     @InjectView(R.id.act_qr_code_scan_result)
     TextView tvScanResult;
+
+    @InjectView(R.id.act_qr_code_create_result)
+    ImageView ivCreateResult;
 
     private final static int SCANNIN_GREQUEST_CODE = 1;
 
@@ -48,7 +54,13 @@ public class TestQrCodeActivity extends BaseActivity implements View.OnClickList
     @Override
     public void onClick(View v) {
         if(v == tvCreate){
-
+            try {
+                Bitmap logo = BitmapFactory.decodeResource(getResources(),R.mipmap.ic_launcher);
+                Bitmap bmp = CaptureActivity.createQRCode("hello liguo", 500,logo);
+                ivCreateResult.setImageBitmap(bmp);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }else if(v == tvScan){
             startActivityForResult(CaptureActivity.createIntent(this), SCANNIN_GREQUEST_CODE);
         }
@@ -62,6 +74,7 @@ public class TestQrCodeActivity extends BaseActivity implements View.OnClickList
                 if (resultCode == RESULT_OK) {
                     Bundle bundle = data.getExtras();
                     tvScanResult.setText(bundle.getString("result"));
+                    tvScanResult.setVisibility(View.VISIBLE);
                     //mImageView.setImageBitmap((Bitmap) data.getParcelableExtra("bitmap"));
                 }
                 break;

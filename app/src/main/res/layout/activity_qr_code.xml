@@ -3,15 +3,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/act_qr_code_create"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="10dp"
-        android:background="@color/holo_blue"
-        android:gravity="center"
-        android:text="生成二维码"
-        android:textSize="18sp" />
 
     <TextView
         android:id="@+id/act_qr_code_scan"
@@ -26,11 +17,26 @@
     <TextView
         android:id="@+id/act_qr_code_scan_result"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:visibility="gone"
+        android:gravity="center"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/act_qr_code_create"
+        android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginTop="10dp"
         android:background="@color/holo_blue"
         android:gravity="center"
-        android:text="扫描结果"
+        android:text="生成二维码"
         android:textSize="18sp" />
+
+    <ImageView
+        android:id="@+id/act_qr_code_create_result"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp" />
 
 </LinearLayout>
