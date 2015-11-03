@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="transparent">#00000000</color>
+    <drawable name="dots_high">#6BA6FF</drawable>
+    <drawable name="dots_normal">#4C4C4C</drawable>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="red">#FF0000</color>
+    <color name="green">#00FF00</color>
+    <color name="blue">#0000FF</color>
+    <color name="date_picker_bg_border">#FFC6C6C6</color>
+    <color name="date_picker_enable_true">#FFFFFFFF</color>
+    <color name="date_picker_enable_false">#FFF0F0F0</color>
+    <color name="holo_blue">#FF33E5B5</color>
+    
+</resources>

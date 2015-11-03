@@ -1,0 +1,80 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/date_picker_enable_false"
+    android:orientation="vertical"
+    android:padding="5dp">
+    <RelativeLayout
+        android:id="@+id/date_picker_title_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp" >
+
+        <TextView
+            android:id="@+id/date_picker_month_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="2014年3月"
+            android:textSize="20sp" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/date_picker_week_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="5dp"
+        android:weightSum="7" >
+
+        <TextView
+            style="@style/TextView_WeekDay"
+            
+            android:text="周日" />
+
+        <TextView
+            style="@style/TextView_WeekDay"
+            android:text="周一" />
+
+        <TextView
+            style="@style/TextView_WeekDay"
+            android:text="周二" />
+
+        <TextView
+            style="@style/TextView_WeekDay"
+            android:text="周三" />
+
+        <TextView
+            style="@style/TextView_WeekDay"
+            android:text="周四" />
+
+        <TextView
+            style="@style/TextView_WeekDay"
+            android:text="周五" />
+
+        <TextView
+            style="@style/TextView_WeekDay"
+            android:text="周六" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/date_picker_bg_border"
+        android:padding="1dp" >
+
+        <com.lg.base.sdk.ui.gridview.ScrollbarGridView
+            android:id="@+id/date_picker_grid_view"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="-5dp"
+            android:background="@drawable/bg_date_picker_gridview"
+            android:horizontalSpacing="1dp"
+            android:listSelector="@color/red"
+            android:numColumns="7"
+            android:scrollbars="none"
+            android:verticalSpacing="1dp" >
+        </com.lg.base.sdk.ui.gridview.ScrollbarGridView>
+    </RelativeLayout>
+
+</LinearLayout>
