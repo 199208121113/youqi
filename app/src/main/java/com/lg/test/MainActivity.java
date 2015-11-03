@@ -25,18 +25,23 @@ import roboguice.inject.InjectView;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
 
+    /** 帐户测试 */
     @InjectView(R.id.act_main_test_account_tv)
     View testAccountView;
 
+    /** 数据库测试 */
     @InjectView(R.id.act_main_test_db_tv)
     View testDBView;
 
+    /** 文件上传测试 */
     @InjectView(R.id.act_main_test_file_upload)
     TextView testUploadFile;
 
+    /** 文件下载测试 */
     @InjectView(R.id.act_main_test_file_download)
     TextView testDownloadFile;
 
+    /** 二维码测试 */
     @InjectView(R.id.act_main_test_qr_code)
     TextView testQrCode;
 
