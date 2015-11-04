@@ -21,8 +21,10 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.view.View;
@@ -60,7 +62,7 @@ public final class ViewfinderView extends View {
     /**
      * 扫描框中的中间线的宽度
      */
-    private static final int MIDDLE_LINE_WIDTH = 2;//6
+    private static final int MIDDLE_LINE_WIDTH = 6;//6
 
     /**
      * 扫描框中的中间线的与扫描框左右的间隙
@@ -129,6 +131,11 @@ public final class ViewfinderView extends View {
         possibleResultPoints = new HashSet<ResultPoint>(5);
     }
 
+    static int[] colors = new int[]{
+            Color.parseColor("#0000FF00"),
+            Color.parseColor("#00FF00"),
+            Color.parseColor("#0000FF00"),
+    };
     @Override
     public void onDraw(Canvas canvas) {
         //中间的扫描框，你要修改扫描框的大小，去CameraManager里面修改
@@ -174,13 +181,23 @@ public final class ViewfinderView extends View {
             canvas.drawRect(frame.right - ScreenRate, frame.bottom - CORNER_WIDTH, frame.right, frame.bottom, paint);
             canvas.drawRect(frame.right - CORNER_WIDTH, frame.bottom - ScreenRate, frame.right, frame.bottom, paint);
 
+            //画边框
+            canvas.drawLine(frame.left, frame.top + ScreenRate, frame.left, frame.bottom - ScreenRate, paint); //left
+            canvas.drawLine(frame.left + ScreenRate, frame.top, frame.right - ScreenRate, frame.top, paint);//top
+            canvas.drawLine(frame.right-1,frame.top+ScreenRate,frame.right-1,frame.bottom-ScreenRate,paint);//right
+            canvas.drawLine(frame.left + ScreenRate, frame.bottom - 1, frame.right - ScreenRate, frame.bottom - 1, paint);//bottom
 
             //绘制中间的线,每次刷新界面，中间的线往下移动SPEEN_DISTANCE
             slideTop += SPEEN_DISTANCE;
             if (slideTop >= frame.bottom) {
                 slideTop = frame.top;
             }
-            canvas.drawRect(frame.left + MIDDLE_LINE_PADDING, slideTop - MIDDLE_LINE_WIDTH / 2, frame.right - MIDDLE_LINE_PADDING, slideTop + MIDDLE_LINE_WIDTH / 2, paint);
+            Paint middleLinePaint = new Paint(paint);
+            Shader mShader = new LinearGradient(frame.left + MIDDLE_LINE_PADDING,slideTop - MIDDLE_LINE_WIDTH / 2,frame.right - MIDDLE_LINE_PADDING,slideTop + MIDDLE_LINE_WIDTH / 2,colors,null,Shader.TileMode.REPEAT);
+            //新建一个线性渐变，前两个参数是渐变开始的点坐标，第三四个参数是渐变结束的点的坐标。连接这2个点就拉出一条渐变线了，玩过PS的都懂。然后那个数组是渐变的颜色。下一个参数是渐变颜色的分布，如果为空，每个颜色就是均匀分布的。最后是模式，这里设置的是循环渐变
+            middleLinePaint.setShader(mShader);
+
+            canvas.drawRect(frame.left + MIDDLE_LINE_PADDING, slideTop - MIDDLE_LINE_WIDTH / 2, frame.right - MIDDLE_LINE_PADDING, slideTop + MIDDLE_LINE_WIDTH / 2, middleLinePaint);
 
 
             //画扫描框下面的字
