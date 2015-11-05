@@ -8,6 +8,7 @@ import com.lg.base.core.LogUtil;
 import com.lg.test.module.User;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by liguo on 2015/10/15.
@@ -27,14 +28,14 @@ public class UserOpTask extends BaseRoboAsyncTask<Boolean> {
     @Override
     protected Boolean run() throws Exception {
         User user = new User();
-        user.setUid(0);
+        //user.setUid(0);
         user.setName(username);
         user.setPwd(pwd);
 
         boolean createdOrUpdated = userDao.saveOrUpdate(user);
         LogUtil.e(tag,"createdOrUpdated="+createdOrUpdated);
 
-        List<User> userList = userDao.queryAll();
+        /*List<User> userList = userDao.queryAll();
         if(userList != null && userList.size()>0){
             for (User u : userList){
                 LogUtil.e(tag,"uid="+u.getUid()+",name="+u.getName()+",pwd="+u.getPwd());
@@ -47,8 +48,18 @@ public class UserOpTask extends BaseRoboAsyncTask<Boolean> {
         LogUtil.e(tag,"deleted="+deleted);
 
         long totalCount = userDao.getDao().countOf();
-        LogUtil.e(tag, "totalCount=" + totalCount);
+        LogUtil.e(tag, "totalCount=" + totalCount);*/
 
+        List<Map<String,Object>> objArray = userDao.getDao().queryListMapBySQL("select * from user_info");
+        if(objArray != null && objArray.size() > 0){
+            for (Map<String,Object> map : objArray){
+                StringBuilder sb = new StringBuilder();
+                for (String key : map.keySet()){
+                    sb.append(key).append("=").append(map.get(key)).append(",");
+                }
+                LogUtil.e(tag, sb.toString());
+            }
+        }
 
         return true;
     }
