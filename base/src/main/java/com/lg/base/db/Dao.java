@@ -9,6 +9,7 @@ import com.lg.base.utils.StringUtil;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -183,6 +184,20 @@ public class Dao<ID,DATA> {
         return dataList;
     }
 
+    public List<Map<String,Object>> queryListMapBySQL(String sql,String... selectionArgs) throws Exception{
+        Cursor cursor = null;
+        List<Map<String,Object>> dataList = null;
+        try {
+            cursor = getCursorBySQL(sql,selectionArgs);
+            dataList = queryMap(cursor);
+        } finally {
+            if(cursor != null && !cursor.isClosed()){
+                cursor.close();
+            }
+        }
+        return dataList;
+    }
+
     public void execBySQL(String sql,String... selectionArgs) throws Exception{
         db.execSQL(sql, selectionArgs);
     }
@@ -248,6 +263,26 @@ public class Dao<ID,DATA> {
                 field.set(data,objValue);
             }
             arrList.add((DATA)data);
+        }
+        return arrList;
+    }
+
+    private List<Map<String,Object>> queryMap(Cursor cursor) throws Exception{
+        List<Map<String,Object>> arrList = new ArrayList<>();
+        if(cursor == null || cursor.isClosed())
+            return null;
+        Map<String,FieldInfo> fieldInfoMap = tableInfo.getFieldInfoMap();
+        String[] columnNameArray = cursor.getColumnNames();
+        while(cursor.moveToNext()){
+            Map<String,Object> map = new LinkedHashMap<>();
+            for (int i =0;i<columnNameArray.length;i++){
+                String columnName =  columnNameArray[i];
+                int columnIndex = cursor.getColumnIndex(columnName);
+                FieldInfo fi = fieldInfoMap.get(columnName);
+                Object objValue = DBUtil.convertCursorToObject(fi.getFieldType(), cursor, columnIndex);
+                map.put(fi.getColumnName(),objValue);
+            }
+            arrList.add(map);
         }
         return arrList;
     }
