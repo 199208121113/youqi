@@ -1,11 +1,14 @@
 package com.lg.test;
 
+import android.content.ComponentName;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
 import android.widget.TextView;
 
 import com.lg.base.core.BaseActivity;
+import com.lg.base.core.BaseEvent;
 import com.lg.base.core.LogUtil;
 import com.lg.base.core.UITask;
 import com.lg.base.task.download.SimpleFileDownloadTask;
@@ -16,6 +19,7 @@ import com.lg.base.utils.ToastUtil;
 import com.lg.test.account.CollectTask;
 import com.lg.test.activity.TestQrCodeActivity;
 import com.lg.test.db.UserOpActivity;
+import com.lg.test.sms.SmsService;
 
 import java.io.File;
 import java.util.HashMap;
@@ -45,6 +49,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @InjectView(R.id.act_main_test_qr_code)
     TextView testQrCode;
 
+    @InjectView(R.id.act_main_test_sms)
+    TextView testSms;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +60,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         testUploadFile.setOnClickListener(this);
         testDownloadFile.setOnClickListener(this);
         testQrCode.setOnClickListener(this);
+        testSms.setOnClickListener(this);
     }
 
     @Override
@@ -61,8 +69,26 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     @Override
+    public void executeEvent(BaseEvent evt) {
+        super.executeEvent(evt);
+        if(evt.getWhat() == SmsService.SMS_START_SUCCESS){
+            postRunOnUi(new UITask(this) {
+                @Override
+                public void run() {
+                    ToastUtil.show(getContext(),"SMS Service started!");
+                }
+            });
+        }
+    }
+
+    @Override
     public void onClick(View v) {
         if(v == testAccountView){
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            ComponentName cn = new ComponentName("com.android.settings", "com.android.settings.Settings");
+            intent.setComponent(cn);
+            intent.putExtra(":android:show_fragment", "com.android.settings.applications.AppOpsSummary");
+            startActivity(intent);
             collect();
         }else if(v == testDBView){
             startActivity(UserOpActivity.createIntent(this));
@@ -72,6 +98,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             download();
         }else if(v == testQrCode){
             startActivity(TestQrCodeActivity.createIntent(this));
+        }else if(v == testSms){
+            // 需要把我们自己的App设置为默认的短信应用程序才能[阻止广播继续下发|删除短信记录]
+//            startService(new Intent(this, SmsService.class));
         }
     }
 
