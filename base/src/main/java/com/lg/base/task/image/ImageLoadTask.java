@@ -1,7 +1,6 @@
 package com.lg.base.task.image;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 
@@ -14,8 +13,6 @@ import com.lg.base.utils.ImageUtil;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 import com.squareup.okhttp.ResponseBody;
-
-import org.apache.http.HttpStatus;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -68,13 +65,11 @@ public class ImageLoadTask extends BaseRoboAsyncTask<Bitmap> {
             Response response = OKHttpUtil.execute(request,null);
             int responseCode = response.code();
             FileOutputStream fos = null;
-            if (responseCode == HttpStatus.SC_OK) {
+            if (responseCode == 200) {
                 IOUtil.delete(tmpPath);
                 fos = new FileOutputStream(tmpPath);
-            } else if (responseCode == HttpStatus.SC_PARTIAL_CONTENT) {
+            } else if (responseCode == 206) {
                 fos = new FileOutputStream(tmpPath, true);
-            } else if (responseCode == HttpStatus.SC_REQUESTED_RANGE_NOT_SATISFIABLE) {
-                IOUtil.delete(tmpPath);
             } else {
                 IOUtil.delete(tmpPath);
             }

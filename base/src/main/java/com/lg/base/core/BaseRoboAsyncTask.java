@@ -21,17 +21,8 @@ import com.lg.base.utils.NetworkUtil;
 import com.lg.base.utils.StringUtil;
 import com.lg.base.utils.ToastUtil;
 
-import org.apache.http.NoHttpResponseException;
-import org.apache.http.ProtocolException;
-import org.apache.http.conn.ConnectTimeoutException;
-import org.apache.http.conn.HttpHostConnectException;
-
 import java.lang.ref.WeakReference;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
 import java.util.concurrent.TimeUnit;
-
-import javax.net.ssl.SSLException;
 
 
 public abstract class BaseRoboAsyncTask<T> extends RoboAsyncTask<T> {
@@ -153,49 +144,13 @@ public abstract class BaseRoboAsyncTask<T> extends RoboAsyncTask<T> {
             ToastUtil.show(mActivity.get(), "网络已断开,请检查网络!");
             return;
         }
-        if (e instanceof HttpHostConnectException) {
-            showErrorDialog("网络不稳定,请检查网络或稍后重试");
-        } else if (e instanceof ConnectTimeoutException) {
-            showErrorDialog("连接超时");
-        } else if (e instanceof SocketTimeoutException) {
-            //服务器处理超时造成的
-        } else if (e instanceof UnknownHostException) {
-            showErrorDialog("网络不稳定,请重试[103]");
-        } else if (e instanceof SSLException) {
-            //网络太慢造成的
-        }else if(e instanceof ProtocolException){
-            showErrorDialog("网络不稳定,请重试[101]");
-        }else if(e instanceof NoHttpResponseException){
-            showErrorDialog("网络不稳定,请重试[102]");
-        }else if(e instanceof OperationCanceledException){
-            // nothing to do
-        }else if(e instanceof AccountsException){
-            // nothing to do
-        } else {
-            String errMsg = getErrorMsgStr(e);
-            showErrorDialog(errMsg);
-        }
+        String errMsg = getErrorMsgStr(e);
+        showErrorDialog(errMsg);
     }
 
     public static String getErrorMessage(Exception e){
-        String errMsg = null;
-        if (e instanceof HttpHostConnectException) {
-            errMsg="网络不稳定";
-        } else if (e instanceof ConnectTimeoutException) {
-            errMsg="网络超时";
-        } else if (e instanceof SocketTimeoutException) {
-            errMsg="服务器处理超时";
-        } else if (e instanceof UnknownHostException) {
-            errMsg="网络不稳定,请重试[103]";
-        } else if (e instanceof SSLException) {
-            //网络太慢造成的
-        }else if(e instanceof ProtocolException){
-            errMsg="网络不稳定,请重试[101]";
-        }else if(e instanceof NoHttpResponseException){
-            errMsg="网络不稳定,请重试[102]";
-        }else{
-            errMsg = getErrorMsgStr(e);
-        }
+        String errMsg;
+        errMsg = getErrorMsgStr(e);
         return errMsg;
     }
 

@@ -9,8 +9,6 @@ import com.lg.base.utils.GsonUtil;
 import com.squareup.okhttp.Response;
 import com.squareup.okhttp.ResponseBody;
 
-import org.apache.http.HttpResponse;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -39,7 +37,7 @@ public class DefaultHandler implements HttpResponseHandler {
     @SuppressWarnings("unchecked")
     @Override
     public <T> T handResposne(Response response, Type resultType) throws Exception {
-        if (resultType == null || resultType == HttpResponse.class || response == null) {
+        if (resultType == null || resultType == Response.class || response == null) {
             return (T) response;
         }
         if (resultType == Void.TYPE) {

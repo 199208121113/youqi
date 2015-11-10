@@ -12,7 +12,7 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
-public abstract class Task<T,V> implements Serializable {
+public abstract class Task<T> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -357,7 +357,4 @@ public abstract class Task<T,V> implements Serializable {
 		return TaskType.download;
 	}
 
-	public V getExtraInfo(){
-		return null;
-	}
 }

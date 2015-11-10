@@ -19,8 +19,6 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 import com.squareup.okhttp.ResponseBody;
 
-import org.apache.http.HttpStatus;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -29,7 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @SuppressWarnings("all")
-public class FileDownloadTask extends Task<String,Object> implements OnTaskRunningListener {
+public class FileDownloadTask extends Task<String> implements OnTaskRunningListener {
 
     @Override
     protected String doInBackground() throws Exception {
@@ -62,10 +60,10 @@ public class FileDownloadTask extends Task<String,Object> implements OnTaskRunni
         final int responseCode = response.code();
         long receivedLength = 0;
         FileOutputStream fos = null;
-        if (responseCode == HttpStatus.SC_OK) {
+        if (responseCode == 200) {
             IOUtil.delete(tempSavePath);
             fos = new FileOutputStream(tempSavePath);
-        } else if (responseCode == HttpStatus.SC_PARTIAL_CONTENT) {
+        } else if (responseCode == 206) {
             fos = new FileOutputStream(tempSavePath, true);
             receivedLength = Math.max(oldReceivedLength,0);
         } else {

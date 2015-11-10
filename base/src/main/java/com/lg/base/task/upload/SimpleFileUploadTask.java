@@ -1,14 +1,11 @@
 package com.lg.base.task.upload;
 
 import android.app.Activity;
-import android.content.Context;
 
 import com.lg.base.core.BaseRoboAsyncTask;
 import com.lg.base.task.OnTaskRunningListener;
 import com.lg.base.task.Status;
 import com.squareup.okhttp.Response;
-
-import org.apache.http.HttpStatus;
 
 import java.io.File;
 import java.util.Map;
@@ -35,7 +32,7 @@ public class SimpleFileUploadTask extends BaseRoboAsyncTask<String> implements O
 		}
 		Response response = FileUploadTask.startUpload(uploadFile, params, null, this.uploadUrl, this);
 		int respCode = response.code();
-		if(respCode == HttpStatus.SC_OK){
+		if(respCode == 200){
 			return uploadFile.getAbsolutePath();
 		}
 		throw new Exception("file upload failed,respCode="+respCode);

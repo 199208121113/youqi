@@ -2,7 +2,6 @@ package com.lg.test.account;
 
 import android.accounts.AccountManager;
 import android.app.Activity;
-import android.content.Context;
 
 import com.lg.base.core.BaseRoboAsyncTask;
 

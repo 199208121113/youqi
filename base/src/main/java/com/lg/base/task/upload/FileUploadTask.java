@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @SuppressWarnings("all")
-public class FileUploadTask extends Task<String,Object> implements OnTaskRunningListener {
+public class FileUploadTask extends Task<String> implements OnTaskRunningListener {
     private static final String KEY_UPLOAD_FILE_PATH = "upload_file_path";
     private static final String KEY_UPLOAD_URL = "KEY_UPLOAD_URL";
 
