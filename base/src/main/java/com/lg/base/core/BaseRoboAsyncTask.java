@@ -133,6 +133,9 @@ public abstract class BaseRoboAsyncTask<T> extends RoboAsyncTask<T> {
 
     @Override
     protected void onException(Exception e) {
+        if(isDontNeedRetryException(e)){
+            return;
+        }
         final boolean avilable = NetworkUtil.isAvailable(mActivity.get());
 
         LogUtil.e(TAG, "ExceptionInfo:", e);
