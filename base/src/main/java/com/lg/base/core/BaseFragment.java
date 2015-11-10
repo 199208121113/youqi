@@ -57,23 +57,8 @@ public abstract class BaseFragment extends Fragment implements MessageHandListen
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+		InjectManager.init(this);
         mGlobalView = (ViewGroup)view;
-//    	ViewTreeObserver vto2 = mGlobalView.getViewTreeObserver();
-//        vto2.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
-//            @Override
-//            public void onGlobalLayout() {
-//            	try {
-//					mGlobalView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-//					mWidth = mGlobalView.getWidth();
-//					mHeight = mGlobalView.getHeight();
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//					DisplayMetrics dm = ScreenUtil.getDisplayMetrics(getActivity());
-//					mWidth=dm.widthPixels;
-//					mHeight = dm.heightPixels;
-//				}
-//            }
-//        });
 		if (actionBarView != null) {
 			calcViewSize(actionBarView, new OnViewSizeConfirmed() {
 				@Override
