@@ -1,7 +1,5 @@
 package com.lg.test;
 
-import android.content.ComponentName;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
@@ -9,6 +7,7 @@ import android.widget.TextView;
 
 import com.lg.base.core.BaseActivity;
 import com.lg.base.core.BaseEvent;
+import com.lg.base.core.InjectView;
 import com.lg.base.core.LogUtil;
 import com.lg.base.core.UITask;
 import com.lg.base.task.download.SimpleFileDownloadTask;
@@ -25,7 +24,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import roboguice.inject.InjectView;
+
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
 
@@ -49,9 +48,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @InjectView(R.id.act_main_test_qr_code)
     TextView testQrCode;
 
-    @InjectView(R.id.act_main_test_sms)
-    TextView testSms;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,7 +56,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         testUploadFile.setOnClickListener(this);
         testDownloadFile.setOnClickListener(this);
         testQrCode.setOnClickListener(this);
-        testSms.setOnClickListener(this);
     }
 
     @Override
@@ -84,11 +79,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         if(v == testAccountView){
-            Intent intent = new Intent(Intent.ACTION_MAIN);
-            ComponentName cn = new ComponentName("com.android.settings", "com.android.settings.Settings");
-            intent.setComponent(cn);
-            intent.putExtra(":android:show_fragment", "com.android.settings.applications.AppOpsSummary");
-            startActivity(intent);
             collect();
         }else if(v == testDBView){
             startActivity(UserOpActivity.createIntent(this));
@@ -98,9 +88,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             download();
         }else if(v == testQrCode){
             startActivity(TestQrCodeActivity.createIntent(this));
-        }else if(v == testSms){
-            // 需要把我们自己的App设置为默认的短信应用程序才能[阻止广播继续下发|删除短信记录]
-//            startService(new Intent(this, SmsService.class));
         }
     }
 
@@ -108,9 +95,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private void collect(){
         new CollectTask(this){
             @Override
-            protected void onSuccess(String s) throws Exception {
+            protected void onSuccess(String s) {
                 super.onSuccess(s);
-                ToastUtil.show(getContext(), "account.name=" + s);
+                ToastUtil.show(getActivityContext(), "account.name=" + s);
             }
         }.execute();
     }
@@ -126,9 +113,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         params.put("bookUploadedUserID", "liguo6568");
         new SimpleFileUploadTask(this,uploadLoadUrl,uploadFile,params){
             @Override
-            protected void onSuccess(String s) throws Exception {
+            protected void onSuccess(String s) {
                 super.onSuccess(s);
-                ToastUtil.show(getContext(), "上传成功");
+                ToastUtil.show(getActivityContext(), "上传成功");
             }
 
             @Override
@@ -140,7 +127,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 if(totalBytes > 0) {
                     bd.putString("scale", NumberUtil.format2(handBytes * 100f / totalBytes));
                 }
-                postRunOnUi(new UITask(getContext(), bd) {
+                postRunOnUi(new UITask(getActivityContext(), bd) {
                     @Override
                     public void run() {
                         Bundle bd = getExtra();
@@ -162,9 +149,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         String pp = Environment.getExternalStorageDirectory().getAbsolutePath()+"/AIReader.apk";
         new SimpleFileDownloadTask(this,url,pp){
             @Override
-            protected void onSuccess(String t) throws Exception {
+            protected void onSuccess(String t) {
                 super.onSuccess(t);
-                ToastUtil.show(getContext(), "下载成功");
+                ToastUtil.show(getActivityContext(), "下载成功");
             }
 
             @Override
@@ -176,7 +163,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 if(totalBytes > 0) {
                     bd.putString("scale", NumberUtil.format2(handBytes * 100f / totalBytes));
                 }
-                postRunOnUi(new UITask(this.getContext(), bd) {
+                postRunOnUi(new UITask(this.getActivityContext(), bd) {
                     @Override
                     public void run() {
                         String scale = getExtra().getString("scale");

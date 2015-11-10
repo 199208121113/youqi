@@ -53,14 +53,4 @@
         android:textSize="18sp"
         android:text="二维码测试" />
 
-    <TextView
-        android:id="@+id/act_main_test_sms"
-        android:layout_width="match_parent"
-        android:layout_marginTop="10dp"
-        android:background="@color/holo_blue"
-        android:gravity="center"
-        android:layout_height="50dp"
-        android:textSize="18sp"
-        android:text="短信拦截测试" />
-
 </LinearLayout>

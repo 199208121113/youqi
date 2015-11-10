@@ -6,10 +6,8 @@ import android.accounts.AccountManagerFuture;
 import android.accounts.AccountsException;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.OperationCanceledException;
 
 import com.lg.base.account.AccountUtils;
@@ -28,42 +26,29 @@ import org.apache.http.ProtocolException;
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.conn.HttpHostConnectException;
 
+import java.lang.ref.WeakReference;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
-import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SSLException;
 
-import roboguice.util.RoboAsyncTask;
 
-
-public abstract class BaseRoboAsyncTask<ResultT> extends RoboAsyncTask<ResultT> {
-    protected final String tag = this.getClass().getSimpleName();
+public abstract class BaseRoboAsyncTask<T> extends RoboAsyncTask<T> {
 
     public static final long MINUTES_1 = 1000 * 60;
-    public static final long MINUTES_30 = MINUTES_1 * 30;
-    public static final long HOUER_1 = MINUTES_1*60;
-    public static final long HOURS_4 = HOUER_1 * 4;
-    public static final long DAY_1 = HOUER_1 * 24;
 
-    public BaseRoboAsyncTask(Context context, Executor executor) {
-        super(context, executor);
+    public static final long DAY_1 = MINUTES_1 * 60 * 24;
+
+    private WeakReference<Activity> mActivity;
+    public BaseRoboAsyncTask(Activity activity) {
+        this.mActivity = new WeakReference<Activity>(activity);
+    }
+    public Activity getActivityContext(){
+        return mActivity.get();
     }
 
-    public BaseRoboAsyncTask(Context context, Handler handler, Executor executor) {
-        super(context, handler, executor);
-    }
-
-    public BaseRoboAsyncTask(Context context, Handler handler) {
-        super(context, handler);
-    }
-
-    public BaseRoboAsyncTask(Context context) {
-        super(context);
-    }
-
-    protected abstract ResultT run() throws Exception;
+    protected abstract T run() throws Exception;
 
     /** 返回该Exception是否需要重试 */
     public static boolean isDontNeedRetryException(Exception err) {
@@ -89,10 +74,10 @@ public abstract class BaseRoboAsyncTask<ResultT> extends RoboAsyncTask<ResultT> 
     }
 
     @Override
-    public final ResultT call() throws Exception {
+    public final T doInBackground() throws Exception {
         curStatus = Status.RUNNING;
         Exception err = null;
-        ResultT result = null;
+        T result = null;
         try {
             result = run();
         } catch (Exception e) {
@@ -143,7 +128,7 @@ public abstract class BaseRoboAsyncTask<ResultT> extends RoboAsyncTask<ResultT> 
     protected AlertDialog showNetWorkDialog(String title, String message) {
         if (networkDialog != null)
             closeNetWorkDialog();
-        networkDialog = LightNetWorkSetDialog.create(context, title, message);
+        networkDialog = LightNetWorkSetDialog.create(mActivity.get(), title, message);
         networkDialog.show();
         return networkDialog;
     }
@@ -156,16 +141,16 @@ public abstract class BaseRoboAsyncTask<ResultT> extends RoboAsyncTask<ResultT> 
     }
 
     @Override
-    protected void onException(Exception e) throws RuntimeException {
-        final boolean avilable = NetworkUtil.isAvailable(getContext());
+    protected void onException(Exception e) {
+        final boolean avilable = NetworkUtil.isAvailable(mActivity.get());
 
-        LogUtil.e(tag, "ExceptionInfo:", e);
+        LogUtil.e(TAG, "ExceptionInfo:", e);
         if (!isOpened()) {
             return;
         }
 
         if (!avilable) {
-            ToastUtil.show(getContext(), "网络已断开,请检查网络!");
+            ToastUtil.show(mActivity.get(), "网络已断开,请检查网络!");
             return;
         }
         if (e instanceof HttpHostConnectException) {
@@ -228,10 +213,7 @@ public abstract class BaseRoboAsyncTask<ResultT> extends RoboAsyncTask<ResultT> 
     }
 
     protected void showErrorDialog(String errMsg) {
-        Activity act = null;
-        if(getContext() instanceof Activity){
-            act = (Activity)getContext();
-        }
+        Activity act = mActivity.get();
         if(act == null)
             return;
         AlertDialog dialog = LightAlertDialog.create(act);
@@ -247,7 +229,7 @@ public abstract class BaseRoboAsyncTask<ResultT> extends RoboAsyncTask<ResultT> 
                 dialog.dismiss();
             }
         });
-        dialog.setOnDismissListener(new ProxyOnDismissListener(getContext(),getOnDialogCloseListener(),null));
+        dialog.setOnDismissListener(new ProxyOnDismissListener(mActivity.get(),getOnDialogCloseListener(),null));
         dialog.show();
     }
 
@@ -280,7 +262,7 @@ public abstract class BaseRoboAsyncTask<ResultT> extends RoboAsyncTask<ResultT> 
         } catch (Exception e) {
             e.printStackTrace();
         }
-        LogUtil.i(tag, "account[" + accountName + "],removed=" + removed);
+        LogUtil.i(TAG, "account[" + accountName + "],removed=" + removed);
         return removed;
     }
 
@@ -311,13 +293,13 @@ public abstract class BaseRoboAsyncTask<ResultT> extends RoboAsyncTask<ResultT> 
             }
         }
 
-        Account newAccount = new Account(loginName, getContext().getPackageName());
+        Account newAccount = new Account(loginName, mActivity.get().getPackageName());
         Bundle bd = new Bundle();
         bd.putString("uid", loginName);
         bd.putString("pwd", loginPwd);
         bd.putString("login_name", loginName);
         boolean added = am.addAccountExplicitly(newAccount, loginPwd, bd);
-        LogUtil.i(tag, "account[" + newAccount.name + "],added=" + added+",isSameAccount="+isSameAccount);
+        LogUtil.i(TAG, "account[" + newAccount.name + "],added=" + added+",isSameAccount="+isSameAccount);
         return added;
     }
 

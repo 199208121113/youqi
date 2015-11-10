@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Application;
 import android.os.Bundle;
 import android.os.Message;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +20,7 @@ import com.lg.base.R;
 import com.lg.base.ui.dialog.LightNetWorkSetDialog;
 import com.lg.base.ui.dialog.LightProgressDialog;
 
-import roboguice.fragment.RoboFragment;
+
 
 @SuppressWarnings("javadoc")
 /**
@@ -28,18 +29,12 @@ import roboguice.fragment.RoboFragment;
  * @author liguo
  *
  */
-public abstract class BaseFragment extends RoboFragment implements MessageHandListener,MessageSendListener,OnActionBarItemSelectedListener {
-    protected final String tag = this.getClass().getSimpleName();
+public abstract class BaseFragment extends Fragment implements MessageHandListener,MessageSendListener,OnActionBarItemSelectedListener {
+    protected final String TAG = this.getClass().getSimpleName();
     private BaseApplication app = null;
     private final Location from = new Location(this.getClass().getName());
     protected abstract int getContentView();
-    
-//    /** 整个Fragment的宽度 */
-//    protected int mWidth = 0;
-//
-//    /** 整个Fragment的高度 */
-//    protected int mHeight = 0;
-    
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

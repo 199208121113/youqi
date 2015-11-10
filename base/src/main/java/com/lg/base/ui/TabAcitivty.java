@@ -23,14 +23,11 @@ import com.lg.base.core.BaseActivity;
 import java.util.HashMap;
 import java.util.Map;
 
-import roboguice.inject.InjectView;
-
 public abstract class TabAcitivty extends BaseActivity implements OnTabChangeListener, TabContentFactory {
 
 	protected final String tag = this.getClass().getSimpleName();
 	protected TabHost mTabHost = null;
 
-	@InjectView(android.R.id.tabs)
 	protected TabWidget mTabWidget = null;
 
 	protected LinearLayout dotsLayout = null;
@@ -168,6 +165,7 @@ public abstract class TabAcitivty extends BaseActivity implements OnTabChangeLis
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		findViewById(android.R.id.tabcontent).setVisibility(View.VISIBLE);
+		mTabWidget  = (TabWidget)findViewById(android.R.id.tabs);
 		mTabHost = (TabHost) findViewById(android.R.id.tabhost);
 		mTabHost.setOnTabChangedListener(this);
 		mTabHost.setup();

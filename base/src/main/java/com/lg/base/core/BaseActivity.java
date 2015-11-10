@@ -5,10 +5,12 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +23,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.inject.Inject;
 import com.lg.base.R;
 import com.lg.base.event.NetWorkEvent;
 import com.lg.base.ui.dialog.LightNetWorkSetDialog;
@@ -29,15 +30,13 @@ import com.lg.base.ui.dialog.LightProgressDialog;
 
 import java.util.List;
 
-import roboguice.activity.RoboFragmentActivity;
-
 /**
  * description:RoboFragmentActivity
  * 继承RoboSherlockFragmentActivity之后，不但可以使用roboguice还可以使用ActionbarSherlock
  * @author liguo
  *
  */
-public abstract class BaseActivity extends RoboFragmentActivity implements MessageHandListener, MessageSendListener, OnViewSizeConfirmed, OnActionBarItemSelectedListener {
+public abstract class BaseActivity extends FragmentActivity implements MessageHandListener, MessageSendListener, OnViewSizeConfirmed, OnActionBarItemSelectedListener {
 
 	protected String TAG = this.getClass().getSimpleName();
 	private volatile BaseApplication app = null;
@@ -48,12 +47,16 @@ public abstract class BaseActivity extends RoboFragmentActivity implements Messa
 	protected int activityHeight = 0;
 	private volatile boolean running = false;
 	private volatile boolean isSelfDestoryed=false;
-	@Inject
-	ActivityManager activityManager;
+
+
+	private static ActivityManager activityManager;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		if(activityManager == null){
+			activityManager = (ActivityManager)this.getSystemService(Context.ACTIVITY_SERVICE);
+		}
 		this.running = true;
         isSelfDestoryed = false;
 		initGlobalView();
@@ -61,6 +64,7 @@ public abstract class BaseActivity extends RoboFragmentActivity implements Messa
 			enableFullScreen();
 		}
 		setContentView(mGlobalView);
+		InjectManager.init(this);
 		app = (BaseApplication) getApplication();
 		app.registerTtListener(this);
 
@@ -347,6 +351,7 @@ public abstract class BaseActivity extends RoboFragmentActivity implements Messa
  	}
 
  	private View inflateActionBarView() {
+
  		return LayoutInflater.from(getActivity()).inflate(R.layout.layout_actionbar, null);
  	}
  	

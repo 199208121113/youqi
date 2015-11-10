@@ -38,8 +38,6 @@
 
     <application android:allowBackup="true"
         android:supportsRtl="true">
-        <meta-data android:name="roboguice.annotations.packages" android:value="com.lg.base.modules"/>
-        <meta-data android:name="roboguice.modules" android:value="com.lg.base.modules.BaseModule"/>
     </application>
 
 </manifest>

@@ -1,9 +1,11 @@
 package com.lg.base.task.image;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 
+import com.lg.base.core.BaseRoboAsyncTask;
 import com.lg.base.http.HttpMethod;
 import com.lg.base.http.OKHttpUtil;
 import com.lg.base.task.download.FileDownloadTask;
@@ -19,23 +21,22 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 
-import roboguice.util.RoboAsyncTask;
 
 @SuppressWarnings("javadoc")
-public class ImageLoadTask extends RoboAsyncTask<Bitmap> {
+public class ImageLoadTask extends BaseRoboAsyncTask<Bitmap> {
 
     String url = null;
     String savePath = null;
     OnImageLoadFinishCallBack callBack = null;
     Bundle param = new Bundle();
-    public ImageLoadTask(Context context,String url,String savePath) {
+    public ImageLoadTask(Activity context,String url,String savePath) {
         super(context);
         this.url = url;
         this.savePath = savePath;
     }
 
     @Override
-    public Bitmap call() throws Exception {
+    public Bitmap run() throws Exception {
         int newWidth = getImageWidth();
         if(IOUtil.fileExist(savePath)){
             if(IOUtil.getFileSize(savePath) > 1024){
@@ -100,14 +101,14 @@ public class ImageLoadTask extends RoboAsyncTask<Bitmap> {
     }
 
     @Override
-    protected void onSuccess(Bitmap t) throws Exception {
+    protected void onSuccess(Bitmap t) {
         super.onSuccess(t);
         if(this.callBack != null)
             this.callBack.onSuccess(t);
     }
 
     @Override
-    protected void onException(Exception e) throws RuntimeException {
+    protected void onException(Exception e) {
         super.onException(e);
         if(this.callBack != null)
             this.callBack.onException(e);

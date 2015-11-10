@@ -10,12 +10,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.lg.base.core.BaseActivity;
+import com.lg.base.core.InjectView;
 import com.lg.qrcode.sample.CaptureActivity;
 import com.lg.test.R;
 
-import roboguice.inject.InjectView;
 
 /**
+ * Test Activity
  * Created by liguo on 2015/11/3.
  */
 public class TestQrCodeActivity extends BaseActivity implements View.OnClickListener {
@@ -32,7 +33,7 @@ public class TestQrCodeActivity extends BaseActivity implements View.OnClickList
     @InjectView(R.id.act_qr_code_create_result)
     ImageView ivCreateResult;
 
-    private final static int SCANNIN_GREQUEST_CODE = 1;
+    private final static int SCAN_GR_CODE = 1;
 
     public static Intent createIntent(Context ctx){
         Intent it = new Intent(ctx,TestQrCodeActivity.class);
@@ -62,7 +63,7 @@ public class TestQrCodeActivity extends BaseActivity implements View.OnClickList
                 e.printStackTrace();
             }
         }else if(v == tvScan){
-            startActivityForResult(CaptureActivity.createIntent(this), SCANNIN_GREQUEST_CODE);
+            startActivityForResult(CaptureActivity.createIntent(this), SCAN_GR_CODE);
         }
     }
 
@@ -70,7 +71,7 @@ public class TestQrCodeActivity extends BaseActivity implements View.OnClickList
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case SCANNIN_GREQUEST_CODE:
+            case SCAN_GR_CODE:
                 if (resultCode == RESULT_OK) {
                     Bundle bundle = data.getExtras();
                     tvScanResult.setText(bundle.getString("result"));

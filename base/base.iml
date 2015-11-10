@@ -93,7 +93,6 @@
     <orderEntry type="library" exported="" name="support-annotations-21.0.3" level="project" />
     <orderEntry type="library" exported="" name="support-v4-21.0.3" level="project" />
     <orderEntry type="library" exported="" name="gson-2.5-SNAPSHOT" level="project" />
-    <orderEntry type="library" exported="" name="roboguice-3.0" level="project" />
     <orderEntry type="library" exported="" name="multidex-1.0.1" level="project" />
     <orderEntry type="library" exported="" name="okio-1.7.0-SNAPSHOT" level="project" />
   </component>

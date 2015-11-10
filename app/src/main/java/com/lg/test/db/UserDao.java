@@ -1,7 +1,5 @@
 package com.lg.test.db;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import com.lg.base.db.Dao;
 import com.lg.test.module.User;
 
@@ -11,11 +9,8 @@ import java.util.List;
  * Created by liguo on 2015/10/17.
  */
 
-@Singleton
-public class UserDao {
 
-    @Inject
-    private DBHelper dbHelper;
+public class UserDao {
 
     private Dao<Long,User> dao;
 
@@ -29,8 +24,16 @@ public class UserDao {
 
     public Dao<Long,User> getDao() throws Exception{
         if(dao == null){
-            dao = dbHelper.getDao(User.class);
+            dao = DBHelper.getInstance().getDao(User.class);
         }
         return dao;
+    }
+
+    private static UserDao userDao = null;
+    public static UserDao getInstance(){
+        if(userDao == null){
+            userDao = new UserDao();
+        }
+        return userDao;
     }
 }

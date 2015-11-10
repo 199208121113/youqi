@@ -1,8 +1,7 @@
 package com.lg.test.db;
 
-import android.content.Context;
+import android.app.Activity;
 
-import com.google.inject.Inject;
 import com.lg.base.core.BaseRoboAsyncTask;
 import com.lg.base.core.LogUtil;
 import com.lg.test.module.User;
@@ -16,10 +15,8 @@ import java.util.Map;
 public class UserOpTask extends BaseRoboAsyncTask<Boolean> {
     private String username;
     private String pwd;
-
-    @Inject
-    UserDao userDao;
-    public UserOpTask(Context context, String username, String pwd) {
+    UserDao userDao = UserDao.getInstance();
+    public UserOpTask(Activity context, String username, String pwd) {
         super(context);
         this.username = username;
         this.pwd = pwd;
@@ -33,7 +30,7 @@ public class UserOpTask extends BaseRoboAsyncTask<Boolean> {
         user.setPwd(pwd);
 
         boolean createdOrUpdated = userDao.saveOrUpdate(user);
-        LogUtil.e(tag,"createdOrUpdated="+createdOrUpdated);
+        LogUtil.e(TAG,"createdOrUpdated="+createdOrUpdated);
 
         /*List<User> userList = userDao.queryAll();
         if(userList != null && userList.size()>0){
@@ -57,7 +54,7 @@ public class UserOpTask extends BaseRoboAsyncTask<Boolean> {
                 for (String key : map.keySet()){
                     sb.append(key).append("=").append(map.get(key)).append(",");
                 }
-                LogUtil.e(tag, sb.toString());
+                LogUtil.e(TAG, sb.toString());
             }
         }
 

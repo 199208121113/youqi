@@ -3,7 +3,7 @@ package com.lg.test.db;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.google.inject.Inject;
+import com.lg.base.core.BaseApplication;
 import com.lg.base.core.LogUtil;
 import com.lg.base.db.DatabaseHelper;
 import com.lg.test.module.User;
@@ -19,10 +19,9 @@ public class DBHelper extends DatabaseHelper {
         super(context, name, factory, version);
     }
 
-    @Inject
     public DBHelper(Context context) {
         this(context, DB_NAME, null, DB_VERSION);
-        LogUtil.e(TAG,"DBHelper init success");
+        LogUtil.e(TAG, "DBHelper init success");
     }
 
     @Override
@@ -38,5 +37,13 @@ public class DBHelper extends DatabaseHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
+    }
+
+    private static DBHelper dbHelper = null;
+    public static DBHelper getInstance(){
+        if(dbHelper == null){
+            dbHelper = new DBHelper(BaseApplication.getAppInstance());
+        }
+        return dbHelper;
     }
 }

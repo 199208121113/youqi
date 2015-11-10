@@ -1,5 +1,6 @@
 package com.lg.base.core;
 
+import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.os.Message;
@@ -9,9 +10,7 @@ import com.lg.base.event.ServiceStateEvent;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import roboguice.service.RoboService;
-
-public abstract class BaseService extends RoboService implements MessageHandListener,MessageSendListener {
+public abstract class BaseService extends Service implements MessageHandListener,MessageSendListener {
 
 	protected final String tag = this.getClass().getSimpleName()+"::";
 	private BaseApplication app = null;

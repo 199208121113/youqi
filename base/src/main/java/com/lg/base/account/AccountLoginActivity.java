@@ -6,20 +6,14 @@ import android.accounts.AccountManager;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.google.inject.Key;
 import com.lg.base.core.BaseApplication;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import roboguice.util.RoboContext;
 
 import static android.accounts.AccountManager.KEY_ACCOUNT_NAME;
 import static android.accounts.AccountManager.KEY_ACCOUNT_TYPE;
 import static android.accounts.AccountManager.KEY_AUTHTOKEN;
 import static android.accounts.AccountManager.KEY_BOOLEAN_RESULT;
 
-public class AccountLoginActivity extends AccountAuthenticatorActivity implements RoboContext {
+public class AccountLoginActivity extends AccountAuthenticatorActivity {
 
 	public static final String PARAM_AUTHTOKEN_TYPE = "authtokenType";
 	public static final String PARAM_USERNAME = "user_name";
@@ -42,13 +36,6 @@ public class AccountLoginActivity extends AccountAuthenticatorActivity implement
 		authTokenType = it.getStringExtra(PARAM_AUTHTOKEN_TYPE);
 		confirmCredentials = it.getBooleanExtra(PARAM_CONFIRMCREDENTIALS, false);
 
-	}
-
-	protected HashMap<Key<?>, Object> scopedObjects = new HashMap<>();
-
-	@Override
-	public Map<Key<?>, Object> getScopedObjectMap() {
-		return scopedObjects;
 	}
 
 	protected final void onLoginSuccess(String username,String password) {

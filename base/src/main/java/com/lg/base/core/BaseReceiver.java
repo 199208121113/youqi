@@ -1,19 +1,18 @@
 package com.lg.base.core;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Message;
 
-import roboguice.receiver.RoboBroadcastReceiver;
-
-public abstract class BaseReceiver extends RoboBroadcastReceiver implements MessageSendListener{
+public abstract class BaseReceiver extends BroadcastReceiver implements MessageSendListener{
 
 	private final Location from = new Location(this.getClass().getName());
 	protected final String tag = this.getClass().getSimpleName();
 	private BaseApplication app = null;
 
 	@Override
-	protected void handleReceive(Context context, Intent intent) {
+	public void onReceive(Context context, Intent intent) {
 		this.app = (BaseApplication) context.getApplicationContext();
 		try {
 			doReceive(context, intent);

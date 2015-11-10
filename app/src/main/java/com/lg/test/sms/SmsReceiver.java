@@ -9,6 +9,7 @@ import com.lg.base.core.BaseReceiver;
 import com.lg.base.core.LogUtil;
 
 /**
+ * 需要把我们自己的App设置为默认的短信应用程序才能[阻止广播继续下发|删除短信记录]
  * 短信Receiver
  * Created by liguo on 2015/11/5.
  */

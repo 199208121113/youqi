@@ -8,10 +8,9 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.lg.base.core.BaseActivity;
+import com.lg.base.core.InjectView;
 import com.lg.base.utils.StringUtil;
 import com.lg.test.R;
-
-import roboguice.inject.InjectView;
 
 /**
  * Created by liguo on 2015/10/14.

@@ -1,6 +1,6 @@
 package com.lg.base.task.download;
 
-import android.content.Context;
+import android.app.Activity;
 
 import com.lg.base.core.BaseRoboAsyncTask;
 import com.lg.base.http.HttpConstant;
@@ -20,13 +20,13 @@ public class SimpleFileDownloadTask extends BaseRoboAsyncTask<String> implements
 
 	private List<TaskFilter<String,ProgressInfo>> taskFilters;
     private static final HashMap<String, String> downloadMap = new HashMap<>();
-	public SimpleFileDownloadTask(Context context, String downloadUrl, String savePath) {
+	public SimpleFileDownloadTask(Activity context, String downloadUrl, String savePath) {
 		super(context);
 		this.downloadUrl = downloadUrl;
 		this.fileSavePath = savePath;
 
 	}
-	public SimpleFileDownloadTask(Context context, String url, String savePath, TaskFilter<String, ProgressInfo> filter) {
+	public SimpleFileDownloadTask(Activity context, String url, String savePath, TaskFilter<String, ProgressInfo> filter) {
 		this(context,url,savePath);
 		this.addTaskFilter(filter);
 	}
@@ -82,7 +82,7 @@ public class SimpleFileDownloadTask extends BaseRoboAsyncTask<String> implements
 	}
 
 	@Override
-	protected void onPreExecute() throws Exception {
+	protected void onPreExecute() {
 		super.onPreExecute();
 		if(taskFilters == null)
 			return ;
@@ -92,7 +92,7 @@ public class SimpleFileDownloadTask extends BaseRoboAsyncTask<String> implements
 	}
 	
 	@Override
-	protected void onSuccess(String t) throws Exception {
+	protected void onSuccess(String t)  {
 		super.onSuccess(t);
 		if(taskFilters == null)
 			return ;
@@ -102,7 +102,7 @@ public class SimpleFileDownloadTask extends BaseRoboAsyncTask<String> implements
 	}
 	
 	@Override
-	protected void onException(Exception e) throws RuntimeException {
+	protected void onException(Exception e) {
 		super.onException(e);
 		if(taskFilters == null)
 			return ;
@@ -112,7 +112,7 @@ public class SimpleFileDownloadTask extends BaseRoboAsyncTask<String> implements
 	}
 
     @Override
-    protected void onFinally() throws RuntimeException {
+    protected void onFinally() {
         super.onFinally();
         downloadMap.remove(this.downloadUrl);
     }

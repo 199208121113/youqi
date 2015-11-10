@@ -6,11 +6,11 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.lg.base.account.AccountLoginActivity;
+import com.lg.base.core.InjectManager;
+import com.lg.base.core.InjectView;
 import com.lg.base.utils.StringUtil;
 import com.lg.test.R;
 
-
-import roboguice.inject.InjectView;
 
 /**
  * Created by liguo on 2015/10/14.
@@ -40,9 +40,7 @@ public class LoginActivity extends AccountLoginActivity implements View.OnClickL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        etUserName = (EditText)findViewById(R.id.act_login_et_user_name);
-        etPassword = (EditText)findViewById(R.id.act_login_et_pwd);
-        btnOK = (Button)findViewById(R.id.act_login_btn_ok);
+        InjectManager.init(this);
         btnOK.setOnClickListener(this);
     }
 
@@ -55,7 +53,7 @@ public class LoginActivity extends AccountLoginActivity implements View.OnClickL
         }
         new UserLoginTask(this,username,pwd){
             @Override
-            protected void onSuccess(Boolean aBoolean) throws Exception {
+            protected void onSuccess(Boolean aBoolean) {
                 super.onSuccess(aBoolean);
                 onLoginSuccess(this.getUsername(), this.getPwd());
                 finish();

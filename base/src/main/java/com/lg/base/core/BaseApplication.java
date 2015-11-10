@@ -30,12 +30,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
-import roboguice.RoboGuice;
-
 public abstract class BaseApplication extends Application implements UncaughtExceptionHandler {
-	static {
-		RoboGuice.setUseAnnotationDatabases(false);
-	}
+
 	protected static final String TAG = BaseApplication.class.getSimpleName();
 	private static volatile ConcurrentHashMap<String, MessageHandListener> ttListenerMap = new ConcurrentHashMap<>();
 	/** UI线程ID */
@@ -50,6 +46,12 @@ public abstract class BaseApplication extends Application implements UncaughtExc
 
 	public String getAccountType(){
 		return this.getPackageName();
+	}
+
+	private static final Handler TASK_HANDLER = new Handler();
+
+	public static Handler getTaskHandler() {
+		return TASK_HANDLER;
 	}
 
 	private volatile Handler handler = null;
@@ -197,13 +199,9 @@ public abstract class BaseApplication extends Application implements UncaughtExc
 	NetWorkReceiver mNetWorkReceiver = null;
 
 	private void registReceivers() {
-		initNetWorkReceiver();
+		mNetWorkReceiver = new NetWorkReceiver();
 		IntentFilter mNetWrokFilter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
 		this.registerReceiver(mNetWorkReceiver, mNetWrokFilter);
-	}
-
-	protected void initNetWorkReceiver() {
-		mNetWorkReceiver = new NetWorkReceiver();
 	}
 
 	// ====================================================
