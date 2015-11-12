@@ -26,36 +26,31 @@ import java.util.Map;
 
 
 
-public class MainActivity extends BaseActivity implements View.OnClickListener {
+public class MainActivity extends BaseActivity {
 
     /** 帐户测试 */
-    @InjectView(R.id.act_main_test_account_tv)
+    @InjectView(value = R.id.act_main_test_account_tv,click = "onClick")
     View testAccountView;
 
     /** 数据库测试 */
-    @InjectView(R.id.act_main_test_db_tv)
+    @InjectView(value = R.id.act_main_test_db_tv,click = "onClick")
     View testDBView;
 
     /** 文件上传测试 */
-    @InjectView(R.id.act_main_test_file_upload)
+    @InjectView(value = R.id.act_main_test_file_upload,click = "onClick")
     TextView testUploadFile;
 
     /** 文件下载测试 */
-    @InjectView(R.id.act_main_test_file_download)
+    @InjectView(value = R.id.act_main_test_file_download,click = "onClick")
     TextView testDownloadFile;
 
     /** 二维码测试 */
-    @InjectView(R.id.act_main_test_qr_code)
+    @InjectView(value = R.id.act_main_test_qr_code,click = "onClick")
     TextView testQrCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        testAccountView.setOnClickListener(this);
-        testDBView.setOnClickListener(this);
-        testUploadFile.setOnClickListener(this);
-        testDownloadFile.setOnClickListener(this);
-        testQrCode.setOnClickListener(this);
     }
 
     @Override
@@ -76,7 +71,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
     }
 
-    @Override
+    @SuppressWarnings("all")
     public void onClick(View v) {
         if(v == testAccountView){
             collect();
