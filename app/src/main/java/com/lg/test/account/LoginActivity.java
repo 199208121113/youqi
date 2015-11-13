@@ -13,6 +13,7 @@ import com.lg.test.R;
 
 
 /**
+ * 用户登录
  * Created by liguo on 2015/10/14.
  */
 public class LoginActivity extends AccountLoginActivity implements View.OnClickListener{
@@ -26,12 +27,16 @@ public class LoginActivity extends AccountLoginActivity implements View.OnClickL
     @InjectView(R.id.act_login_btn_ok)
     Button btnOK;
 
+    @InjectView(value = R.id.act_login_action_bar_icon_left,click = "onBack")
+    View backView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         InjectManager.init(this);
         btnOK.setOnClickListener(this);
+        backView.setBackgroundResource(R.drawable.sl_back_bg);
     }
 
     @Override
@@ -49,5 +54,9 @@ public class LoginActivity extends AccountLoginActivity implements View.OnClickL
                 finish();
             }
         }.execute();
+    }
+
+    public void onBack(View v){
+        finish();
     }
 }
