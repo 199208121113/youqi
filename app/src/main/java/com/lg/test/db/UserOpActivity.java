@@ -7,15 +7,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.lg.base.core.BaseActivity;
+import com.lg.base.core.ActionBarMenu;
 import com.lg.base.core.InjectView;
 import com.lg.base.utils.StringUtil;
 import com.lg.test.R;
+import com.lg.test.core.SuperActivity;
 
 /**
  * Created by liguo on 2015/10/14.
  */
-public class UserOpActivity extends BaseActivity implements View.OnClickListener{
+public class UserOpActivity extends SuperActivity implements View.OnClickListener{
 
     @InjectView(R.id.act_user_op_user_name)
     EditText etUserName;
@@ -34,6 +35,11 @@ public class UserOpActivity extends BaseActivity implements View.OnClickListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         btnAdd.setOnClickListener(this);
+    }
+
+    @Override
+    protected ActionBarMenu onActionBarCreate() {
+        return new ActionBarMenu("数据库测试");
     }
 
     @Override

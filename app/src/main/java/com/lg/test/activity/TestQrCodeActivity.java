@@ -9,17 +9,19 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.lg.base.core.ActionBarMenu;
 import com.lg.base.core.BaseActivity;
 import com.lg.base.core.InjectView;
 import com.lg.qrcode.sample.CaptureActivity;
 import com.lg.test.R;
+import com.lg.test.core.SuperActivity;
 
 
 /**
  * Test Activity
  * Created by liguo on 2015/11/3.
  */
-public class TestQrCodeActivity extends BaseActivity implements View.OnClickListener {
+public class TestQrCodeActivity extends SuperActivity implements View.OnClickListener {
 
     @InjectView(R.id.act_qr_code_create)
     TextView tvCreate;
@@ -43,6 +45,11 @@ public class TestQrCodeActivity extends BaseActivity implements View.OnClickList
     @Override
     protected int getContentView() {
         return R.layout.activity_qr_code;
+    }
+
+    @Override
+    protected ActionBarMenu onActionBarCreate() {
+        return new ActionBarMenu("二维码测试");
     }
 
     @Override

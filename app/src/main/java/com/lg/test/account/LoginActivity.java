@@ -17,16 +17,6 @@ import com.lg.test.R;
  */
 public class LoginActivity extends AccountLoginActivity implements View.OnClickListener{
 
-    /**
-     * (1)帐户测试
-     *
-     * (2)guice-4.0-no-aop.jar https://github.com/google/guice/releases
-     *  roboguice-3.0 已经下载到e:/devlop/open_project
-     *  公共类库 guava ?
-     *
-     * (3)数据库 更换框架
-     */
-
     @InjectView(R.id.act_login_et_user_name)
     EditText etUserName;
 

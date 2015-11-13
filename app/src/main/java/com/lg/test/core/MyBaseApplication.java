@@ -1,4 +1,4 @@
-package com.lg.test;
+package com.lg.test.core;
 
 import com.lg.base.core.BaseApplication;
 

@@ -5,6 +5,7 @@ import android.os.Environment;
 import android.view.View;
 import android.widget.TextView;
 
+import com.lg.base.core.ActionBarMenu;
 import com.lg.base.core.BaseActivity;
 import com.lg.base.core.BaseEvent;
 import com.lg.base.core.InjectView;
@@ -47,6 +48,11 @@ public class MainActivity extends BaseActivity {
     /** 二维码测试 */
     @InjectView(value = R.id.act_main_test_qr_code,click = "onClick")
     TextView testQrCode;
+
+    @Override
+    protected ActionBarMenu onActionBarCreate() {
+        return new ActionBarMenu("app demo");
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
