@@ -12,5 +12,8 @@
     <color name="date_picker_enable_true">#FFFFFFFF</color>
     <color name="date_picker_enable_false">#FFF0F0F0</color>
     <color name="holo_blue">#FF33E5B5</color>
-    
+
+    <color name="col_18b0f4">#18b0f4</color>
+    <color name="col_565656">#565656</color>
+    <color name="col_EEEEEE">#EEEEEE</color>
 </resources>

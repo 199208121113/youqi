@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="Global">
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_width">wrap_content</item>
-    </style>
-
     <style name="TextView_WeekDay" parent="android:style/Widget.TextView">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
@@ -25,6 +20,19 @@
     <style name="ProgressBar_List" parent="ProgressBar">
         <item name="android:layout_width">64dp</item>
         <item name="android:layout_height">64dp</item>
+    </style>
+
+    <style name="AnimationActivity" mce_bogus="1" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/push_left_in</item>
+        <item name="android:activityOpenExitAnimation">@anim/push_left_out</item>
+        <item name="android:activityCloseEnterAnimation">@anim/push_right_in</item>
+        <item name="android:activityCloseExitAnimation">@anim/push_right_out</item>
+    </style>
+
+    <style name="BaseTheme" parent="android:Theme.Light">
+        <item name="android:windowBackground">@color/col_EEEEEE</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowAnimationStyle">@style/AnimationActivity</item>
     </style>
 
 </resources>
