@@ -17,6 +17,7 @@ import com.lg.base.utils.NumberUtil;
 import com.lg.base.utils.StringUtil;
 import com.lg.base.utils.ToastUtil;
 import com.lg.test.account.CollectTask;
+import com.lg.test.activity.TestEncodeActivity;
 import com.lg.test.activity.TestQrCodeActivity;
 import com.lg.test.db.UserOpActivity;
 import com.lg.test.sms.SmsService;
@@ -49,6 +50,9 @@ public class MainActivity extends BaseActivity {
     @InjectView(value = R.id.act_main_test_qr_code,click = "onClick")
     TextView testQrCode;
 
+    @InjectView(value = R.id.act_main_test_encode,click = "onClick")
+    TextView testEncode;
+
     @Override
     protected ActionBarMenu onActionBarCreate() {
         return new ActionBarMenu("app demo");
@@ -64,19 +68,6 @@ public class MainActivity extends BaseActivity {
         return R.layout.activity_main;
     }
 
-    @Override
-    public void executeEvent(BaseEvent evt) {
-        super.executeEvent(evt);
-        if(evt.getWhat() == SmsService.SMS_START_SUCCESS){
-            postRunOnUi(new UITask(this) {
-                @Override
-                public void run() {
-                    ToastUtil.show(getContext(),"SMS Service started!");
-                }
-            });
-        }
-    }
-
     @SuppressWarnings("all")
     public void onClick(View v) {
         if(v == testAccountView){
@@ -89,6 +80,8 @@ public class MainActivity extends BaseActivity {
             download();
         }else if(v == testQrCode){
             startActivity(TestQrCodeActivity.createIntent(this));
+        }else if(v == testEncode){
+            startActivity(TestEncodeActivity.createIntent(this));
         }
     }
 
