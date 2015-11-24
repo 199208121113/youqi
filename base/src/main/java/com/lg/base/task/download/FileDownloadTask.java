@@ -61,13 +61,13 @@ public class FileDownloadTask extends Task<String> implements OnTaskRunningListe
         long receivedLength = 0;
         FileOutputStream fos = null;
         if (responseCode == 200) {
-            IOUtil.delete(tempSavePath);
+            IOUtil.deleteByFilePath(tempSavePath);
             fos = new FileOutputStream(tempSavePath);
         } else if (responseCode == 206) {
             fos = new FileOutputStream(tempSavePath, true);
             receivedLength = Math.max(oldReceivedLength,0);
         } else {
-            IOUtil.delete(tempSavePath);
+            IOUtil.deleteByFilePath(tempSavePath);
         }
 
         if (fos == null)
@@ -112,14 +112,14 @@ public class FileDownloadTask extends Task<String> implements OnTaskRunningListe
                 throw new OperationCanceledException("requestUrl:[" + requestUrl + "] canceled");
             }
             if (totalLenght > 0 && receivedLength < totalLenght) {
-                IOUtil.delete(fileSavePath);
-                IOUtil.delete(tempSavePath);
+                IOUtil.deleteByFilePath(fileSavePath);
+                IOUtil.deleteByFilePath(tempSavePath);
                 throw new Exception("Data is not complete,rec=[" + receivedLength + "/" + totalLenght + "]");
             }
             try {
                 boolean deleted = IOUtil.deleteFileByRename(fileSavePath);
                 if(!deleted) {
-                    IOUtil.delete(fileSavePath);
+                    IOUtil.deleteByFilePath(fileSavePath);
                 }
             } catch (Exception e) {
                 //ignore this Exception
@@ -133,7 +133,7 @@ public class FileDownloadTask extends Task<String> implements OnTaskRunningListe
                    }
                 }
             } catch (Exception err) {
-                IOUtil.delete(fileSavePath);
+                IOUtil.deleteByFilePath(fileSavePath);
                 throw err;
             }
         } finally {

@@ -44,12 +44,12 @@ public class ImageLoadTask extends BaseRoboAsyncTask<Bitmap> {
                     bmp = ImageUtil.getBitmap(savePath);
                 }
                 if (bmp == null) {
-                	IOUtil.delete(savePath);
+                	IOUtil.deleteByFilePath(savePath);
                     throw new Exception("can't load bitmap from file:" + savePath+" url="+this.url);
                 }
                 return bmp;
             }else{
-                IOUtil.delete(savePath);
+                IOUtil.deleteByFilePath(savePath);
             }
         }
         Bitmap bmp = null;
@@ -66,12 +66,12 @@ public class ImageLoadTask extends BaseRoboAsyncTask<Bitmap> {
             int responseCode = response.code();
             FileOutputStream fos = null;
             if (responseCode == 200) {
-                IOUtil.delete(tmpPath);
+                IOUtil.deleteByFilePath(tmpPath);
                 fos = new FileOutputStream(tmpPath);
             } else if (responseCode == 206) {
                 fos = new FileOutputStream(tmpPath, true);
             } else {
-                IOUtil.delete(tmpPath);
+                IOUtil.deleteByFilePath(tmpPath);
             }
             if(fos == null)
                 return null;
@@ -89,7 +89,7 @@ public class ImageLoadTask extends BaseRoboAsyncTask<Bitmap> {
             bmp = ImageUtil.getBitmap(savePath);
         }
         if (bmp == null){
-        	IOUtil.delete(savePath);
+        	IOUtil.deleteByFilePath(savePath);
             throw new Exception("can't load bitmap from file:" + savePath);
         }
         return bmp;

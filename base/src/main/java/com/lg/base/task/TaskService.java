@@ -488,7 +488,7 @@ public class TaskService extends BaseService implements Task.OnStateChangeListen
 		String fullFileName = new File(this.getApplicationContext().getCacheDir(), t.getId() + ".tsk").getAbsolutePath();
 		LogUtil.d(tag, "deleteTaskFromFile() status=" + t.getStatus());
 		try {
-			IOUtil.delete(fullFileName);
+			IOUtil.deleteByFilePath(fullFileName);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
