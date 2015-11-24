@@ -210,7 +210,7 @@ public class IOUtil {
 		if (fullFileName == null)
 			throw new IllegalArgumentException("filename is null");
         ByteArrayInputStream bais = new ByteArrayInputStream(data,0,data.length);
-        return saveFileForInputStream(fullFileName,bais);
+        return saveFileForInputStream(fullFileName, bais);
 	}
 
 	public static boolean saveFileForInputStream(String fileFullPath, InputStream is) throws Exception{
@@ -252,10 +252,10 @@ public class IOUtil {
 	}
 	
 	public static boolean saveFileForText(String fileFullPath,String text,boolean append) throws Exception{
-		return FileUtil.saveTextToFilePath(fileFullPath,text,append);
+		return FileUtil.saveTextToFilePath(fileFullPath, text, append);
 	}
 	
-	public static boolean saveBitmap(String fileFullPath,Bitmap bmp,final int quality) throws Exception{
+	public static boolean saveFileForBitmap(String fileFullPath,Bitmap bmp,final int quality) throws Exception{
 		boolean saved = false;
 		if(bmp == null || bmp.isRecycled())
 			return saved;
@@ -278,7 +278,7 @@ public class IOUtil {
 		return saved;
 	}
 
-	public static void delete(String path) {
+	public static void deleteByFilePath(String path) {
 		File file = new File(path);
 		if (!file.exists())
 			return;
@@ -286,24 +286,16 @@ public class IOUtil {
 			file.deleteOnExit();
 	}
 
-//	public static void deleteDir(File file) {
-//		if (file == null || file.exists() == false) {
-//			return;
-//		}
-//		if (file.isFile() || file.list() == null || file.list().length == 0) {
-//			file.delete();
-//		} else {
-//			File[] files = file.listFiles();
-//			for (File f : files) {
-//				deleteDir(f);// 递归删除每一个文件
-//				f.delete();// 删除该文件夹
-//			}
-//		}
-//	}
-	
-	/** 删除目录及目录下的所有文件，
-	 * deleteCurDir：[true:删除当前目录，false：不删除当前目录]
-	 * */
+	public static void deleteByFile(File file) {
+		if (file == null || !file.exists())
+			return;
+		boolean suc = file.delete();
+		if (!suc) {
+			file.deleteOnExit();
+		}
+	}
+
+	/** 删除目录及目录下的所有文件*/
 	public static void deleteDir(File dir) {
 		if (dir == null)
 			return;
@@ -335,14 +327,7 @@ public class IOUtil {
 		}
 	}
 
-	public static void deleteFile(File file) {
-		if (file == null || file.exists() == false)
-			return;
-		boolean suc = file.delete();
-		if (!suc) {
-			file.deleteOnExit();
-		}
-	}
+
 	
 	public static boolean deleteFileByRename(String path){
 		File ff = new File(path);
@@ -359,16 +344,14 @@ public class IOUtil {
 		return deleted;
 	}
 
-	public static byte[] serialize(Object o) throws NotSerializableException, IOException {
+	public static byte[] serialize(Object o) throws Exception {
 		ByteArrayOutputStream baos = null;
 		try {
 			baos = new ByteArrayOutputStream();
 			serialize(o, baos);
 			byte bs[] = baos.toByteArray();
 			return bs;
-		} catch (NotSerializableException e) {
-			throw e;
-		} catch (IOException e) {
+		} catch (Exception e) {
 			throw e;
 		} finally {
 			if (baos != null) {
@@ -382,12 +365,12 @@ public class IOUtil {
 		}
 	}
 
-	public static void serialize(Object o, String fn) throws NotSerializableException, FileNotFoundException, IOException {
+	public static void serialize(Object o, String fn) throws Exception {
 		FileOutputStream fos = new FileOutputStream(fn);
 		serialize(o, fos);
 	}
 
-	public static void serialize(Object o, OutputStream ostrm) throws NotSerializableException, IOException {
+	public static void serialize(Object o, OutputStream ostrm) throws Exception {
 		if (ostrm == null)
 			throw new IOException("output stream is null");
 		ObjectOutputStream os = null;
@@ -395,10 +378,6 @@ public class IOUtil {
 			os = new ObjectOutputStream(ostrm);
 			os.writeObject(o);
 			os.close();
-		} catch (NotSerializableException e) {
-			throw e;
-		} catch (IOException e) {
-			throw e;
 		} finally {
 			if (os != null) {
 				try {
@@ -411,15 +390,11 @@ public class IOUtil {
 		}
 	}
 
-	public static Object unSerialize(byte[] bytes) throws IOException, ClassNotFoundException {
+	public static Object unSerialize(byte[] bytes) throws Exception {
 		ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
 		try {
 			Object o = unSerialize(bais);
 			return o;
-		} catch (IOException e) {
-			throw e;
-		} catch (ClassNotFoundException e) {
-			throw e;
 		} finally {
 			if (bais != null)
 				try {
@@ -431,7 +406,7 @@ public class IOUtil {
 		}
 	}
 
-	public static Object unSerialize(InputStream istrm) throws IOException, ClassNotFoundException {
+	public static Object unSerialize(InputStream istrm) throws Exception {
 		ObjectInputStream is = null;
 		Object o;
 		try {
@@ -440,10 +415,6 @@ public class IOUtil {
 			is.close();
 			is = null;
 			return o;
-		} catch (IOException e1) {
-			throw e1;
-		} catch (ClassNotFoundException e2) {
-			throw e2;
 		} finally {
 			if (is != null) {
 				try {
@@ -486,7 +457,7 @@ public class IOUtil {
 		int index = fn.lastIndexOf("/");
 		if (index < 0)
 			return fn;
-		return fn.substring(index+1);
+		return fn.substring(index + 1);
 	}
 	
 	public static String getFileName(File f){
@@ -509,11 +480,10 @@ public class IOUtil {
 	}
 
 	/**
-	 * 单个文件拷贝
-	 * 
-	 * @parameter targetFilePath 目标路径
-	 * @parameter sourceFilePath 源路径
-	 * @return
+	 * 单个文件复制
+	 * @param targetFilePath 目标路径
+	 * @param sourceFilePath 源路径
+	 * @return 是否复制成功
 	 */
 	public static boolean copyFile(String targetFilePath, String sourceFilePath) {
 		if (targetFilePath == null || targetFilePath.trim().length() == 0)
@@ -558,39 +528,5 @@ public class IOUtil {
 			}
 		}
 		return false;
-	}
-	
-	public static boolean mkDirByCMD(String dir) throws Exception{
-		boolean maked = false;
-		Process pro = null;
-		try {
-			pro = Runtime.getRuntime().exec("mkdir -p "+dir);
-			pro.waitFor();
-			maked = true;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}finally{
-			if(pro != null){
-				pro.destroy();
-			}
-		}
-		return maked;
-	}
-		
-	public static boolean deleteDirByCMD(String dir){
-		boolean deleted = false;
-		Process pro = null;
-		try {
-			pro = Runtime.getRuntime().exec("rm -r "+dir);
-			pro.waitFor();
-			deleted = true;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}finally{
-			if(pro != null){
-				pro.destroy();
-			}
-		}
-		return deleted;
 	}
 }

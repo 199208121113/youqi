@@ -14,6 +14,8 @@ import android.os.Message;
 import android.support.multidex.MultiDex;
 import android.util.Log;
 
+import com.lg.base.init.FilePathManager;
+import com.lg.base.init.SharedPreferenceManager;
 import com.lg.base.receiver.NetWorkReceiver;
 import com.lg.base.utils.DateUtil;
 import com.lg.base.utils.ExceptionUtil;
@@ -89,6 +91,8 @@ public abstract class BaseApplication extends Application implements UncaughtExc
 
 	private void init() {
 		registReceivers();
+		FilePathManager.init(this);
+		SharedPreferenceManager.init(this);
 	}
 
 	@Override
