@@ -46,5 +46,6 @@ dependencies {
     compile project(':base')
     compile project(':qrcode')
     compile 'com.android.support:multidex:1.0.1'
-    //compile 'com.android.support:design:23.1.0'
+    compile 'com.android.support:appcompat-v7:23.+'
+    compile 'com.android.support:design:23.1.0'
 }

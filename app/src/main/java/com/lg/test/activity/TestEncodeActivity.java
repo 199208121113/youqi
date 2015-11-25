@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
+import com.lg.base.core.ActionBarMenu;
 import com.lg.base.core.InjectView;
 import com.lg.base.utils.AES256Cipher;
 import com.lg.base.utils.StringUtil;
@@ -22,6 +23,11 @@ public class TestEncodeActivity extends SuperActivity {
     public static Intent createIntent(Context ctx){
         Intent it = new Intent(ctx,TestEncodeActivity.class);
         return it;
+    }
+
+    @Override
+    protected ActionBarMenu onActionBarCreate() {
+        return new ActionBarMenu("加密测试");
     }
 
     @InjectView(R.id.act_encode_et_content)

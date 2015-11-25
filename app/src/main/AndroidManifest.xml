@@ -52,6 +52,13 @@
             android:screenOrientation="portrait">
         </activity>
 
+        <!-- AES加密 -->
+        <activity
+            android:name=".activity.TestSupportV7"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait">
+        </activity>
+
         <!-- 帐户相关 -->
         <service
             android:name=".account.MyAccountService"

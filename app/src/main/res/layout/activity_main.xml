@@ -11,7 +11,7 @@
         android:gravity="center"
         android:layout_height="50dp"
         android:textSize="18sp"
-        android:text="帐户测试" />
+        android:text="Account" />
 
     <TextView
         android:id="@+id/act_main_test_db_tv"
@@ -21,7 +21,7 @@
         android:gravity="center"
         android:layout_height="50dp"
         android:textSize="18sp"
-        android:text="数据库测试" />
+        android:text="database" />
 
     <TextView
         android:id="@+id/act_main_test_file_upload"
@@ -31,7 +31,7 @@
         android:gravity="center"
         android:layout_height="50dp"
         android:textSize="18sp"
-        android:text="文件上传测试" />
+        android:text="file upload" />
 
     <TextView
         android:id="@+id/act_main_test_file_download"
@@ -41,7 +41,7 @@
         android:gravity="center"
         android:layout_height="50dp"
         android:textSize="18sp"
-        android:text="文件下载测试" />
+        android:text="file download" />
 
     <TextView
         android:id="@+id/act_main_test_qr_code"
@@ -51,7 +51,7 @@
         android:gravity="center"
         android:layout_height="50dp"
         android:textSize="18sp"
-        android:text="二维码测试" />
+        android:text="qrcode" />
 
     <TextView
         android:id="@+id/act_main_test_encode"
@@ -61,6 +61,16 @@
         android:gravity="center"
         android:layout_height="50dp"
         android:textSize="18sp"
-        android:text="加密测试" />
+        android:text="encode" />
+
+    <TextView
+        android:id="@+id/act_main_test_support_v7"
+        android:layout_width="match_parent"
+        android:layout_marginTop="10dp"
+        android:background="@color/holo_blue"
+        android:gravity="center"
+        android:layout_height="50dp"
+        android:textSize="18sp"
+        android:text="support-v7" />
 
 </LinearLayout>
