@@ -64,13 +64,13 @@
         android:text="encode" />
 
     <TextView
-        android:id="@+id/act_main_test_support_v7"
+        android:id="@+id/act_main_test_recycler_view"
         android:layout_width="match_parent"
         android:layout_marginTop="10dp"
         android:background="@color/holo_blue"
         android:gravity="center"
         android:layout_height="50dp"
         android:textSize="18sp"
-        android:text="support-v7" />
+        android:text="recycler-view" />
 
 </LinearLayout>

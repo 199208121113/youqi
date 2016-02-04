@@ -54,7 +54,7 @@
 
         <!-- AES加密 -->
         <activity
-            android:name=".activity.TestSupportV7"
+            android:name=".activity.TestRecyclerViewActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait">
         </activity>

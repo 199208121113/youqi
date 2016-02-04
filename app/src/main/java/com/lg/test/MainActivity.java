@@ -18,7 +18,7 @@ import com.lg.base.utils.ToastUtil;
 import com.lg.test.account.CollectTask;
 import com.lg.test.activity.TestEncodeActivity;
 import com.lg.test.activity.TestQrCodeActivity;
-import com.lg.test.activity.TestSupportV7;
+import com.lg.test.activity.TestRecyclerViewActivity;
 import com.lg.test.db.UserOpActivity;
 
 import java.io.File;
@@ -52,8 +52,8 @@ public class MainActivity extends BaseActivity {
     @InjectView(value = R.id.act_main_test_encode,click = "onClick")
     TextView testEncode;
 
-    @InjectView(value = R.id.act_main_test_support_v7,click = "onClick")
-    TextView testV7;
+    @InjectView(value = R.id.act_main_test_recycler_view,click = "onClick")
+    TextView testRecyclerView;
 
     @Override
     protected ActionBarMenu onActionBarCreate() {
@@ -84,8 +84,8 @@ public class MainActivity extends BaseActivity {
             startActivity(TestQrCodeActivity.createIntent(this));
         }else if(v == testEncode){
             startActivity(TestEncodeActivity.createIntent(this));
-        }else if(v == testV7){
-            startActivity(TestSupportV7.createIntent(this));
+        }else if(v == testRecyclerView){
+            startActivity(TestRecyclerViewActivity.createIntent(this));
         }
     }
 
