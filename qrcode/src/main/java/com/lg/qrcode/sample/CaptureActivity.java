@@ -134,7 +134,10 @@ public class CaptureActivity extends Activity implements Callback {
             Intent resultIntent = new Intent();
             Bundle bundle = new Bundle();
             bundle.putString("result", resultString);
-            bundle.putParcelable("bitmap", barcode);
+            if(barcode != null && !barcode.isRecycled()){
+                barcode.recycle();
+//                bundle.putParcelable("bitmap", barcode);
+            }
             resultIntent.putExtras(bundle);
             this.setResult(RESULT_OK, resultIntent);
         }
