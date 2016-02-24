@@ -10,13 +10,14 @@ import com.lg.base.http.OKHttpUtil;
 import com.lg.base.task.download.FileDownloadTask;
 import com.lg.base.utils.IOUtil;
 import com.lg.base.utils.ImageUtil;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
-import com.squareup.okhttp.ResponseBody;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 
 @SuppressWarnings("javadoc")

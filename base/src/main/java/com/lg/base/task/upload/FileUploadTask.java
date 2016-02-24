@@ -10,16 +10,17 @@ import com.lg.base.task.TaskEvent;
 import com.lg.base.task.TaskService;
 import com.lg.base.utils.MD5Util;
 import com.lg.base.utils.StringUtil;
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.MultipartBuilder;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
 
 import java.io.File;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 @SuppressWarnings("all")
 public class FileUploadTask extends Task<String> implements OnTaskRunningListener {
@@ -84,7 +85,7 @@ public class FileUploadTask extends Task<String> implements OnTaskRunningListene
     }
 
     public static Response startUpload(File file,Map<String,String> paramsNew,Map<String,String> headers,String uploadUrl,OnTaskRunningListener listener) throws Exception{
-        MultipartBuilder builder = new MultipartBuilder().type(MultipartBuilder.FORM);
+        MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
 
         builder.addFormDataPart("fileData", file.getName(), RequestBody.create(MediaType.parse("application/octet-stream"),file) );
 

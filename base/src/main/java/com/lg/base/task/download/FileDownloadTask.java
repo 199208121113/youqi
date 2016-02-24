@@ -15,9 +15,6 @@ import com.lg.base.task.TaskService;
 import com.lg.base.utils.IOUtil;
 import com.lg.base.utils.MD5Util;
 import com.lg.base.utils.StringUtil;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
-import com.squareup.okhttp.ResponseBody;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -25,6 +22,10 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 @SuppressWarnings("all")
 public class FileDownloadTask extends Task<String> implements OnTaskRunningListener {
@@ -71,7 +72,7 @@ public class FileDownloadTask extends Task<String> implements OnTaskRunningListe
         }
 
         if (fos == null)
-            throw new Exception("fos is null,responseCode=" + responseCode + ",requestUrl=" + request.urlString());
+            throw new Exception("fos is null,responseCode=" + responseCode + ",requestUrl=" + request.url().toString());
         if (StringUtil.isEmpty(fileSavePath))
             throw new IllegalArgumentException("lastSavePath is empty");
         ResponseBody rb = response.body();

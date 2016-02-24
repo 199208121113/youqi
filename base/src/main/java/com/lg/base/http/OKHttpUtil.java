@@ -2,28 +2,22 @@ package com.lg.base.http;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.SSLCertificateSocketFactory;
 import android.net.Uri;
 import android.text.TextUtils;
 
 import com.lg.base.exception.NetworkRequestException;
 import com.lg.base.utils.GsonUtil;
-import com.squareup.okhttp.FormEncodingBuilder;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.net.URLEncoder;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.SSLSocketFactory;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class OKHttpUtil {
 
@@ -74,12 +68,12 @@ public class OKHttpUtil {
     }
 
     private static OkHttpClient getOkHttpClient(){
-        System.setProperty("http.keepAlive","false");
+        System.setProperty("http.keepAlive", "false");
         if(okHttpClient != null) {
             return okHttpClient;
         }
         okHttpClient = new OkHttpClient();
-        okHttpClient.setFollowRedirects(true);
+        /*okHttpClient.setFollowRedirects(true);
         okHttpClient.setFollowSslRedirects(true);
         okHttpClient.setRetryOnConnectionFailure(false);
         okHttpClient.setConnectTimeout(50, TimeUnit.SECONDS);
@@ -90,16 +84,16 @@ public class OKHttpUtil {
             public boolean verify(String hostname, SSLSession session) {
                 return true;
             }
-        });
+        });*/
         return okHttpClient;
     }
-    private static void setSSLSocketFactory1(){
+    /*private static void setSSLSocketFactory1(){
         SSLSocketFactory ssf = SSLCertificateSocketFactory.getDefault(HAND_SHAKE_TIMEOUT_MILLIS,null);
         okHttpClient.setSslSocketFactory(ssf);
     }
 
     private static void setSSLSocketFactory2(){
-		/*final TrustManager[] trustAllCerts = new TrustManager[] {
+		*//*final TrustManager[] trustAllCerts = new TrustManager[] {
 			new X509TrustManager() {
 				@Override
 				public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) throws CertificateException {
@@ -114,7 +108,7 @@ public class OKHttpUtil {
 					return null;
 				}
 			}
-		};*/
+		};*//*
         try {
             final SSLContext sslContext = SSLContext.getInstance("SSL");
             //sslContext.init(null, trustAllCerts, new SecureRandom());
@@ -126,7 +120,7 @@ public class OKHttpUtil {
         }  catch (Exception e) {
             setSSLSocketFactory1();
         }
-    }
+    }*/
 
     private static Request.Builder buildRequestByGet(String url,Map<String,String> params){
         StringBuilder sb = new StringBuilder(url);
@@ -163,7 +157,7 @@ public class OKHttpUtil {
     }
 
     public static RequestBody getFormRequestBody(Map<String,String> params){
-        FormEncodingBuilder bodyBuilder = new FormEncodingBuilder();
+        FormBody.Builder bodyBuilder = new FormBody.Builder();
         if(params != null && params.size() > 0){
             String value;
             for (String key : params.keySet()) {

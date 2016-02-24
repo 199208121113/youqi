@@ -4,12 +4,13 @@ import com.lg.base.core.LogUtil;
 import com.lg.base.http.resp.DefaultHandler;
 import com.lg.base.http.resp.HttpResponseHandler;
 import com.lg.base.utils.GsonUtil;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
+
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class HttpService {
 
@@ -37,7 +38,7 @@ public class HttpService {
             headersNew.putAll(headers);
         }
         Request request = OKHttpUtil.buildRequest(url, HttpMethod.GET, paramsNew, headersNew);
-        LogUtil.d(tag, "get,url=" + request.urlString());
+        LogUtil.d(tag, "get,url=" + request.url().toString());
         Response response = OKHttpUtil.execute(request, null);
         if (respHandler == null)
             respHandler = DefaultHandler.getDefaultInstance();
@@ -74,7 +75,7 @@ public class HttpService {
     public static Map<String, String> getBasicParams() {
         Map<String, String> pm = new HashMap<>();
         //公共参数
-        pm.put("key", "value");
+//        pm.put("key", "value");
         return pm;
     }
 

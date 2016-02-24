@@ -1,8 +1,9 @@
 package com.lg.base.http.resp;
 
-import com.squareup.okhttp.Response;
 
 import java.lang.reflect.Type;
+
+import okhttp3.Response;
 
 public interface HttpResponseHandler {
 	

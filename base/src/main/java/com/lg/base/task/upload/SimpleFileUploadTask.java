@@ -5,10 +5,11 @@ import android.app.Activity;
 import com.lg.base.core.BaseRoboAsyncTask;
 import com.lg.base.task.OnTaskRunningListener;
 import com.lg.base.task.Status;
-import com.squareup.okhttp.Response;
 
 import java.io.File;
 import java.util.Map;
+
+import okhttp3.Response;
 
 public class SimpleFileUploadTask extends BaseRoboAsyncTask<String> implements OnTaskRunningListener{
 

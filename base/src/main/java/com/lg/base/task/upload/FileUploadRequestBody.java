@@ -2,11 +2,11 @@ package com.lg.base.task.upload;
 
 import com.lg.base.task.OnTaskRunningListener;
 import com.lg.base.task.Status;
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.RequestBody;
 
 import java.io.IOException;
 
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import okio.Buffer;
 import okio.BufferedSink;
 import okio.ForwardingSink;
@@ -92,7 +92,7 @@ public class FileUploadRequestBody extends RequestBody {
         return new MySink(sink,contentLenght,listener);
     }
 
-    public static class MySink extends ForwardingSink{
+    public static class MySink extends ForwardingSink {
         private final long contentLength;
         private final OnTaskRunningListener listener;
         boolean userCanceled = false;

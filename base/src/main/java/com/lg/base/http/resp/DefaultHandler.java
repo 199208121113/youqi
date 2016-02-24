@@ -6,13 +6,14 @@ import android.graphics.BitmapFactory;
 import com.lg.base.exception.NetworkRequestException;
 import com.lg.base.exception.NetworkResponseException;
 import com.lg.base.utils.GsonUtil;
-import com.squareup.okhttp.Response;
-import com.squareup.okhttp.ResponseBody;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.lang.reflect.Type;
+
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 /**
  * HttpResponse的默认处理器
