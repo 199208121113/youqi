@@ -18,8 +18,6 @@ public interface IViewHolder<DATA, STATE> extends IOnScrollListener {
 
 	void initViews();
 
-	void resetViews();
-
 	void recycleItem();
 
 	void destroy();

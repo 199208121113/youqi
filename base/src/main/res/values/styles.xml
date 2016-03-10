@@ -29,7 +29,7 @@
         <item name="android:activityCloseExitAnimation">@anim/push_right_out</item>
     </style>
 
-    <style name="BaseTheme" parent="android:Theme.Light">
+    <style name="AppBaseTheme" parent="android:Theme.Light">
         <item name="android:windowBackground">@color/col_EEEEEE</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowAnimationStyle">@style/AnimationActivity</item>

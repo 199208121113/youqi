@@ -33,11 +33,6 @@ public class CellHolder extends BaseViewHolder<CellItem, CellStatus> {
 	}
 
 	@Override
-	protected void onResetViews() {
-
-	}
-
-	@Override
 	protected void onRecycleItem() {
 		tv1.setText("");
 	}

@@ -1,8 +1,8 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="BaseTheme">
-
+    <style name="AppTheme" parent="AppBaseTheme">
+        <item name="android:listDivider">@drawable/sh_recycler_linear_hor</item>
     </style>
 
 </resources>

@@ -25,8 +25,6 @@ public abstract class BaseViewHolder<DATA, STATE> implements IViewHolder<DATA, S
 
 	protected abstract void onBindItem();
 
-	protected abstract void onResetViews();
-
 	protected abstract void onRecycleItem();
 
 	protected abstract void onRefreshView();
@@ -43,7 +41,6 @@ public abstract class BaseViewHolder<DATA, STATE> implements IViewHolder<DATA, S
 			return;
 		}
 		if (this.item != null) {
-			resetViews();
 			recycleItem();
 		}
 		this.item = item;
@@ -77,11 +74,6 @@ public abstract class BaseViewHolder<DATA, STATE> implements IViewHolder<DATA, S
 	@Override
 	public final void initViews() {
 		onInitViews(getRootView());
-	}
-
-	@Override
-	public final void resetViews() {
-		onResetViews();
 	}
 
 	@Override
@@ -142,11 +134,6 @@ public abstract class BaseViewHolder<DATA, STATE> implements IViewHolder<DATA, S
 		this.totalItemCount = totalItemCount;
 	}
 	
-	/** 默认有一个headview,根据情况而改变 */
-	protected int getHeaderCount(){
-		return 1;
-	}
-
     public void onLayout(){
 
     }
