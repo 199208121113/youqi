@@ -33,7 +33,7 @@
 
         <!-- 数据库操作 -->
         <activity
-            android:name=".db.UserOpActivity"
+            android:name=".activity.TestDbActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait">
         </activity>

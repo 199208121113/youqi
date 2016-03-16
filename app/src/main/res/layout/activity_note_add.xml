@@ -1,0 +1,21 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <EditText
+        android:id="@+id/act_note_add_text"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:hint="笔记内容" />
+
+    <Button
+        android:id="@+id/act_note_add_btn_ok"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:text="新增" />
+
+</LinearLayout>
+

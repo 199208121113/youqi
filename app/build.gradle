@@ -41,6 +41,11 @@ android {
         preDexLibraries = false
         javaMaxHeapSize "2g"
     }
+//    sourceSets {
+//        main {
+//            java.srcDirs = ['src/main/java', 'src/main/java-gen']
+//        }
+//    }
 }
 
 dependencies {
@@ -49,4 +54,6 @@ dependencies {
     compile project(':qrcode')
     compile 'com.android.support:multidex:1.0.1'
     //compile 'com.android.support:design:23.1.1'
+    compile 'de.greenrobot:greendao:2.1.0'
+    compile 'com.jakewharton:butterknife:1.4.0'
 }

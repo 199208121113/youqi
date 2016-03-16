@@ -16,10 +16,10 @@ import com.lg.base.utils.NumberUtil;
 import com.lg.base.utils.StringUtil;
 import com.lg.base.utils.ToastUtil;
 import com.lg.test.account.CollectTask;
+import com.lg.test.activity.TestDbActivity;
 import com.lg.test.activity.TestEncodeActivity;
 import com.lg.test.activity.TestQrCodeActivity;
 import com.lg.test.activity.TestRecyclerViewActivity;
-import com.lg.test.db.UserOpActivity;
 
 import java.io.File;
 import java.util.HashMap;
@@ -75,7 +75,7 @@ public class MainActivity extends BaseActivity {
         if(v == testAccountView){
             collect();
         }else if(v == testDBView){
-            startActivity(UserOpActivity.createIntent(this));
+            startActivity(TestDbActivity.createIntent(this));
         }else if(v == testUploadFile){
             upload();
         }else if(v == testDownloadFile){

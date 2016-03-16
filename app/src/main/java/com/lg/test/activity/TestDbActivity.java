@@ -1,4 +1,4 @@
-package com.lg.test.db;
+package com.lg.test.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,29 +12,26 @@ import com.lg.base.core.InjectView;
 import com.lg.base.utils.StringUtil;
 import com.lg.test.R;
 import com.lg.test.core.SuperActivity;
+import com.lg.test.task.NoteAddTask;
 
 /**
  * Created by liguo on 2015/10/14.
  */
-public class UserOpActivity extends SuperActivity implements View.OnClickListener{
+public class TestDbActivity extends SuperActivity{
 
-    @InjectView(R.id.act_user_op_user_name)
-    EditText etUserName;
+    @InjectView(R.id.act_note_add_text)
+    EditText etNoteText;
 
-    @InjectView(R.id.act_user_op_et_pwd)
-    EditText etPassword;
-
-    @InjectView(R.id.act_user_op_add_btn_ok)
+    @InjectView(value = R.id.act_note_add_btn_ok,click = "onClick")
     Button btnAdd;
 
     public static Intent createIntent(Context ctx){
-        Intent it = new Intent(ctx,UserOpActivity.class);
+        Intent it = new Intent(ctx,TestDbActivity.class);
         return it;
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        btnAdd.setOnClickListener(this);
     }
 
     @Override
@@ -44,19 +41,16 @@ public class UserOpActivity extends SuperActivity implements View.OnClickListene
 
     @Override
     protected int getContentView() {
-        return R.layout.activity_user_op;
+        return R.layout.activity_note_add;
     }
 
-    @Override
     public void onClick(View v) {
-
         if(v == btnAdd){
-            String username = etUserName.getText().toString().trim();
-            String pwd = etPassword.getText().toString().trim();
-            if(StringUtil.isEmpty(username) || StringUtil.isEmpty(pwd)){
+            String text = etNoteText.getText().toString().trim();
+            if(StringUtil.isEmpty(text)){
                 return;
             }
-            new UserOpTask(this,username,pwd){}.execute();
+            new NoteAddTask(this,text){}.execute();
         }
     }
 }
