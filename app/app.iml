@@ -84,9 +84,9 @@
     <orderEntry type="jdk" jdkName="Android API 23 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="support-annotations-23.1.1" level="project" />
+    <orderEntry type="library" exported="" name="butterknife-7.0.0" level="project" />
     <orderEntry type="library" exported="" name="multidex-1.0.1" level="project" />
     <orderEntry type="library" exported="" name="greendao-2.1.0" level="project" />
-    <orderEntry type="library" exported="" name="butterknife-1.4.0" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="multidex-instrumentation-1.0.1" level="project" />
     <orderEntry type="module" module-name="base" exported="" />
     <orderEntry type="module" module-name="qrcode" exported="" />
