@@ -11,6 +11,7 @@ import com.lg.test.greendao.Note;
 import com.lg.test.greendao.NoteDao;
 
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * Created by liguo on 2015/10/15.
@@ -36,7 +37,12 @@ public class NoteAddTask extends BaseRoboAsyncTask<Boolean> {
         note.setText(text);
         note.setDate(Calendar.getInstance().getTime());
         long newId = noteDao.insert(note);
-        LogUtil.d(TAG,"newId="+newId);
+        LogUtil.d(TAG, "newId=" + newId);
+
+        List<Note> noteList = noteDao.loadAll();
+        for(Note nt : noteList){
+            LogUtil.e(TAG,"nt="+nt.getText());
+        }
         return true;
     }
 }
