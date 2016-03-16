@@ -26,7 +26,6 @@ public class NoteDao extends AbstractDao<Note, Long> {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property Text = new Property(1, String.class, "text", false, "TEXT");
         public final static Property Date = new Property(2, java.util.Date.class, "date", false, "DATE");
-        public final static Property Remarks = new Property(3, String.class, "remarks", false, "REMARKS");
     };
 
 
@@ -44,8 +43,7 @@ public class NoteDao extends AbstractDao<Note, Long> {
         db.execSQL("CREATE TABLE " + constraint + "\"NOTE\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY ," + // 0: id
                 "\"TEXT\" TEXT NOT NULL ," + // 1: text
-                "\"DATE\" INTEGER," + // 2: date
-                "\"REMARKS\" TEXT);"); // 3: remarks
+                "\"DATE\" INTEGER);"); // 2: date
     }
 
     /** Drops the underlying database table. */
@@ -69,11 +67,6 @@ public class NoteDao extends AbstractDao<Note, Long> {
         if (date != null) {
             stmt.bindLong(3, date.getTime());
         }
- 
-        String remarks = entity.getRemarks();
-        if (remarks != null) {
-            stmt.bindString(4, remarks);
-        }
     }
 
     /** @inheritdoc */
@@ -88,8 +81,7 @@ public class NoteDao extends AbstractDao<Note, Long> {
         Note entity = new Note( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.getString(offset + 1), // text
-            cursor.isNull(offset + 2) ? null : new java.util.Date(cursor.getLong(offset + 2)), // date
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3) // remarks
+            cursor.isNull(offset + 2) ? null : new java.util.Date(cursor.getLong(offset + 2)) // date
         );
         return entity;
     }
@@ -100,7 +92,6 @@ public class NoteDao extends AbstractDao<Note, Long> {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setText(cursor.getString(offset + 1));
         entity.setDate(cursor.isNull(offset + 2) ? null : new java.util.Date(cursor.getLong(offset + 2)));
-        entity.setRemarks(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
      }
     
     /** @inheritdoc */

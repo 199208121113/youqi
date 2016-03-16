@@ -10,7 +10,6 @@ public class Note {
     /** Not-null value. */
     private String text;
     private java.util.Date date;
-    private String remarks;
 
     public Note() {
     }
@@ -19,11 +18,10 @@ public class Note {
         this.id = id;
     }
 
-    public Note(Long id, String text, java.util.Date date, String remarks) {
+    public Note(Long id, String text, java.util.Date date) {
         this.id = id;
         this.text = text;
         this.date = date;
-        this.remarks = remarks;
     }
 
     public Long getId() {
@@ -50,14 +48,6 @@ public class Note {
 
     public void setDate(java.util.Date date) {
         this.date = date;
-    }
-
-    public String getRemarks() {
-        return remarks;
-    }
-
-    public void setRemarks(String remarks) {
-        this.remarks = remarks;
     }
 
 }
