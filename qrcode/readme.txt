@@ -1,2 +1,2 @@
-//(1)数据库工具
-compile 'de.greenrobot:greendao:2.1.0'
+//(1)zxing二维码扫描工具
+compile 'com.google.zxing:core:3.2.1'
