@@ -36,7 +36,7 @@ import java.util.List;
  * @author liguo
  *
  */
-public abstract class BaseActivity extends FragmentActivity implements MessageHandListener, MessageSendListener, OnViewSizeConfirmed, OnActionBarItemSelectedListener {
+public abstract class BaseActivity extends FragmentActivity implements MessageHandListener, OnViewSizeConfirmed, OnActionBarItemSelectedListener {
 
 	protected String TAG = this.getClass().getSimpleName();
 	private volatile BaseApplication app = null;
@@ -66,7 +66,7 @@ public abstract class BaseActivity extends FragmentActivity implements MessageHa
 		setContentView(mGlobalView);
 		InjectManager.init(this);
 		app = (BaseApplication) getApplication();
-		app.registerTtListener(this);
+		EventBus.get().register(this);
 
 		initGoBack();
 		calcViewSize(mGlobalView, this);
@@ -140,42 +140,7 @@ public abstract class BaseActivity extends FragmentActivity implements MessageHa
 	protected void onDestroy() {
 		super.onDestroy();
         isSelfDestoryed = true;
-		app.unRegisterTtListener(this);
-	}
-
-	public final void sendEvent(BaseEvent evt) {
-		if (evt.getFrom() == null) {
-			evt.setFrom(getLocation());
-		}
-		app.sendEvent(evt);
-	}
-
-	public final void sendMessage(Message msg) {
-		BaseMessage tmsg = new BaseMessage(from, msg);
-		app.sendMessage(tmsg);
-	}
-
-	public final void sendEmptyMessage(int what) {
-		Message msg = Message.obtain();
-		msg.what = what;
-		BaseMessage tmsg = new BaseMessage(from, msg);
-		app.sendMessage(tmsg);
-	}
-
-	public final void sendMessageDelayed(Message msg, long delayMillis) {
-		BaseMessage tmsg = new BaseMessage(from, msg);
-		app.sendMessageDelayed(tmsg, delayMillis);
-	}
-
-	public final void sendEmptyMessageDelayed(int what, long delayMillis) {
-		Message msg = Message.obtain();
-		msg.what = what;
-		BaseMessage tmsg = new BaseMessage(from, msg);
-		app.sendMessageDelayed(tmsg, delayMillis);
-	}
-	
-	public final void removeMessage(int what){
-		app.removeMessage(what);
+		EventBus.get().unRegister(this);
 	}
 
 	/**检测是否在UI线程中运行*/
@@ -192,19 +157,9 @@ public abstract class BaseActivity extends FragmentActivity implements MessageHa
 		return new Location(this.getClass().getName());
 	}
 
-	public static final Location findLocation(Class<?> cls) {
-		return new Location(cls.getName());
-	}
-
-	/** 提交到UI线程中处理 */
-	public final void postRunOnUi(UITask task) {
-		app.postRunOnUi(task);
-	}
-
-
 	protected void sendExitEvent(){
 		BaseEvent exitEvent = new BaseEvent(Location.any,exit_what);
-		sendEvent(exitEvent);
+		EventBus.get().sendEvent(exitEvent);
 	}
 	public static final int exit_what = -1988;
 	/** 处理Event，是在二线程中 */
@@ -213,7 +168,7 @@ public abstract class BaseActivity extends FragmentActivity implements MessageHa
 		if (evt instanceof NetWorkEvent) {
 			Bundle bd = new Bundle();
 			bd.putSerializable("obj", evt);
-			postRunOnUi(new UITask(this, bd) {
+			EventBus.get().postRunOnUi(new UITask(this, bd) {
 				@Override
 				public void run() {
 					NetWorkEvent event = (NetWorkEvent) getExtra().getSerializable("obj");
@@ -221,7 +176,7 @@ public abstract class BaseActivity extends FragmentActivity implements MessageHa
 				}
 			});
 		}else if(evt != null && evt.getWhat() == exit_what){
-			postRunOnUi(new UITask(this) {
+			EventBus.get().postRunOnUi(new UITask(this) {
 				@Override
 				public void run() {
 					finish();

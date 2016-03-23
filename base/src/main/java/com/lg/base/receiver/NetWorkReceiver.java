@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.lg.base.core.BaseReceiver;
+import com.lg.base.core.EventBus;
 import com.lg.base.core.Location;
 import com.lg.base.event.NetWorkEvent;
 import com.lg.base.event.NetWorkEvent.NetWorkType;
@@ -23,7 +24,7 @@ public class NetWorkReceiver extends BaseReceiver {
 			nt = NetWorkType.other;
 		}
 		NetWorkEvent evt = new NetWorkEvent(Location.any, available, nt);
-		sendEvent(evt);
+		EventBus.get().sendEvent(evt);
 	}
 
 }

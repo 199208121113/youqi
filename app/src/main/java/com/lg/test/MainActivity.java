@@ -2,11 +2,14 @@ package com.lg.test;
 
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Message;
 import android.view.View;
 import android.widget.TextView;
 
 import com.lg.base.core.ActionBarMenu;
 import com.lg.base.core.BaseActivity;
+import com.lg.base.core.BaseEvent;
+import com.lg.base.core.EventBus;
 import com.lg.base.core.InjectView;
 import com.lg.base.core.LogUtil;
 import com.lg.base.core.UITask;
@@ -86,6 +89,29 @@ public class MainActivity extends BaseActivity {
             startActivity(TestEncodeActivity.createIntent(this));
         }else if(v == testRecyclerView){
             startActivity(TestRecyclerViewActivity.createIntent(this));
+            EventBus.get().sendEmptyMessageDelayed(getLocation(), 1, 3000);
+        }
+    }
+
+    @Override
+    public void executeMessage(Message msg) {
+        super.executeMessage(msg);
+        if(msg.what == 1){
+            ToastUtil.show(this, "ABC");
+            EventBus.get().sendEvent(new BaseEvent(getLocation(), 100));
+        }
+    }
+
+    @Override
+    public void executeEvent(BaseEvent evt) {
+        super.executeEvent(evt);
+        if(evt.getWhat() == 100){
+            EventBus.get().postRunOnUi(new UITask(this) {
+                @Override
+                public void run() {
+                    ToastUtil.show(getContext(), "executeEvent");
+                }
+            });
         }
     }
 
@@ -125,16 +151,16 @@ public class MainActivity extends BaseActivity {
                 if(totalBytes > 0) {
                     bd.putString("scale", NumberUtil.format2(handBytes * 100f / totalBytes));
                 }
-                postRunOnUi(new UITask(getActivityContext(), bd) {
+                EventBus.get().postRunOnUi(new UITask(getActivityContext(), bd) {
                     @Override
                     public void run() {
                         Bundle bd = getExtra();
                         String scale = bd.getString("scale");
-                        if(StringUtil.isNotEmpty(scale)) {
+                        if (StringUtil.isNotEmpty(scale)) {
                             testUploadFile.setText(scale + "%");
-                        }else{
+                        } else {
                             long handBytes = getExtra().getLong("rec");
-                            testUploadFile.setText(NumberUtil.format2((handBytes * 1f) / (1024 * 1024))+ "MB");
+                            testUploadFile.setText(NumberUtil.format2((handBytes * 1f) / (1024 * 1024)) + "MB");
                         }
                     }
                 });
@@ -161,15 +187,15 @@ public class MainActivity extends BaseActivity {
                 if(totalBytes > 0) {
                     bd.putString("scale", NumberUtil.format2(handBytes * 100f / totalBytes));
                 }
-                postRunOnUi(new UITask(this.getActivityContext(), bd) {
+                EventBus.get().postRunOnUi(new UITask(this.getActivityContext(), bd) {
                     @Override
                     public void run() {
                         String scale = getExtra().getString("scale");
                         if (StringUtil.isNotEmpty(scale)) {
                             testDownloadFile.setText(scale + "%");
-                        }else{
+                        } else {
                             long handBytes = getExtra().getLong("rec");
-                            testDownloadFile.setText(NumberUtil.format2((handBytes *1f) / (1024*1024)) + "MB");
+                            testDownloadFile.setText(NumberUtil.format2((handBytes * 1f) / (1024 * 1024)) + "MB");
                         }
                     }
                 });

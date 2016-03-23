@@ -29,17 +29,15 @@ import com.lg.base.ui.dialog.LightProgressDialog;
  * @author liguo
  *
  */
-public abstract class BaseFragment extends Fragment implements MessageHandListener,MessageSendListener,OnActionBarItemSelectedListener {
+public abstract class BaseFragment extends Fragment implements MessageHandListener,OnActionBarItemSelectedListener {
     protected final String TAG = this.getClass().getSimpleName();
-    private BaseApplication app = null;
     private final Location from = new Location(this.getClass().getName());
     protected abstract int getContentView();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        app = (BaseApplication) getActivity().getApplication();
-        app.registerTtListener(this);
+		EventBus.get().register(this);
     }
     
     @Override
@@ -89,61 +87,11 @@ public abstract class BaseFragment extends Fragment implements MessageHandListen
     public void onDestroy() {
         super.onDestroy();
         mGlobalView = null;
-        app.unRegisterTtListener(this);
-    }
-    public final void sendEvent(BaseEvent evt) {
-		if(evt.getFrom() == null){
-			evt.setFrom(getLocation());
-		}
-		app.sendEvent(evt);
-    }
-
-    public final void sendMessage(Message msg) {
-        BaseMessage tmsg = new BaseMessage(from, msg);
-        app.sendMessage(tmsg);
-    }
-
-    public final void sendEmptyMessage(int what) {
-        Message msg = Message.obtain();
-        msg.what = what;
-        BaseMessage tmsg = new BaseMessage(from, msg);
-        app.sendMessage(tmsg);
-    }
-
-    public final void sendMessageDelayed(Message msg, long delayMillis) {
-        BaseMessage tmsg = new BaseMessage(from, msg);
-        app.sendMessageDelayed(tmsg, delayMillis);
-    }
-
-    public final void sendEmptyMessageDelayed(int what, long delayMillis) {
-        Message msg = Message.obtain();
-        msg.what = what;
-        BaseMessage tmsg = new BaseMessage(from, msg);
-        app.sendMessageDelayed(tmsg, delayMillis);
-    }
-    
-    public final void removeMessage(int what) {
-        app.removeMessage(what);
-    }
-
-    protected final void checkRunOnUI() {
-        app.checkRunOnUI();
-    }
-
-    protected final void checkRunOnMain() {
-        app.checkRunOnMain();
+		EventBus.get().unRegister(this);
     }
 
 	protected final Location getLocation() {
 		return new Location(this.getClass().getName());
-	}
-
-	public static final Location findLocation(Class<?> cls) {
-		return new Location(cls.getName());
-	}
-	
-	protected void postRunOnUi(UITask task){
-	    app.postRunOnUi(task);
 	}
 
     @Override

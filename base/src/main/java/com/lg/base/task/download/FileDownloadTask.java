@@ -2,7 +2,7 @@ package com.lg.base.task.download;
 
 import android.os.OperationCanceledException;
 
-import com.lg.base.core.MessageSendListener;
+import com.lg.base.core.EventBus;
 import com.lg.base.http.HttpConstant;
 import com.lg.base.http.HttpMethod;
 import com.lg.base.http.OKHttpUtil;
@@ -168,9 +168,7 @@ public class FileDownloadTask extends Task<String> implements OnTaskRunningListe
     }
 
     @SuppressWarnings("all")
-    public static <T> void createTask(MessageSendListener sender, IWatcherCallback<T> watcher, String downloadUrl,String savePath) {
-        if(sender == null)
-            return;
+    public static <T> void createTask(IWatcherCallback<T> watcher, String downloadUrl,String savePath) {
         if(downloadUrl == null || downloadUrl.trim().length() == 0)
             return;
         if(savePath == null || savePath.trim().length() == 0)
@@ -190,7 +188,7 @@ public class FileDownloadTask extends Task<String> implements OnTaskRunningListe
         params.put("save_path", savePath);
         te.setParams(params);
         te.setMaxRetryCount(5);
-        sender.sendEvent(te);
+        EventBus.get().sendEvent(te);
     }
 
     private static String getFileName(String path){

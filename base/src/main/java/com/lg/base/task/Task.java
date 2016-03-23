@@ -3,7 +3,6 @@ package com.lg.base.task;
 import android.os.Process;
 
 import com.lg.base.core.LogUtil;
-import com.lg.base.core.MessageSendListener;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -46,8 +45,6 @@ public abstract class Task<T> implements Serializable {
 
 	private volatile int maxRetryCount = 0;
 	
-	private transient MessageSendListener sender = null;
-
 	protected abstract T doInBackground() throws Exception;
 
 	private Task getThis() {
@@ -257,13 +254,6 @@ public abstract class Task<T> implements Serializable {
 		if (mNewStatus.ordinal() != oldStatus.ordinal()) {
 			listener.onStatusChanged(this, mNewStatus, oldStatus);
 		}
-	}
-
-	public void setSender(MessageSendListener sender) {
-		this.sender = sender;
-	}
-	public MessageSendListener getSender() {
-		return sender;
 	}
 
     // flags

@@ -1,6 +1,6 @@
 package com.lg.base.task.upload;
 
-import com.lg.base.core.MessageSendListener;
+import com.lg.base.core.EventBus;
 import com.lg.base.http.OKHttpUtil;
 import com.lg.base.task.IWatcherCallback;
 import com.lg.base.task.OnTaskRunningListener;
@@ -56,9 +56,7 @@ public class FileUploadTask extends Task<String> implements OnTaskRunningListene
         return uploadFilePath;
     }
 
-    public static <T> void createTask(MessageSendListener sender, IWatcherCallback<T> watcher,String uploadUrl,File uploadFile,Map<String,String> otherParams) {
-        if(sender == null)
-            return;
+    public static <T> void createTask(IWatcherCallback<T> watcher,String uploadUrl,File uploadFile,Map<String,String> otherParams) {
         if(StringUtil.isEmpty(uploadUrl))
             return;
         TaskEvent te = new TaskEvent(TaskService.LOCATION);
@@ -81,7 +79,7 @@ public class FileUploadTask extends Task<String> implements OnTaskRunningListene
         }
         te.setParams(params);
         te.setMaxRetryCount(2);
-        sender.sendEvent(te);
+        EventBus.get().sendEvent(te);
     }
 
     public static Response startUpload(File file,Map<String,String> paramsNew,Map<String,String> headers,String uploadUrl,OnTaskRunningListener listener) throws Exception{

@@ -7,15 +7,9 @@ public abstract class UITask implements Runnable {
 
 	protected Bundle extra;
 	protected Context context;
-	private Object data = null;
 	public UITask(Context ctx, Bundle extra) {
 		super();
 		this.extra = extra;
-		this.context = ctx;
-	}
-	public UITask(Context ctx, Object data) {
-		super();
-		this.data = data;
 		this.context = ctx;
 	}
 
@@ -35,9 +29,5 @@ public abstract class UITask implements Runnable {
 	public Context getContext() {
 		return context;
 	}
-	public Object getData() {
-		return data;
-	}
-	
 
 }

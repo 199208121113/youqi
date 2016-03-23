@@ -5,9 +5,9 @@ import android.os.Message;
 import com.lg.base.core.BaseEvent;
 import com.lg.base.core.BaseService;
 import com.lg.base.core.DoWhat;
+import com.lg.base.core.EventBus;
 import com.lg.base.core.Location;
 import com.lg.base.core.LogUtil;
-import com.lg.base.core.MessageSendListener;
 import com.lg.base.task.Task.Progress;
 import com.lg.base.utils.IOUtil;
 
@@ -454,7 +454,6 @@ public class TaskService extends BaseService implements Task.OnStateChangeListen
 			LogUtil.d(tag, "sExecutor.execute() obj=" + t.getFuture().toString());
 		}
 		sPollMap.put(t.getId(), t);
-		t.setSender(this);
 	}
 
 	private void removeTaskFromTool(String taskId) {
@@ -523,11 +522,11 @@ public class TaskService extends BaseService implements Task.OnStateChangeListen
 				te.setOperatorFlags(TaskEvent.Operate.FLAG_START_FROM_FILE);
 				te.setTaskId(t.getId());
 				te.setFromFileTask(t);
-				sendEvent(te);
+				EventBus.get().sendEvent(te);
 				LogUtil.d(tag, "startTasksFromFile() add taskId:" + t.getId() + " from file");
 			}
 		}
-		sendEmptyMessageDelayed(WHAT_TASK_LOOP_ADD, 1000L);
+		EventBus.get().sendEmptyMessageDelayed(LOCATION,WHAT_TASK_LOOP_ADD, 1000L);
 	}
 
 	private void startTasksFromPool() {
@@ -539,7 +538,7 @@ public class TaskService extends BaseService implements Task.OnStateChangeListen
 				sExecutor.execute(t.getFuture());
 			}
 		}
-		sendEmptyMessageDelayed(WHAT_TASK_LOOP_ADD, 1000 * 60 * 60);
+		EventBus.get().sendEmptyMessageDelayed(LOCATION,WHAT_TASK_LOOP_ADD, 1000 * 60 * 60);
 	}
 
 	private void submitDoWhatForSaveTask(Task t) {
@@ -555,27 +554,27 @@ public class TaskService extends BaseService implements Task.OnStateChangeListen
 	private void sendEventWhat(String taskId, int what) {
 		MsgTaskEvent mte = new MsgTaskEvent(LOCATION, what);
 		mte.setTaskId(taskId);
-		sendEvent(mte);
+		EventBus.get().sendEvent(mte);
 	}
 
 	private void sendEmptyEventWaht(int what) {
 		MsgTaskEvent mte = new MsgTaskEvent(LOCATION, what);
-		sendEvent(mte);
+		EventBus.get().sendEvent(mte);
 	}
 	
-	public static <T> void addWatcher(MessageSendListener sender, IWatcherCallback<T> watcher,String taskId) {
+	public static <T> void addWatcher(IWatcherCallback<T> watcher,String taskId) {
 		TaskEvent te = new TaskEvent(TaskService.LOCATION);
 		te.setTaskId(taskId);
 		te.setOperatorFlags(TaskEvent.Operate.FLAG_WATCH);
 		te.setWatcher(watcher);
-		sender.sendEvent(te);
+		EventBus.get().sendEvent(te);
 	}
 	private static final String TAG_ALL_WATHER = "#ALL";
-	public static <T> void addWatcher(MessageSendListener sender, IWatcherCallback<T> watcher) {
+	public static <T> void addWatcher(IWatcherCallback<T> watcher) {
 		TaskEvent te = new TaskEvent(TaskService.LOCATION);
 		te.setTaskId(TAG_ALL_WATHER+System.currentTimeMillis());
 		te.setOperatorFlags(TaskEvent.Operate.FLAG_WATCH);
 		te.setWatcher(watcher);
-		sender.sendEvent(te);
+		EventBus.get().sendEvent(te);
 	}
 }

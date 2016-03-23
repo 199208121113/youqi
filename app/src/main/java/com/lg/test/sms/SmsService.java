@@ -8,6 +8,7 @@ import android.os.Handler;
 
 import com.lg.base.core.BaseEvent;
 import com.lg.base.core.BaseService;
+import com.lg.base.core.EventBus;
 import com.lg.base.core.Location;
 import com.lg.base.core.LogUtil;
 import com.lg.base.utils.ToastUtil;
@@ -33,7 +34,7 @@ public class SmsService extends BaseService {
 
     @Override
     protected void doCreate() {
-        sendEvent(new BaseEvent(Location.any, SMS_START_SUCCESS));
+        EventBus.get().sendEvent(new BaseEvent(Location.any, SMS_START_SUCCESS));
     }
 
     @Override

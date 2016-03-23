@@ -10,7 +10,7 @@ import com.lg.base.event.ServiceStateEvent;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public abstract class BaseService extends Service implements MessageHandListener,MessageSendListener {
+public abstract class BaseService extends Service implements MessageHandListener {
 
 	protected final String tag = this.getClass().getSimpleName()+"::";
 	private BaseApplication app = null;
@@ -27,17 +27,16 @@ public abstract class BaseService extends Service implements MessageHandListener
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		app = (BaseApplication) getApplication();
-		app.registerTtListener(this);
+		EventBus.get().register(this);
 		t3 = new Thread3("T3-"+this.getClass().getSimpleName());
 		t3.start();
-		app.sendEvent(new ServiceStateEvent(from, to, ServiceStateEvent.State.create));
+		EventBus.get().sendEvent(new ServiceStateEvent(from, to, ServiceStateEvent.State.create));
 	}
 
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		app.sendEvent(new ServiceStateEvent(from, to, ServiceStateEvent.State.destroy));
+		EventBus.get().sendEvent(new ServiceStateEvent(from, to, ServiceStateEvent.State.destroy));
 	}
 
 	@Override
@@ -51,7 +50,7 @@ public abstract class BaseService extends Service implements MessageHandListener
 				return;
 			} else if (ServiceStateEvent.State.destroy == tes.getState()) {
 				doDestroy();
-				app.unRegisterTtListener(this);
+				EventBus.get().unRegister(this);
 				t3.stopRunning();
 				return;
 			}
@@ -69,37 +68,6 @@ public abstract class BaseService extends Service implements MessageHandListener
 		doExecuteMessage(msg);
 	}
 
-	public final void sendEvent(BaseEvent evt) {
-		if(evt.getFrom() == null){
-			evt.setFrom(getLocation());
-		}
-		app.sendEvent(evt);
-	}
-
-	public final void sendMessage(Message msg) {
-		BaseMessage tmsg = new BaseMessage(from, msg);
-		app.sendMessage(tmsg);
-	}
-
-	public final void sendEmptyMessage(int what) {
-		Message msg = Message.obtain();
-		msg.what = what;
-		BaseMessage tmsg = new BaseMessage(from, msg);
-		app.sendMessage(tmsg);
-	}
-
-	public final void sendMessageDelayed(Message msg, long delayMillis) {
-		BaseMessage tmsg = new BaseMessage(from, msg);
-		app.sendMessageDelayed(tmsg, delayMillis);
-	}
-
-	public final void sendEmptyMessageDelayed(int what, long delayMillis) {
-		Message msg = Message.obtain();
-		msg.what = what;
-		BaseMessage tmsg = new BaseMessage(from, msg);
-		app.sendMessageDelayed(tmsg, delayMillis);
-	}
-	
 	protected final void submitDoWhat(DoWhat doWhat){
 		if(doWhat == null)
 			return ;
@@ -124,10 +92,6 @@ public abstract class BaseService extends Service implements MessageHandListener
 		return new Location(this.getClass().getName());
 	}
 	
-	protected final Location findLocation(Class<?> cls){
-		return new Location(cls.getName());
-	}
-
 	protected abstract void doCreate();
 
 	protected abstract void doDestroy();

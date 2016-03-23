@@ -78,4 +78,8 @@ public class TestRxJava {
     private static final void log(String s){
         System.err.println(s);
     }
+
+    private static void testBus(){
+
+    }
 }

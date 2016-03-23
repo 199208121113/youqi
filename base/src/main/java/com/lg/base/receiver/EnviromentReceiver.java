@@ -5,6 +5,7 @@ import android.content.Intent;
 
 import com.lg.base.core.BaseEvent;
 import com.lg.base.core.BaseReceiver;
+import com.lg.base.core.EventBus;
 import com.lg.base.core.Location;
 import com.lg.base.core.LogUtil;
 import com.lg.base.event.PackageEvent;
@@ -50,7 +51,7 @@ public class EnviromentReceiver extends BaseReceiver {
 			baseEvent = e;
 		}
 		if(baseEvent != null){
-			sendEvent(baseEvent);
+			EventBus.get().sendEvent(baseEvent);
 		}
 	}
 }

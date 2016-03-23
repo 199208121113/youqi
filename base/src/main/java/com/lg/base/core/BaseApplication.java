@@ -25,17 +25,11 @@ import java.lang.Thread.UncaughtExceptionHandler;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicLong;
 
 public abstract class BaseApplication extends Application implements UncaughtExceptionHandler {
 
 	protected static final String TAG = BaseApplication.class.getSimpleName();
-	private static volatile ConcurrentHashMap<String, MessageHandListener> ttListenerMap = new ConcurrentHashMap<>();
+
 	/** UI线程ID */
 	private static volatile long uiTid = -1;
 
@@ -56,33 +50,13 @@ public abstract class BaseApplication extends Application implements UncaughtExc
 		return TASK_HANDLER;
 	}
 
-	private volatile Handler handler = null;
 	@Override
 	public void onCreate() {
 		super.onCreate();
 		appContext = this;
-		if(handler == null){
-			handler = new Handler(new Handler.Callback() {
-				@Override
-				public boolean handleMessage(Message msg) {
-					if (uiTid <= 0) {
-						uiTid = Thread.currentThread().getId();
-						Thread.currentThread().setName("T1-UI");
-					}
-					if (msg == null || msg.obj == null)
-						return false;
-					if(!(msg.obj instanceof BaseMessage))
-						return false;
-					BaseMessage ttMsg = (BaseMessage) msg.obj;
-					String from = ttMsg.getFrom().getUri();
-					MessageHandListener ttMsgListener = ttListenerMap.get(from);
-					if (ttMsgListener != null)
-						ttMsgListener.executeMessage(ttMsg.getMsg());
-					return true;
-				}
-			});
-		}
-		defaultMessageSender = new DefaultMessageSenderListenerImpl(this);
+		EventBus.get();
+		uiTid = Thread.currentThread().getId();
+		Thread.currentThread().setName("T1-UI");
 		defaultHandler = Thread.getDefaultUncaughtExceptionHandler();
 		Thread.setDefaultUncaughtExceptionHandler(this);
 		init();
@@ -101,89 +75,7 @@ public abstract class BaseApplication extends Application implements UncaughtExc
 		this.unregisterReceiver(mNetWorkReceiver);
 	}
 
-	public void sendMessage(BaseMessage tmsg) {
-		Message msg = handler.obtainMessage();
-		msg.obj = tmsg;
-		handler.sendMessage(msg);
-	}
 
-    public void sendMessageDelayed(BaseMessage tmsg, long delayMillis) {
-		Message msg = handler.obtainMessage();
-		msg.obj = tmsg;
-		handler.sendMessageDelayed(msg, delayMillis);
-	}
-    public void removeMessage(int what){
-		handler.removeMessages(what);
-	}
-
-    public void sendEvent(BaseEvent evt) {
-		if (evt == null) {
-			LogUtil.e(TAG,"evt is null");
-			return;
-		}
-		if (evt.getFrom() == null) {
-			LogUtil.e(TAG,"evt.from is null");
-			return;
-		}
-		if (evt.getTo() == null) {
-			LogUtil.e(TAG,"evt.to is null");
-			return;
-		}
-		String to = evt.getTo().getUri().trim();
-		executors.execute(new EventWorker(evt));
-		LogUtil.d(TAG, getThreadPoolInfo());
-		if (!(ttListenerMap.containsKey(to) || Location.any.getUri().equals(to))) {
-			LogUtil.e(TAG, "to:" + to + " can't register");
-		}
-	}
-	private String getThreadPoolInfo(){
-		int corePoolSize = executors.getCorePoolSize();
-		int maxPoolSize = executors.getMaximumPoolSize();
-		int activeCountForThread = executors.getActiveCount();
-		int queueCount = executors.getQueue().size();
-		StringBuilder sb = new StringBuilder();
-		sb.append("核心线程数:" + corePoolSize + ",最大线程数:" + maxPoolSize + ",当前活动线程:" + activeCountForThread + "\n,缓存队列数量:" + queueCount + "");
-		sb.append("曾经同时位于池中的最大线程数:" + executors.getLargestPoolSize());
-		return sb.toString();
-	}
-
-    public void registerTtListener(MessageHandListener tl) {
-		ttListenerMap.put(tl.getClass().getName(), tl);
-	}
-
-    public void unRegisterTtListener(MessageHandListener tl) {
-		ttListenerMap.remove(tl.getClass().getName());
-	}
-
-	public static boolean containsMessageHandListener(String fullClassName){
-		return ttListenerMap.containsKey(fullClassName);
-	}
-
-	private class EventWorker implements Runnable {
-		private BaseEvent evt;
-
-		public EventWorker(BaseEvent evt) {
-			super();
-			this.evt = evt;
-		}
-
-		@Override
-		public void run() {
-			String to = evt.getTo().getUri();
-			if (to == null || to.trim().length() == 0)
-				return;
-			if (Location.any.getUri().equals(to)) {
-				for (MessageHandListener lt : ttListenerMap.values()) {
-					lt.executeEvent(evt);
-				}
-				return;
-			}
-			MessageHandListener lt = ttListenerMap.get(to);
-			if (lt == null)
-				return;
-			lt.executeEvent(evt);
-		}
-	}
 
 	void checkRunOnUI() {
 		if (Thread.currentThread().getId() != uiTid)
@@ -191,12 +83,8 @@ public abstract class BaseApplication extends Application implements UncaughtExc
 	}
 
 	void checkRunOnMain() {
-		if (!Thread.currentThread().getName().startsWith(T2_THREAD_NAME))
+		if (!Thread.currentThread().getName().startsWith(EventBus.T2_THREAD_NAME))
 			throw new IllegalStateException("not run on Main Thread");
-	}
-
-	public void postRunOnUi(UITask task) {
-		handler.post(task);
 	}
 
 	// -------------------------------------------------------
@@ -207,22 +95,6 @@ public abstract class BaseApplication extends Application implements UncaughtExc
 		IntentFilter mNetWrokFilter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
 		this.registerReceiver(mNetWorkReceiver, mNetWrokFilter);
 	}
-
-	// ====================================================
-	private static final String T2_THREAD_NAME="T2-MainThread#";
-	/** 持久化线程工厂 */
-	private static final ThreadFactory threadFactory = new ThreadFactory() {
-		private final AtomicLong mCount = new AtomicLong(1);
-
-		@Override
-		public Thread newThread(Runnable r) {
-			return new Thread(r, T2_THREAD_NAME + mCount.getAndIncrement());
-		}
-	};
-	private static final int CORE_POOL_SIZE = 5;
-	private static final int MAXIMUM_POOL_SIZE = 128;
-	private static final int KEEP_ALIVE = 10;
-	private final ThreadPoolExecutor executors = new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(20), threadFactory,new ThreadPoolExecutor.DiscardOldestPolicy());
 
 	// ==========================全局异常处理===========================
 
@@ -382,11 +254,6 @@ public abstract class BaseApplication extends Application implements UncaughtExc
     protected boolean isRecordErrLog(){
     	return true;
     }
-
-	private static DefaultMessageSenderListenerImpl defaultMessageSender = null;
-	public static DefaultMessageSenderListenerImpl getDefaultMessageSender(){
-		return defaultMessageSender;
-	}
 
 	@Override
 	protected void attachBaseContext(Context base) {
