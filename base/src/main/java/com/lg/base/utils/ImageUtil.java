@@ -2,6 +2,8 @@ package com.lg.base.utils;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.ContentUris;
+import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -12,6 +14,7 @@ import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -261,7 +264,7 @@ public class ImageUtil {
 		if(uri == null)
 			return null;
 		if(Build.VERSION.SDK_INT >= 19 && DocumentsContract.isDocumentUri(activity,uri)){
-            String wholeID = DocumentsContract.getDocumentId(uri);
+            /*String wholeID = DocumentsContract.getDocumentId(uri);
             if(wholeID != null && wholeID.trim().length() > 0){
                 String id = wholeID.split(":")[1];
                 String[] column = { MediaStore.Images.Media.DATA };
@@ -284,19 +287,45 @@ public class ImageUtil {
                 if(filePath != null){
                     return filePath;
                 }
-            }
+            }*/
+			if (isExternalStorageDocument(uri)) {
+				String docId = DocumentsContract.getDocumentId(uri);
+				String[] split = docId.split(":");
+				String type = split[0];
+				if ("primary".equalsIgnoreCase(type)) {
+					return Environment.getExternalStorageDirectory() + "/" + split[1];
+				}
+			} else if (isDownloadsDocument(uri)) {
+				String id = DocumentsContract.getDocumentId(uri);
+				Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
+				return getDataColumn(activity, contentUri, null, null);
+			} else if (isMediaDocument(uri)) {
+				String docId = DocumentsContract.getDocumentId(uri);
+				String[] split = docId.split(":");
+				String type = split[0];
+				Uri contentUri = null;
+				if ("image".equals(type)) {
+					contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+				} else if ("video".equals(type)) {
+					contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+				} else if ("audio".equals(type)) {
+					contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+				}
+				String selection = MediaStore.Images.Media._ID + "=?";
+				String[] selectionArgs = new String[] { split[1] };
+				return getDataColumn(activity, contentUri, selection, selectionArgs);
+			}
 		}
 		
-		String uriStr = uri.toString().toLowerCase();
 		/**
 		   (1) file:///sdcard/DCIM/Camera/1397608571759.jpg
 		   (2) content://media/external/images/media/178107
 		*/
-		if(uriStr.startsWith("file://")){
-			return uri.toString().replaceFirst("file://", "");
+		if ("file".equalsIgnoreCase(uri.getScheme())) {
+			return uri.getPath();
 		}
-		if(uriStr.startsWith("content:")){
-			Cursor cursor = null;
+		if("content".equalsIgnoreCase(uri.getScheme())){
+			/*Cursor cursor = null;
 			String path = null;
 			try {
 				cursor = activity.managedQuery(uri, new String[] { MediaStore.Images.Media.DATA }, null, null, null);
@@ -310,7 +339,10 @@ public class ImageUtil {
 					cursor.close();
 				}
 			}
-			return path;
+			return path;*/
+			if (isGooglePhotosUri(uri))
+				return uri.getLastPathSegment();
+			return getDataColumn(activity, uri, null, null);
 		}
 		return null;
 	}
@@ -383,7 +415,7 @@ public class ImageUtil {
 		}
 		ByteArrayInputStream isBm = new ByteArrayInputStream(baos.toByteArray());
 		Bitmap bitmap = BitmapFactory.decodeStream(isBm, null, null);
-		LogUtil.d(TAG, "baos.size()="+baos.size()/1024.0);
+		LogUtil.d(TAG, "baos.size()=" + baos.size() / 1024.0);
 		return bitmap;
 	}
 
@@ -393,6 +425,52 @@ public class ImageUtil {
 		bitmap.recycle();
 		bitmap = null;
 		return newBitmap;
+	}
+
+	//----------------------------
+	public static String getDataColumn(Context context, Uri uri, String selection, String[] selectionArgs) {
+		Cursor cursor = null;
+		String column = MediaStore.Images.Media.DATA;
+		String[] projection = { column };
+		try {
+			cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, null);
+			if (cursor != null && cursor.moveToFirst()) {
+				int index = cursor.getColumnIndexOrThrow(column);
+				return cursor.getString(index);
+			}
+		} finally {
+			if (cursor != null)
+				cursor.close();
+		}
+		return null;
+	}
+
+	/**
+	 * @param uri The Uri to check.
+	 * @return Whether the Uri authority is ExternalStorageProvider.
+	 */
+	public static boolean isExternalStorageDocument(Uri uri) {
+		return "com.android.externalstorage.documents".equalsIgnoreCase(uri.getAuthority());
+	}
+
+	/**
+	 * @param uri The Uri to check.
+	 * @return Whether the Uri authority is DownloadsProvider.
+	 */
+	public static boolean isDownloadsDocument(Uri uri) {
+		return "com.android.providers.downloads.documents".equalsIgnoreCase(uri.getAuthority());
+	}
+
+	/**
+	 * @param uri The Uri to check.
+	 * @return Whether the Uri authority is MediaProvider.
+	 */
+	public static boolean isMediaDocument(Uri uri) {
+		return "com.android.providers.media.documents".equalsIgnoreCase(uri.getAuthority());
+	}
+
+	public static boolean isGooglePhotosUri(Uri uri) {
+		return "com.google.android.apps.photos.content".equalsIgnoreCase(uri.getAuthority());
 	}
 
 }

@@ -16,6 +16,77 @@ import rx.schedulers.Schedulers;
 public class TestRxJava {
     public static void main(String[] args){
         log("main(),MainThreadID=" + getCurThreadId());
+        Observable<String> ob1 = Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+                subscriber.onNext("String");
+                subscriber.onCompleted();
+            }
+        });
+        Observable<Object> observable = Observable.create(new Observable.OnSubscribe<Object>() {
+            @Override
+            public void call(Subscriber<? super Object> subscriber) {
+                subscriber.onNext("Object");
+
+                subscriber.onCompleted();
+            }
+        }).concatWith(ob1);
+          /*.doOnCompleted(new Action0() {
+            @Override
+            public void call() {
+                log("---doOnCompleted(),tid=" + getCurThreadId());
+            }
+        }).doOnNext(new Action1<Object>() {
+            @Override
+            public void call(Object o) {
+                log("--doOnNext(),tid=" + getCurThreadId());
+            }
+        });*/
+        observable.subscribe(new Subscriber<Object>() {
+            @Override
+            public void onCompleted() {
+                log("onCompleted(),tid=" + getCurThreadId());
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                log("onError(),tid=" + getCurThreadId());
+            }
+
+            @Override
+            public void onNext(Object result) {
+                log("onNext(),result=" + result);
+            }
+        });
+       /* observable.subscribe(new Subscriber<Object>() {
+            @Override
+            public void onCompleted() {
+                log("onCompleted2(),tid=" + getCurThreadId());
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                log("onError()2,tid=" + getCurThreadId());
+            }
+
+            @Override
+            public void onNext(Object result) {
+                log("onNext()2,result=" + result);
+            }
+        });*/
+
+    }
+
+    private static long getCurThreadId(){
+        return Thread.currentThread().getId();
+    }
+
+    private static final void log(String s){
+        System.err.println(s);
+    }
+
+    private static void test1(){
+
         Subscription subscription = Observable.just("3", "4")
                 .subscribeOn(Schedulers.io())
                 .map(new Func1<String, Integer>() {
@@ -69,17 +140,5 @@ public class TestRxJava {
                 });
 
         log("isUnsubscribed()=" + subscription.isUnsubscribed());
-    }
-
-    private static long getCurThreadId(){
-        return Thread.currentThread().getId();
-    }
-
-    private static final void log(String s){
-        System.err.println(s);
-    }
-
-    private static void testBus(){
-
     }
 }
