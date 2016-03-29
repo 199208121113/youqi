@@ -1,7 +1,7 @@
 package com.lg.base.task;
 
-import com.lg.base.core.BaseEvent;
-import com.lg.base.core.Location;
+import com.lg.base.bus.BaseEvent;
+import com.lg.base.bus.EventLocation;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -18,15 +18,15 @@ public class TaskEvent extends BaseEvent{
 	private Class<?> clazz = null;
 	
 
-	public TaskEvent(Location from, Location to, Object data) {
+	public TaskEvent(EventLocation from, EventLocation to, Object data) {
 		super(from, to, data);
 	}
 
-	public TaskEvent(Location from, Location to) {
+	public TaskEvent(EventLocation from, EventLocation to) {
 		super(from, to);
 	}
 
-	public TaskEvent(Location to) {
+	public TaskEvent(EventLocation to) {
 		super(to);
 	}
 

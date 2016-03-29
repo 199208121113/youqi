@@ -1,13 +1,13 @@
 package com.lg.base.event;
 
-import com.lg.base.core.BaseEvent;
-import com.lg.base.core.Location;
+import com.lg.base.bus.BaseEvent;
+import com.lg.base.bus.EventLocation;
 
 public class SdCardEvent extends BaseEvent {
 
 	private static final long serialVersionUID = 1L;
 
-	public SdCardEvent(Location from, Location to,SdCardState st) {
+	public SdCardEvent(EventLocation from, EventLocation to,SdCardState st) {
 		super(from, to);
 		this.state = st;
 	}

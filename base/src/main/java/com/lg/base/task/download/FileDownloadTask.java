@@ -2,7 +2,7 @@ package com.lg.base.task.download;
 
 import android.os.OperationCanceledException;
 
-import com.lg.base.core.EventBus;
+import com.lg.base.bus.EventBus;
 import com.lg.base.http.HttpConstant;
 import com.lg.base.http.HttpMethod;
 import com.lg.base.http.OKHttpUtil;

@@ -1,8 +1,8 @@
 package com.lg.base.event;
 
 
-import com.lg.base.core.BaseEvent;
-import com.lg.base.core.Location;
+import com.lg.base.bus.BaseEvent;
+import com.lg.base.bus.EventLocation;
 
 public class PackageEvent extends BaseEvent {
 
@@ -10,7 +10,7 @@ public class PackageEvent extends BaseEvent {
 	private String packageName = null;
 	private State state = null;
 
-	public PackageEvent(Location from, Location to, String packageName, State st) {
+	public PackageEvent(EventLocation from, EventLocation to, String packageName, State st) {
 		super(from, to);
 		this.packageName = packageName;
 		this.state = st;

@@ -2,11 +2,10 @@ package com.lg.base.task;
 
 import android.os.Message;
 
-import com.lg.base.core.BaseEvent;
+import com.lg.base.bus.BaseEvent;
+import com.lg.base.bus.EventBus;
+import com.lg.base.bus.EventLocation;
 import com.lg.base.core.BaseService;
-import com.lg.base.core.DoWhat;
-import com.lg.base.core.EventBus;
-import com.lg.base.core.Location;
 import com.lg.base.core.LogUtil;
 import com.lg.base.task.Task.Progress;
 import com.lg.base.utils.IOUtil;
@@ -30,7 +29,7 @@ import static com.lg.base.task.TaskEvent.Operate.FLAG_WATCH;
 
 public class TaskService extends BaseService implements Task.OnStateChangeListener {
 
-	public static final Location LOCATION = new Location(TaskService.class.getName());
+	public static final EventLocation LOCATION = new EventLocation(TaskService.class.getName());
 	private static final int CORE_POOL_SIZE = 5;
 	private static final int MAXIMUM_POOL_SIZE = 128;
 	private static final int KEEP_ALIVE = 10;
@@ -114,12 +113,14 @@ public class TaskService extends BaseService implements Task.OnStateChangeListen
 		return sPollMap.containsKey(taskId);
 	}
 	@Override
-	protected void doCreate() {
-		submitDoWhat(new DoWhat(WHAT_TASK_ADD_FROM_FILE));
+	public void onCreate() {
+		super.onCreate();
+		EventBus.get().sendEvent(new BaseEvent(LOCATION,WHAT_TASK_ADD_FROM_FILE));
 	}
 
 	@Override
-	protected void doDestroy() {
+	public void onDestroy() {
+		super.onDestroy();
 		try {
 			sExecutorTimely.shutdownNow();
 			sExecutor.shutdown();
@@ -130,13 +131,14 @@ public class TaskService extends BaseService implements Task.OnStateChangeListen
 	}
 
 	@Override
-	protected void doExecuteMessage(Message msg) {
+	public void executeMessage(Message msg) {
 		if (msg.what == WHAT_TASK_LOOP_ADD)
 			sendEmptyEventWaht(WHAT_TASK_START_FROM_POLL);
 	}
 
 	@Override
-	protected void doExecuteEvent(BaseEvent evt) {
+	public void executeEvent(BaseEvent evt) {
+		super.executeEvent(evt);
 		if (evt instanceof MsgTaskEvent) {
 			MsgTaskEvent mte = (MsgTaskEvent) evt;
 			int what = mte.getWhat();
@@ -189,21 +191,17 @@ public class TaskService extends BaseService implements Task.OnStateChangeListen
 				e.printStackTrace();
 			}
 		}
-	}
-
-	@Override
-	protected void doExecuteDoWhat(DoWhat doWhat) {
-		super.doExecuteDoWhat(doWhat);
-		if (doWhat.getWhat() == WHAT_TASK_SAVE_TO_FILE) {
-			Task t = (Task) doWhat.getObj();
+		if (evt.getWhat() == WHAT_TASK_SAVE_TO_FILE) {
+			Task t = (Task) evt.getData();
 			saveTaskToFile(t);
-		} else if (doWhat.getWhat() == WHAT_TASK_DELETE_TO_FILE) {
-			Task t = (Task) doWhat.getObj();
+		} else if (evt.getWhat() == WHAT_TASK_DELETE_TO_FILE) {
+			Task t = (Task) evt.getData();
 			deleteTaskFromFile(t);
-		} else if ((doWhat.getWhat() == WHAT_TASK_ADD_FROM_FILE)) {
+		} else if ((evt.getWhat() == WHAT_TASK_ADD_FROM_FILE)) {
 			startTasksFromFile();
 		}
 	}
+
 
 	// 任务回调----------begin---------------
 
@@ -472,7 +470,7 @@ public class TaskService extends BaseService implements Task.OnStateChangeListen
 	}
 
 	private void saveTaskToFile(Task t) {
-		checkRunOnT3();
+		checkRunOnMain();
 		String fullFileName = new File(this.getApplicationContext().getCacheDir(), t.getId() + ".tsk").getAbsolutePath();
 		LogUtil.d(tag, "saveTaskToFile() status=" + t.getStatus());
 		try {
@@ -483,7 +481,7 @@ public class TaskService extends BaseService implements Task.OnStateChangeListen
 	}
 
 	private void deleteTaskFromFile(Task t) {
-		checkRunOnT3();
+		checkRunOnMain();
 		String fullFileName = new File(this.getApplicationContext().getCacheDir(), t.getId() + ".tsk").getAbsolutePath();
 		LogUtil.d(tag, "deleteTaskFromFile() status=" + t.getStatus());
 		try {
@@ -494,7 +492,7 @@ public class TaskService extends BaseService implements Task.OnStateChangeListen
 	}
 
 	private void startTasksFromFile() {
-		checkRunOnT3();
+		checkRunOnMain();
 		LogUtil.d(tag, "startTasksFromFile()");
 		File file = this.getApplicationContext().getCacheDir();
 		File[] files = file.listFiles(new FilenameFilter() {
@@ -542,13 +540,17 @@ public class TaskService extends BaseService implements Task.OnStateChangeListen
 	}
 
 	private void submitDoWhatForSaveTask(Task t) {
-		DoWhat doWhat = new DoWhat(WHAT_TASK_SAVE_TO_FILE, t);
-		submitDoWhat(doWhat);
+//		DoWhat doWhat = new DoWhat(WHAT_TASK_SAVE_TO_FILE, t);
+//		submitDoWhat(doWhat);
+		BaseEvent evt = new BaseEvent(LOCATION,WHAT_TASK_SAVE_TO_FILE).setData(t);
+		EventBus.get().sendEvent(evt);
 	}
 
 	private void submitDoWhatForDeleteTask(Task t) {
-		DoWhat doWhat = new DoWhat(WHAT_TASK_DELETE_TO_FILE, t);
-		submitDoWhat(doWhat);
+//		DoWhat doWhat = new DoWhat(WHAT_TASK_DELETE_TO_FILE, t);
+//		submitDoWhat(doWhat);
+		BaseEvent evt = new BaseEvent(LOCATION,WHAT_TASK_DELETE_TO_FILE).setData(t);
+		EventBus.get().sendEvent(evt);
 	}
 
 	private void sendEventWhat(String taskId, int what) {

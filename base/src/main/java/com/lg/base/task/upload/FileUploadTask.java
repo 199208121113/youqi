@@ -1,6 +1,6 @@
 package com.lg.base.task.upload;
 
-import com.lg.base.core.EventBus;
+import com.lg.base.bus.EventBus;
 import com.lg.base.http.OKHttpUtil;
 import com.lg.base.task.IWatcherCallback;
 import com.lg.base.task.OnTaskRunningListener;

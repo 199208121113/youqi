@@ -24,6 +24,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.lg.base.R;
+import com.lg.base.bus.BaseEvent;
+import com.lg.base.bus.EventBus;
+import com.lg.base.bus.EventHandListener;
+import com.lg.base.bus.EventLocation;
 import com.lg.base.event.NetWorkEvent;
 import com.lg.base.ui.dialog.LightNetWorkSetDialog;
 import com.lg.base.ui.dialog.LightProgressDialog;
@@ -36,11 +40,11 @@ import java.util.List;
  * @author liguo
  *
  */
-public abstract class BaseActivity extends FragmentActivity implements MessageHandListener, OnViewSizeConfirmed, OnActionBarItemSelectedListener {
+public abstract class BaseActivity extends FragmentActivity implements EventHandListener, OnViewSizeConfirmed, OnActionBarItemSelectedListener {
 
 	protected String TAG = this.getClass().getSimpleName();
 	private volatile BaseApplication app = null;
-	private final Location from = new Location(this.getClass().getName());
+	private final EventLocation from = new EventLocation(this.getClass().getName());
 	public final String DATA_SERIALIZABLE = "DATA_SERIALIZABLE";
 
 	protected int activityWidth = 0;
@@ -153,12 +157,12 @@ public abstract class BaseActivity extends FragmentActivity implements MessageHa
 		app.checkRunOnMain();
 	}
 
-	protected final Location getLocation() {
-		return new Location(this.getClass().getName());
+	protected final EventLocation getLocation() {
+		return new EventLocation(this.getClass().getName());
 	}
 
 	protected void sendExitEvent(){
-		BaseEvent exitEvent = new BaseEvent(Location.any,exit_what);
+		BaseEvent exitEvent = new BaseEvent(EventLocation.any,exit_what);
 		EventBus.get().sendEvent(exitEvent);
 	}
 	public static final int exit_what = -1988;

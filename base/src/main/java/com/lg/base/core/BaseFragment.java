@@ -17,6 +17,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.lg.base.R;
+import com.lg.base.bus.BaseEvent;
+import com.lg.base.bus.EventBus;
+import com.lg.base.bus.EventHandListener;
+import com.lg.base.bus.EventLocation;
 import com.lg.base.ui.dialog.LightNetWorkSetDialog;
 import com.lg.base.ui.dialog.LightProgressDialog;
 
@@ -29,9 +33,9 @@ import com.lg.base.ui.dialog.LightProgressDialog;
  * @author liguo
  *
  */
-public abstract class BaseFragment extends Fragment implements MessageHandListener,OnActionBarItemSelectedListener {
+public abstract class BaseFragment extends Fragment implements EventHandListener,OnActionBarItemSelectedListener {
     protected final String TAG = this.getClass().getSimpleName();
-    private final Location from = new Location(this.getClass().getName());
+    private final EventLocation from = new EventLocation(this.getClass().getName());
     protected abstract int getContentView();
 
     @Override
@@ -90,8 +94,8 @@ public abstract class BaseFragment extends Fragment implements MessageHandListen
 		EventBus.get().unRegister(this);
     }
 
-	protected final Location getLocation() {
-		return new Location(this.getClass().getName());
+	protected final EventLocation getLocation() {
+		return new EventLocation(this.getClass().getName());
 	}
 
     @Override

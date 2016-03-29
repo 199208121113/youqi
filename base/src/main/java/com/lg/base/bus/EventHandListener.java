@@ -1,8 +1,10 @@
-package com.lg.base.core;
+package com.lg.base.bus;
 
 import android.os.Message;
 
-public interface MessageHandListener {
+import com.lg.base.bus.BaseEvent;
+
+public interface EventHandListener {
 	void executeEvent(BaseEvent evt);
 	void executeMessage(Message msg);
 }
