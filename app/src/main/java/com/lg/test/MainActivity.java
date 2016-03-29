@@ -6,10 +6,11 @@ import android.os.Message;
 import android.view.View;
 import android.widget.TextView;
 
+import com.lg.base.bus.BaseEvent;
+import com.lg.base.bus.EventBus;
+import com.lg.base.bus.EventThread;
 import com.lg.base.core.ActionBarMenu;
 import com.lg.base.core.BaseActivity;
-import com.lg.base.core.BaseEvent;
-import com.lg.base.core.EventBus;
 import com.lg.base.core.InjectView;
 import com.lg.base.core.LogUtil;
 import com.lg.base.core.UITask;
@@ -20,9 +21,7 @@ import com.lg.base.utils.StringUtil;
 import com.lg.base.utils.ToastUtil;
 import com.lg.test.account.CollectTask;
 import com.lg.test.activity.TestDbActivity;
-import com.lg.test.activity.TestEncodeActivity;
 import com.lg.test.activity.TestQrCodeActivity;
-import com.lg.test.activity.TestRecyclerViewActivity;
 
 import java.io.File;
 import java.util.HashMap;
@@ -86,32 +85,25 @@ public class MainActivity extends BaseActivity {
         }else if(v == testQrCode){
             startActivity(TestQrCodeActivity.createIntent(this));
         }else if(v == testEncode){
-            startActivity(TestEncodeActivity.createIntent(this));
+            //startActivity(TestEncodeActivity.createIntent(this));
+            EventBus.get().sendEmptyMessageDelayed(getLocation(),100,0);
         }else if(v == testRecyclerView){
-            startActivity(TestRecyclerViewActivity.createIntent(this));
-            EventBus.get().sendEmptyMessageDelayed(getLocation(), 1, 3000);
+            //startActivity(TestRecyclerViewActivity.createIntent(this));
+            EventBus.get().sendEvent(new BaseEvent(getLocation(),1).setData("hello").setRunOnThread(EventThread.UI));
         }
     }
 
     @Override
     public void executeMessage(Message msg) {
         super.executeMessage(msg);
-        if(msg.what == 1){
-            ToastUtil.show(this, "ABC");
-            EventBus.get().sendEvent(new BaseEvent(getLocation(), 100));
-        }
+        ToastUtil.show(this, "executeMessage,msg.what=" + msg.what);
     }
 
     @Override
     public void executeEvent(BaseEvent evt) {
         super.executeEvent(evt);
-        if(evt.getWhat() == 100){
-            EventBus.get().postRunOnUi(new UITask(this) {
-                @Override
-                public void run() {
-                    ToastUtil.show(getContext(), "executeEvent");
-                }
-            });
+        if(evt.getWhat() == 1) {
+            ToastUtil.show(this, "executeEvent,evt.what=" + evt.getWhat());
         }
     }
 

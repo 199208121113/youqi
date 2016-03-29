@@ -6,10 +6,10 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Handler;
 
-import com.lg.base.core.BaseEvent;
+import com.lg.base.bus.BaseEvent;
 import com.lg.base.core.BaseService;
-import com.lg.base.core.EventBus;
-import com.lg.base.core.Location;
+import com.lg.base.bus.EventBus;
+import com.lg.base.bus.EventLocation;
 import com.lg.base.core.LogUtil;
 import com.lg.base.utils.ToastUtil;
 
@@ -30,17 +30,9 @@ public class SmsService extends BaseService {
         super.onCreate();
         mObserver = new SmsContentObserver(new Handler());
         getContentResolver().registerContentObserver(Uri.parse("content://sms/"), true, mObserver);
+        EventBus.get().sendEvent(new BaseEvent(EventLocation.any, SMS_START_SUCCESS));
     }
 
-    @Override
-    protected void doCreate() {
-        EventBus.get().sendEvent(new BaseEvent(Location.any, SMS_START_SUCCESS));
-    }
-
-    @Override
-    protected void doDestroy() {
-
-    }
 
     @Override
     public void onDestroy() {
