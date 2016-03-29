@@ -42,10 +42,6 @@ public class EventBus {
 
     private ThreadPoolExecutor executors = null;
 
-    static {
-        EventBus.get();
-    }
-
     private EventBus(){
         ttListenerMap = new ConcurrentHashMap<>();
         tempHandler = new TempHandler(Looper.getMainLooper());

@@ -55,7 +55,6 @@ public abstract class BaseApplication extends Application implements UncaughtExc
 	public void onCreate() {
 		super.onCreate();
 		appContext = this;
-		EventBus.get();
 		uiTid = Thread.currentThread().getId();
 		Thread.currentThread().setName("T1-UI");
 		defaultHandler = Thread.getDefaultUncaughtExceptionHandler();
@@ -105,8 +104,8 @@ public abstract class BaseApplication extends Application implements UncaughtExc
 	public void uncaughtException(Thread thread, Throwable ex) {
 		LogUtil.e(TAG, "App crash:", ex);
 		if (handleException(ex)) {
-			LooperThread lt = new LooperThread(this);
-			lt.start();
+			ErrorHandler eh = new ErrorHandler(Looper.getMainLooper());
+			eh.sendEmptyMessage(2);
 		} else if (defaultHandler != null) {
 			defaultHandler.uncaughtException(thread, ex);
 		} else {
@@ -124,11 +123,10 @@ public abstract class BaseApplication extends Application implements UncaughtExc
 	}
 	
 	/** 退出并重启 */
-	protected static void exitAndReStart(Context ctx) {
+	public static void exitAndReStart(Context ctx) {
 		LogUtil.e(TAG, "exitAndReStart()");
 		killBackgroundProcesses(ctx);
 		killSelfProcess();
-		//System.exit(0);
 	}
 	
 	/** 杀掉当前进程 */
@@ -160,7 +158,7 @@ public abstract class BaseApplication extends Application implements UncaughtExc
 	/** 获得设备信息并写入到文件 */
 	private boolean handleException(Throwable ex) {
 		if(isRecordErrLog()){
-			Map<String,String> infos = collectDeviceInfo(getApplicationContext());
+			Map<String,String> infos = collectDeviceInfo(getAppInstance());
 			saveCrashInfoToFile(ex,infos);
 		}
 		return true;
@@ -220,36 +218,17 @@ public abstract class BaseApplication extends Application implements UncaughtExc
 		}
 		return null;
 	}
-	
-    private static class LooperThread extends Thread {  
-        public Handler mHandler;
-        private int sendCount = 0;
-        private Context mContext;
-		public LooperThread(Context context) {
-			super();
-			this.mContext = context;
-		}
 
-		public void run() {  
-            Looper.prepare();  
-            mHandler = new Handler() {
-                public void handleMessage(Message msg) {
-                	if(msg.what ==1){
-                		mHandler.removeMessages(msg.what);
-                		//ToastUtil.show(mContext, "抱歉！程序出错,即将退出");
-                		this.sendEmptyMessageDelayed(2, 2000);
-                	}else if(msg.what == 2){
-                		exitAndReStart(mContext);
-                	}
-                }
-            };
-            if(sendCount == 0){
-            	mHandler.sendEmptyMessage(1);
-            	sendCount++;
-            }
-            Looper.loop();  
-        }
-    }
+	private static class ErrorHandler extends Handler{
+		public ErrorHandler(Looper looper) {
+			super(looper);
+		}
+		public void handleMessage(Message msg) {
+			if(msg.what == 2){
+				exitAndReStart(getAppInstance());
+			}
+		}
+	}
     
     /** 是否记录错误日志 */
     protected boolean isRecordErrLog(){
