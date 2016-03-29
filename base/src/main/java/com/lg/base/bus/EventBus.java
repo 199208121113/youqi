@@ -10,9 +10,9 @@ import com.lg.base.core.UITask;
 
 import java.lang.ref.WeakReference;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -36,16 +36,12 @@ public class EventBus {
         }
     };
 
-    private static final int CORE_POOL_SIZE = 5;
-    private static final int MAXIMUM_POOL_SIZE = 128;
-    private static final int KEEP_ALIVE = 10;
-
-    private ThreadPoolExecutor executors = null;
+    private ScheduledExecutorService executors = null;
 
     private EventBus(){
         ttListenerMap = new ConcurrentHashMap<>();
         tempHandler = new TempHandler(Looper.getMainLooper());
-        executors = new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(20), threadFactory,new ThreadPoolExecutor.DiscardOldestPolicy());
+        executors = Executors.newScheduledThreadPool(4,threadFactory);
     }
 
     @SuppressWarnings("unused")
@@ -73,18 +69,25 @@ public class EventBus {
         return ttListenerMap;
     }
 
-    public void sendEvent(BaseEvent evt) {
+    private boolean isValid(BaseEvent evt){
         if (evt == null) {
             LogUtil.e(TAG, "evt is null");
-            return;
+            return false;
         }
         if (evt.getTo() == null) {
             LogUtil.e(TAG,"evt.to is null");
-            return;
+            return false;
         }
         String to = evt.getTo().getUri().trim();
         if (!(ttListenerMap.containsKey(to) || EventLocation.any.getUri().equals(to))) {
             LogUtil.e(TAG, "to:" + to + " can't register");
+            return false;
+        }
+        return true;
+    }
+
+    public void sendEvent(BaseEvent evt) {
+        if (!isValid(evt)) {
             return;
         }
         EventThread et = evt.getRunOnThread();
@@ -94,7 +97,81 @@ public class EventBus {
         }else if(et == EventThread.IO){
             executors.execute(worker);
         }else if(et == EventThread.NEW){
-            new Thread(worker).start();
+            Executors.newSingleThreadExecutor(threadFactory).execute(worker);
+        }else if(et == EventThread.UI){
+            getHandler().post(worker);
+        }
+//        Scheduler scheduler = evt.getScheduler();
+//        if(scheduler == null){
+//            scheduler = Schedulers.immediate();
+//        }
+//        scheduler.createWorker().schedule(new RxAction(evt));
+    }
+
+    /**
+     * @param evt 事件
+     * @param delayed 延迟多少秒后执行
+     * @param timeUnit 时间单位
+     */
+    public void sendEventDelayed(BaseEvent evt,long delayed,TimeUnit timeUnit) {
+        if (!isValid(evt)) {
+            return;
+        }
+        EventThread et = evt.getRunOnThread();
+        EventWorker worker = new EventWorker(evt);
+        if(et == null){
+            worker.run();
+        }else if(et == EventThread.IO){
+            executors.schedule(worker, delayed, timeUnit);
+        }else if(et == EventThread.NEW){
+            Executors.newSingleThreadScheduledExecutor(threadFactory).schedule(worker, delayed, timeUnit);
+        }else if(et == EventThread.UI){
+            getHandler().post(worker);
+        }
+    }
+
+    /**
+     * @param evt 事件
+     * @param delayed 延迟delayed秒后开始执行
+     * @param period 从第1次执行后，就每隔period后执行一次
+     * @param unit 时间单位
+     */
+    public void sendEventAtFixedRate(BaseEvent evt,long delayed,long period,TimeUnit unit) {
+        if (!isValid(evt)) {
+            return;
+        }
+        EventThread et = evt.getRunOnThread();
+        EventWorker worker = new EventWorker(evt);
+        if(et == null){
+            worker.run();
+        }else if(et == EventThread.IO){
+            executors.scheduleAtFixedRate(worker, delayed, period, unit);
+        }else if(et == EventThread.NEW){
+            Executors.newSingleThreadScheduledExecutor(threadFactory).scheduleAtFixedRate(worker, delayed, period, unit);
+        }else if(et == EventThread.UI){
+            getHandler().post(worker);
+        }
+    }
+
+    /**
+     *
+     * @param evt 事件
+     * @param initialDelay 首次延迟时间
+     * @param delay 每次执行之间的间隔
+     * @param unit 时间单位
+     */
+    public void sendEventWithFixedDelay(BaseEvent evt,long initialDelay,long delay,TimeUnit unit) {
+        if (!isValid(evt)) {
+            return;
+        }
+        EventThread et = evt.getRunOnThread();
+        EventWorker worker = new EventWorker(evt);
+        if(et == null){
+            worker.run();
+        }else if(et == EventThread.IO){
+            executors.scheduleWithFixedDelay(worker, initialDelay, delay, unit);
+        }else if(et == EventThread.NEW){
+            Executors.newSingleThreadScheduledExecutor(threadFactory).scheduleWithFixedDelay(worker, initialDelay, delay, unit);
         }else if(et == EventThread.UI){
             getHandler().post(worker);
         }
@@ -192,6 +269,20 @@ public class EventBus {
             }
         }
     }
+
+   /* private static class RxAction implements Action0 {
+        private BaseEvent evt;
+
+        public RxAction(BaseEvent evt) {
+            super();
+            this.evt = evt;
+        }
+
+        @Override
+        public void call() {
+            new EventWorker(evt).run();
+        }
+    }*/
 
     private static class TempHandler extends Handler{
         public TempHandler(Looper looper) {

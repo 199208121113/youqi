@@ -13,6 +13,8 @@ public class BaseEvent implements Serializable, Cloneable{
 	private EventLocation to = null;
 	private Object data = null;
 	private Bundle bundle = null;
+	private EventThread runOnThread = EventThread.IO;
+
 	public BaseEvent(EventLocation from, EventLocation to, Object data) {
 		this(from,to);
 		this.data = data;
@@ -29,17 +31,7 @@ public class BaseEvent implements Serializable, Cloneable{
 		this.what = what;
 	}
 
-	private EventThread runOnThread = EventThread.IO;
-
-	public EventThread getRunOnThread() {
-		return runOnThread;
-	}
-
-	public BaseEvent setRunOnThread(EventThread runOnThread) {
-		this.runOnThread = runOnThread;
-		return this;
-	}
-	//-------------------------------getter and setter------------------------------
+	//===================getter and setter===========================
 
 	public static long getSerialVersionUID() {
 		return serialVersionUID;
@@ -90,6 +82,15 @@ public class BaseEvent implements Serializable, Cloneable{
 		return this;
 	}
 
+	public EventThread getRunOnThread() {
+		return runOnThread;
+	}
+
+	public BaseEvent setRunOnThread(EventThread runOnThread) {
+		this.runOnThread = runOnThread;
+		return this;
+	}
+
 	@Override
 	public Object clone()  {
 		BaseEvent e = null;
@@ -100,4 +101,16 @@ public class BaseEvent implements Serializable, Cloneable{
 		}
 		return e;
 	}
+
+	//======================rxJava scheduler====================
+	/*Scheduler scheduler = null;
+
+	public Scheduler getScheduler() {
+		return scheduler;
+	}
+
+	public BaseEvent setScheduler(Scheduler scheduler) {
+		this.scheduler = scheduler;
+		return this;
+	}*/
 }

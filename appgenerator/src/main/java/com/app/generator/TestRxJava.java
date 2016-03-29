@@ -107,7 +107,7 @@ public class TestRxJava {
                         return Observable.just(arr);
                     }
                 })
-                .observeOn(Schedulers.newThread())
+                .observeOn(Schedulers.immediate())
                 .subscribe(new Subscriber<String[]>() {
                     @Override
                     public void onCompleted() {
