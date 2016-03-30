@@ -18,8 +18,8 @@ public abstract class AccountAuthenticatedTask<T> extends BaseRoboAsyncTask<T> {
 
 	@Override
 	protected final T run() throws Exception {
-		final AccountManager accountManager = AccountManager.get(getActivityContext());
-		Account account = AccountUtils.getAccount(accountManager, getActivityContext());
+		final AccountManager accountManager = AccountManager.get(getWeakActivity());
+		Account account = AccountUtils.getAccount(accountManager, getWeakActivity());
 
 		uid = account.name;
 		pwd = getPasswordFromAccount(account,accountManager);

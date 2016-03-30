@@ -45,12 +45,6 @@ public abstract class BaseApplication extends Application implements UncaughtExc
 		return this.getPackageName();
 	}
 
-	private static final Handler TASK_HANDLER = new Handler();
-
-	public static Handler getTaskHandler() {
-		return TASK_HANDLER;
-	}
-
 	@Override
 	public void onCreate() {
 		super.onCreate();

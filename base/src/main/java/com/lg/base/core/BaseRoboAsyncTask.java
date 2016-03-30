@@ -7,6 +7,7 @@ import android.accounts.AccountsException;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.OperationCanceledException;
 
@@ -27,16 +28,30 @@ import java.util.concurrent.TimeUnit;
 
 public abstract class BaseRoboAsyncTask<T> extends RoboAsyncTask<T> {
 
+    @SuppressWarnings("unused")
     public static final long MINUTES_1 = 1000 * 60;
 
-    public static final long DAY_1 = MINUTES_1 * 60 * 24;
+    @SuppressWarnings("unused")
+    public static final long DAY_1 = 60000 * 60 * 24;
 
-    private WeakReference<Activity> mActivity;
+    private volatile WeakReference<Activity> mActivity;
     public BaseRoboAsyncTask(Activity activity) {
-        this.mActivity = new WeakReference<Activity>(activity);
+        this.mActivity = new WeakReference<>(activity);
     }
-    public Activity getActivityContext(){
-        return mActivity.get();
+    public Activity getWeakActivity(){
+        Activity act = mActivity.get();
+        if(act == null){
+            return null;
+        }
+        if(Build.VERSION.SDK_INT >= 17) {
+            if (act.isDestroyed()) {
+                return null;
+            }
+        }
+        if(act.isFinishing()){
+            return null;
+        }
+        return act;
     }
 
     protected abstract T run() throws Exception;
@@ -52,21 +67,21 @@ public abstract class BaseRoboAsyncTask<T> extends RoboAsyncTask<T> {
         return needRetry;
     }
 
-    private Status curStatus = Status.PENDING;
+    private volatile Status status = Status.PENDING;
 
-    public Status getCurStatus() {
-        return curStatus;
+    public Status getStatus() {
+        return this.status;
     }
 
     @Override
     public boolean cancel(boolean mayInterruptIfRunning) {
-        curStatus = Status.CANCELED;
+        status = Status.CANCELED;
         return super.cancel(mayInterruptIfRunning);
     }
 
     @Override
     public final T doInBackground() throws Exception {
-        curStatus = Status.RUNNING;
+        status = Status.RUNNING;
         Exception err = null;
         T result = null;
         try {
@@ -75,7 +90,7 @@ public abstract class BaseRoboAsyncTask<T> extends RoboAsyncTask<T> {
             err = e;
         }
         if (err == null) {
-            curStatus = Status.ERROR_STOPED;
+            status = Status.ERROR_STOPED;
             return result;
         }
         if(isDontNeedRetryException(err)){
@@ -101,10 +116,10 @@ public abstract class BaseRoboAsyncTask<T> extends RoboAsyncTask<T> {
             }
         }
         if (err != null) {
-            curStatus = Status.ERROR_STOPED;
+            status = Status.ERROR_STOPED;
             throw err;
         }
-        curStatus = Status.FINISHED;
+        status = Status.FINISHED;
         return result;
     }
 
@@ -116,10 +131,14 @@ public abstract class BaseRoboAsyncTask<T> extends RoboAsyncTask<T> {
     // ==================网络设置dialog=================
     AlertDialog networkDialog = null;
 
+    @SuppressWarnings("unused")
     protected AlertDialog showNetWorkDialog(String title, String message) {
         if (networkDialog != null)
             closeNetWorkDialog();
-        networkDialog = LightNetWorkSetDialog.create(mActivity.get(), title, message);
+        Activity act = getWeakActivity();
+        if(act == null)
+            return null;
+        networkDialog = LightNetWorkSetDialog.create(act, title, message);
         networkDialog.show();
         return networkDialog;
     }
@@ -136,21 +155,27 @@ public abstract class BaseRoboAsyncTask<T> extends RoboAsyncTask<T> {
         if(isDontNeedRetryException(e)){
             return;
         }
-        final boolean avilable = NetworkUtil.isAvailable(mActivity.get());
+
+        Activity act = getWeakActivity();
+        if(act == null)
+            return ;
+
+        final boolean available = NetworkUtil.isAvailable(act);
 
         LogUtil.e(TAG, "ExceptionInfo:", e);
         if (!isOpened()) {
             return;
         }
 
-        if (!avilable) {
-            ToastUtil.show(mActivity.get(), "网络已断开,请检查网络!");
+        if (!available) {
+            ToastUtil.show(act, "网络已断开,请检查网络!");
             return;
         }
         String errMsg = getErrorMsgStr(e);
         showErrorDialog(errMsg);
     }
 
+    @SuppressWarnings("unused")
     public static String getErrorMessage(Exception e){
         String errMsg;
         errMsg = getErrorMsgStr(e);
@@ -171,9 +196,9 @@ public abstract class BaseRoboAsyncTask<T> extends RoboAsyncTask<T> {
     }
 
     protected void showErrorDialog(String errMsg) {
-        Activity act = mActivity.get();
+        Activity act = getWeakActivity();
         if(act == null)
-            return;
+            return ;
         AlertDialog dialog = LightAlertDialog.create(act);
         dialog.setTitle("提示");
         String errSux = getExceptionTitle();
@@ -199,15 +224,8 @@ public abstract class BaseRoboAsyncTask<T> extends RoboAsyncTask<T> {
         return "";
     }
 
-    private Bundle mExtraParam = null;
-    public Bundle getExtraParam() {
-        return mExtraParam;
-    }
-    public void setExtraParam(Bundle mExtraParam) {
-        this.mExtraParam = mExtraParam;
-    }
-
     /** 删除旧帐户 */
+    @SuppressWarnings("deprecation")
     protected boolean removeOldAccount(AccountManager manager,Account account){
         boolean removed = true;
         String accountName = "";
@@ -250,8 +268,10 @@ public abstract class BaseRoboAsyncTask<T> extends RoboAsyncTask<T> {
                 removeOldAccount(am, oldAccount);
             }
         }
-
-        Account newAccount = new Account(loginName, mActivity.get().getPackageName());
+        Activity act = getWeakActivity();
+        if(act == null)
+            return false;
+        Account newAccount = new Account(loginName, act.getPackageName());
         Bundle bd = new Bundle();
         bd.putString("uid", loginName);
         bd.putString("pwd", loginPwd);
@@ -282,7 +302,8 @@ public abstract class BaseRoboAsyncTask<T> extends RoboAsyncTask<T> {
     }
 
     /** 获取已经登录的帐户 */
-    protected Account getLoginedAccount(AccountManager accountManager){
+    @SuppressWarnings("unused")
+    protected Account getLoginAccount(AccountManager accountManager){
         Account account = null;
         Account[] accounts = null;
         try {

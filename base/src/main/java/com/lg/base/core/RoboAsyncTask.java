@@ -1,5 +1,8 @@
 package com.lg.base.core;
 
+import android.os.Handler;
+import android.os.Looper;
+
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 
@@ -10,6 +13,8 @@ import java.util.concurrent.FutureTask;
 public abstract class RoboAsyncTask<T> implements Callable<T> {
 
     public final String TAG = this.getClass().getSimpleName();
+
+    private static Handler taskHandler = null;
 
     protected abstract T doInBackground() throws Exception;
 
@@ -29,22 +34,33 @@ public abstract class RoboAsyncTask<T> implements Callable<T> {
 
     }
 
+    private static Handler getTaskHandler(){
+        if(taskHandler == null){
+            synchronized (RoboAsyncTask.class) {
+                if(taskHandler == null) {
+                    taskHandler = new Handler(Looper.getMainLooper());
+                }
+            }
+        }
+        return taskHandler;
+    }
+
     @Override
     public final T call() throws Exception {
         T result = null;
         try {
-            BaseApplication.getTaskHandler().post(new Runnable() {
+            getTaskHandler().post(new Runnable() {
                 @Override
                 public void run() {
                     RoboAsyncTask.this.onPreExecute();
                 }
             });
             result = doInBackground();
-            BaseApplication.getTaskHandler().post(new RunnableSuccess(result));
+            getTaskHandler().post(new RunnableSuccess(result));
         } catch (Exception e) {
-            BaseApplication.getTaskHandler().post(new RunnableException(e));
+            getTaskHandler().post(new RunnableException(e));
         }finally{
-            BaseApplication.getTaskHandler().post(new Runnable() {
+            getTaskHandler().post(new Runnable() {
                 @Override
                 public void run() {
                     RoboAsyncTask.this.onFinally();
