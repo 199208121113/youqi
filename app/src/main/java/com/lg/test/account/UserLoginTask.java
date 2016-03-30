@@ -20,7 +20,7 @@ public class UserLoginTask extends BaseRoboAsyncTask<Boolean> {
 
     @Override
     protected Boolean run() throws Exception {
-        AccountManager am = AccountManager.get(getActivityContext());
+        AccountManager am = AccountManager.get(getWeakActivity());
         boolean added = createOrUpdateAccount(this.username,this.pwd,am);
         return added;
     }

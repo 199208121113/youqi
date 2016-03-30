@@ -113,7 +113,7 @@ public class MainActivity extends BaseActivity {
             @Override
             protected void onSuccess(String s) {
                 super.onSuccess(s);
-                ToastUtil.show(getActivityContext(), "account.name=" + s);
+                ToastUtil.show(getWeakActivity(), "account.name=" + s);
             }
         }.execute();
     }
@@ -131,7 +131,7 @@ public class MainActivity extends BaseActivity {
             @Override
             protected void onSuccess(String s) {
                 super.onSuccess(s);
-                ToastUtil.show(getActivityContext(), "上传成功");
+                ToastUtil.show(getWeakActivity(), "上传成功");
             }
 
             @Override
@@ -143,7 +143,7 @@ public class MainActivity extends BaseActivity {
                 if(totalBytes > 0) {
                     bd.putString("scale", NumberUtil.format2(handBytes * 100f / totalBytes));
                 }
-                EventBus.get().postRunOnUi(new UITask(getActivityContext(), bd) {
+                EventBus.get().postRunOnUi(new UITask(getWeakActivity(), bd) {
                     @Override
                     public void run() {
                         Bundle bd = getExtra();
@@ -167,7 +167,7 @@ public class MainActivity extends BaseActivity {
             @Override
             protected void onSuccess(String t) {
                 super.onSuccess(t);
-                ToastUtil.show(getActivityContext(), "下载成功");
+                ToastUtil.show(getWeakActivity(), "下载成功");
             }
 
             @Override
@@ -179,7 +179,7 @@ public class MainActivity extends BaseActivity {
                 if(totalBytes > 0) {
                     bd.putString("scale", NumberUtil.format2(handBytes * 100f / totalBytes));
                 }
-                EventBus.get().postRunOnUi(new UITask(this.getActivityContext(), bd) {
+                EventBus.get().postRunOnUi(new UITask(this.getWeakActivity(), bd) {
                     @Override
                     public void run() {
                         String scale = getExtra().getString("scale");

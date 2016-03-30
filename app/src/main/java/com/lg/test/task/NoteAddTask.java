@@ -26,7 +26,7 @@ public class NoteAddTask extends BaseRoboAsyncTask<Boolean> {
 
     @Override
     protected Boolean run() throws Exception {
-        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(getActivityContext(), "notes-db", null);
+        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(getWeakActivity(), "notes-db", null);
         SQLiteDatabase db = helper.getWritableDatabase();
         // 注意：该数据库连接属于 DaoMaster，所以多个 Session 指的是相同的数据库连接。
         DaoMaster daoMaster = new DaoMaster(db);
