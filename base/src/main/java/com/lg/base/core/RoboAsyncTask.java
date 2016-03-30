@@ -34,7 +34,7 @@ public abstract class RoboAsyncTask<T> implements Callable<T> {
 
     }
 
-    private static Handler getTaskHandler(){
+    public static Handler getTaskHandler(){
         if(taskHandler == null){
             synchronized (RoboAsyncTask.class) {
                 if(taskHandler == null) {
