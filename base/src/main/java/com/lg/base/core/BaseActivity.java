@@ -170,15 +170,14 @@ public abstract class BaseActivity extends FragmentActivity implements EventHand
 	@Override
 	public void executeEvent(BaseEvent evt) {
 		if (evt instanceof NetWorkEvent) {
-			Bundle bd = new Bundle();
-			bd.putSerializable("obj", evt);
-			EventBus.get().postRunOnUi(new UITask(this, bd) {
+			EventBus.get().postRunOnUi(new UITask() {
 				@Override
 				public void run() {
-					NetWorkEvent event = (NetWorkEvent) getExtra().getSerializable("obj");
+					NetWorkEvent event = (NetWorkEvent) getData();
 					onNetworkStateChanged(event);
 				}
-			});
+			}.setData(evt));
+
 		}else if(evt != null && evt.getWhat() == exit_what){
 			EventBus.get().postRunOnUi(new UITask(this) {
 				@Override

@@ -2,12 +2,8 @@ package com.lg.base.bus;
 
 import android.os.Bundle;
 
-import java.io.Serializable;
-
-public class BaseEvent implements Serializable, Cloneable{
+public class BaseEvent implements Cloneable{
 	
-	private static final long serialVersionUID = 1L;
-
 	private int what = 0;
 	private EventLocation from = null;
 	private EventLocation to = null;
@@ -32,10 +28,6 @@ public class BaseEvent implements Serializable, Cloneable{
 	}
 
 	//===================getter and setter===========================
-
-	public static long getSerialVersionUID() {
-		return serialVersionUID;
-	}
 
 	public int getWhat() {
 		return what;

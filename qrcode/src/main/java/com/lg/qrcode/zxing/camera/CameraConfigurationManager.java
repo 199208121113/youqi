@@ -274,14 +274,13 @@ final class CameraConfigurationManager {
 	 */
 	protected void setDisplayOrientation(Camera camera, int angle){  
         Method downPolymorphic;  
-        try  
-        {  
+        try {
             downPolymorphic = camera.getClass().getMethod("setDisplayOrientation", int.class);
             if (downPolymorphic != null)  
                 downPolymorphic.invoke(camera, angle);
         }  
-        catch (Exception e1)  
-        {  
+        catch (Exception e) {
+          e.printStackTrace();
         }  
    }  
 

@@ -107,7 +107,7 @@ public class TestRecyclerViewActivity extends SuperActivity implements RecyclerI
         ToastUtil.show(this,"position="+position);
     }
 
-    public class TestAdapter extends RecyclerViewAdapter<TestBean,Void,TestRecyclerViewHolder> {
+    public static class TestAdapter extends RecyclerViewAdapter<TestBean,Void,TestRecyclerViewHolder> {
         public TestAdapter(Context ctx) {
             super(ctx);
         }

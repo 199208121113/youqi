@@ -8,7 +8,6 @@ import java.util.HashMap;
 
 public class TaskEvent extends BaseEvent{
 	
-	private static final long serialVersionUID = 1L;
 	private String taskId;
     private String taskName;
 	private int taskFlags;

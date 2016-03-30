@@ -143,7 +143,7 @@ public class MainActivity extends BaseActivity {
                 if(totalBytes > 0) {
                     bd.putString("scale", NumberUtil.format2(handBytes * 100f / totalBytes));
                 }
-                EventBus.get().postRunOnUi(new UITask(getWeakActivity(), bd) {
+                EventBus.get().postRunOnUi(new UITask() {
                     @Override
                     public void run() {
                         Bundle bd = getExtra();
@@ -155,7 +155,7 @@ public class MainActivity extends BaseActivity {
                             testUploadFile.setText(NumberUtil.format2((handBytes * 1f) / (1024 * 1024)) + "MB");
                         }
                     }
-                });
+                }.setExtra(bd));
             }
         }.execute();
     }
@@ -179,7 +179,7 @@ public class MainActivity extends BaseActivity {
                 if(totalBytes > 0) {
                     bd.putString("scale", NumberUtil.format2(handBytes * 100f / totalBytes));
                 }
-                EventBus.get().postRunOnUi(new UITask(this.getWeakActivity(), bd) {
+                EventBus.get().postRunOnUi(new UITask() {
                     @Override
                     public void run() {
                         String scale = getExtra().getString("scale");
@@ -190,7 +190,7 @@ public class MainActivity extends BaseActivity {
                             testDownloadFile.setText(NumberUtil.format2((handBytes * 1f) / (1024 * 1024)) + "MB");
                         }
                     }
-                });
+                }.setExtra(bd));
             }
         }.execute();
     }

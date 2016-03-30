@@ -6,9 +6,8 @@ import java.io.Serializable;
 
 
 
-public class AdapterItem<DATA, STATE> implements Serializable {
+public class AdapterItem<DATA, STATE> {
 	
-	private static final long serialVersionUID = 1L;
 	private DATA data;
 	private STATE state;
 	private OnAdapterItemStateChangeListener<DATA, STATE> onAdapterItemStateChangeListener = null;

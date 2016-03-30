@@ -86,6 +86,8 @@ public class TestQrCodeActivity extends SuperActivity implements View.OnClickLis
                     //mImageView.setImageBitmap((Bitmap) data.getParcelableExtra("bitmap"));
                 }
                 break;
+            default:
+                break;
         }
     }
 

@@ -49,23 +49,13 @@ public abstract class RoboAsyncTask<T> implements Callable<T> {
     public final T call() throws Exception {
         T result = null;
         try {
-            getTaskHandler().post(new Runnable() {
-                @Override
-                public void run() {
-                    RoboAsyncTask.this.onPreExecute();
-                }
-            });
+            getTaskHandler().post(new TaskCallback<>(this,0));
             result = doInBackground();
-            getTaskHandler().post(new RunnableSuccess(result));
+            getTaskHandler().post(new TaskCallback<>(this,1).setResult(result));
         } catch (Exception e) {
-            getTaskHandler().post(new RunnableException(e));
+            getTaskHandler().post(new TaskCallback<>(this,2).setErr(e));
         }finally{
-            getTaskHandler().post(new Runnable() {
-                @Override
-                public void run() {
-                    RoboAsyncTask.this.onFinally();
-                }
-            });
+            getTaskHandler().post(new TaskCallback<>(this,3));
         }
         return result;
     }
@@ -74,10 +64,11 @@ public abstract class RoboAsyncTask<T> implements Callable<T> {
         if(ft != null){
             return;
         }
-        ft = new FutureTask<T>(this);
+        ft = new FutureTask<>(this);
         new Thread(ft).start();
     }
 
+    @SuppressWarnings("unused")
     public final boolean isCancelled() {
         return ft.isCancelled();
     }
@@ -88,25 +79,39 @@ public abstract class RoboAsyncTask<T> implements Callable<T> {
 
     private FutureTask<T> ft = null;
 
-    private class RunnableSuccess implements Runnable{
+    private static class TaskCallback<T> implements Runnable{
         private T result;
-        public RunnableSuccess(T result) {
-            this.result = result;
-        }
-        @Override
-        public void run() {
-            RoboAsyncTask.this.onSuccess(result);
-        }
-    }
-
-    private class RunnableException implements Runnable{
         private Exception err;
-        public RunnableException(Exception err) {
-            this.err = err;
+        private RoboAsyncTask<T> task;
+        private int mode;
+
+        public TaskCallback(RoboAsyncTask<T> task, int mode) {
+            this.task = task;
+            this.mode = mode;
         }
+
         @Override
         public void run() {
-            RoboAsyncTask.this.onException(err);
+            if(mode == 0){
+                task.onPreExecute();
+            }else if(mode == 1){
+                task.onSuccess(this.result);
+            }else if(mode == 2){
+                task.onException(this.err);
+            }else if(mode == 4){
+                task.onFinally();
+            }
+
+        }
+
+        public TaskCallback setResult(T result) {
+            this.result = result;
+            return this;
+        }
+
+        public TaskCallback setErr(Exception err) {
+            this.err = err;
+            return this;
         }
     }
 }
