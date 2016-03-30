@@ -98,7 +98,7 @@ public abstract class RoboAsyncTask<T> implements Callable<T> {
                 task.onSuccess(this.result);
             }else if(mode == 2){
                 task.onException(this.err);
-            }else if(mode == 4){
+            }else if(mode == 3){
                 task.onFinally();
             }
 
