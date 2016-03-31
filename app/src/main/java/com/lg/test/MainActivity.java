@@ -8,7 +8,6 @@ import android.widget.TextView;
 
 import com.lg.base.bus.BaseEvent;
 import com.lg.base.bus.EventBus;
-import com.lg.base.bus.EventThread;
 import com.lg.base.core.ActionBarMenu;
 import com.lg.base.core.BaseActivity;
 import com.lg.base.core.InjectView;
@@ -22,6 +21,7 @@ import com.lg.base.utils.ToastUtil;
 import com.lg.test.account.CollectTask;
 import com.lg.test.activity.TestDbActivity;
 import com.lg.test.activity.TestQrCodeActivity;
+import com.lg.test.activity.TestRecyclerViewActivity;
 
 import java.io.File;
 import java.util.HashMap;
@@ -88,8 +88,8 @@ public class MainActivity extends BaseActivity {
             //startActivity(TestEncodeActivity.createIntent(this));
             EventBus.get().sendEmptyMessageDelayed(getLocation(),100,0);
         }else if(v == testRecyclerView){
-            //startActivity(TestRecyclerViewActivity.createIntent(this));
-            EventBus.get().sendEvent(new BaseEvent(getLocation(),1).setData("hello").setRunOnThread(EventThread.UI));
+            startActivity(TestRecyclerViewActivity.createIntent(this));
+            //EventBus.get().sendEvent(new BaseEvent(getLocation(),1).setData("hello").setRunOnThread(EventThread.UI));
         }
     }
 

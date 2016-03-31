@@ -1,5 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <declare-styleable name="FamiliarRecyclerView">
+        <attr format="reference|color" name="frv_divider"/>
+        <attr format="reference|color" name="frv_dividerVertical"/>
+        <attr format="reference|color" name="frv_dividerHorizontal"/>
+        <attr format="dimension" name="frv_dividerHeight"/>
+        <attr format="dimension" name="frv_dividerVerticalHeight"/>
+        <attr format="dimension" name="frv_dividerHorizontalHeight"/>
+        <attr format="dimension" name="frv_itemViewBothSidesMargin"/>
+        <attr format="reference" name="frv_emptyView"/>
+        <attr format="boolean" name="frv_isEmptyViewKeepShowHeadOrFooter"/>
+        <attr format="enum" name="frv_layoutManager"><enum name="linear" value="0"/>
+            <enum name="grid" value="1"/><enum name="staggeredGrid" value="2"/>
+        </attr>
+        <attr format="enum" name="frv_layoutManagerOrientation">
+            <enum name="horizontal" value="0"/>
+            <enum name="vertical" value="1"/>
+        </attr>
+        <attr format="integer" name="frv_spanCount"/>
+        <attr format="boolean" name="frv_isReverseLayout"/>
+        <attr format="boolean" name="frv_headerDividersEnabled"/>
+        <attr format="boolean" name="frv_footerDividersEnabled"/>
+    </declare-styleable>
     <declare-styleable name="ExpandableTextView">
         <attr name="defaultLineCount" format="integer" />
     </declare-styleable>

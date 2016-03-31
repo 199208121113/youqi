@@ -3,37 +3,31 @@ package com.lg.test.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.lg.base.core.ActionBarMenu;
 import com.lg.base.core.InjectView;
-import com.lg.base.ui.recycle.ItemDecorationByGridLayout;
-import com.lg.base.ui.recycle.ItemDecorationByLinearLayout;
-import com.lg.base.ui.recycle.PullToRefreshRecyclerView;
-import com.lg.base.ui.recycle.RecyclerItemClickListener;
 import com.lg.base.ui.recycle.RecyclerViewAdapter;
 import com.lg.base.ui.recycle.RecyclerViewHolder;
-import com.lg.base.utils.ImageUtil;
 import com.lg.base.utils.ScreenUtil;
 import com.lg.base.utils.ToastUtil;
 import com.lg.test.R;
 import com.lg.test.core.SuperActivity;
 
-import java.util.Random;
+import cn.iwgang.familiarrecyclerview.FamiliarRecyclerView;
+import cn.iwgang.familiarrecyclerview.FamiliarRecyclerViewOnScrollListener;
 
 /**
  * Created by liguo on 2015/11/25.
  */
-public class TestRecyclerViewActivity extends SuperActivity implements RecyclerItemClickListener {
+public class TestRecyclerViewActivity extends SuperActivity implements FamiliarRecyclerView.OnItemClickListener,FamiliarRecyclerView.OnItemLongClickListener{
 
     @InjectView(value = R.id.act_v7_rv)
-    PullToRefreshRecyclerView mRecyclerView;
+    FamiliarRecyclerView mRecyclerView;
 
     TestAdapter mAdapter;
 
@@ -54,44 +48,60 @@ public class TestRecyclerViewActivity extends SuperActivity implements RecyclerI
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        int headerViewHeight = ScreenUtil.dip2px(this, 50);
+        View headerView = LayoutInflater.from(this).inflate(R.layout.item_recycler_header,null);
+        headerView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,headerViewHeight));
+        mRecyclerView.addHeaderView(headerView);
 
-        int a = 3;
-        //(1)设置LayoutManager
-        RecyclerView.LayoutManager layoutManager = null;
-        if(a == 1) {
-            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-            linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-            layoutManager = linearLayoutManager;
-        }else if(a == 2){
-            layoutManager = new GridLayoutManager(this,3);
-        }else if(a == 3){
-            layoutManager = new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
-        }
-        mRecyclerView.setLayoutManager(layoutManager);
+        View footerView = LayoutInflater.from(this).inflate(R.layout.item_recycler_footer,null);
+        footerView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, headerViewHeight));
+        mRecyclerView.addFooterView(footerView);
 
-        //(2)设置分隔线,可在AppTheme中设置 <item name="android:listDivider">@drawable/sh_recycler_linear_hor</item>
-        RecyclerView.ItemDecoration itemDecoration = null;
-        if(a == 1) {
-            itemDecoration = new ItemDecorationByLinearLayout(this, LinearLayoutManager.VERTICAL);
-        }else if(a == 2 || a== 3){
-            itemDecoration = new ItemDecorationByGridLayout(this);
-        }
-        mRecyclerView.addItemDecoration(itemDecoration);
+        // 设置分割线(也可以在布局文件中直接指定分割线Divider及分割线大小，当然你也可以使用自己的分割线实现),如果是网格或瀑布流视图，你甚至可以设置横竖不同的分割线Divider及分割线大小
+        //mRecyclerView.setDivider();
+
+        // 设置数据空View（设置isRetainShowHeadOrFoot为true时，可以让显示EmptyView时不会清除掉添加的HeadView和FooterView）
+//        mRecyclerView.setEmptyView()
+
+        // Item单击事件
+        mRecyclerView.setOnItemClickListener(this);
+
+        // Item长按事件
+        mRecyclerView.setOnItemLongClickListener(this);
+
+        // 设置滚动到顶部或底部时的事件回调
+        mRecyclerView.setOnScrollListener(new FamiliarRecyclerViewOnScrollListener(mRecyclerView.getLayoutManager()) {
+            @Override
+            public void onScrolledToTop() {
+                ToastUtil.show(getApplication(),"Top");
+            }
+
+            @Override
+            public void onScrolledToBottom() {
+                ToastUtil.show(getApplication(),"Bottom");
+            }
+        });
 
         //(4)初始化Adapter的数据
         mAdapter = new TestAdapter(this);
-        mAdapter.setItemClickListener(this);
-        int dp10 = ScreenUtil.dip2px(this,10);
         for (int i = 1; i< 100;i++){
-            int h = new Random().nextInt(10)+3;
-            if(h < 3){
-                h = 3;
-            }
-            h = h * dp10;
-            mAdapter.addItem(new TestBean(""+i,h),null);
+            mAdapter.addItem(new TestBean(""+i),null);
         }
         mRecyclerView.setAdapter(mAdapter);
 
+    }
+
+    @Override
+    public void onItemClick(FamiliarRecyclerView familiarRecyclerView, View view, int position) {
+        String text = mAdapter.getItem(position).getData().getText();
+        ToastUtil.show(this,"text="+text);
+    }
+
+    @Override
+    public boolean onItemLongClick(FamiliarRecyclerView familiarRecyclerView, View view, int position) {
+        String text = mAdapter.getItem(position).getData().getText();
+        ToastUtil.show(this,"text="+text);
+        return true;
     }
 
     @Override
@@ -102,44 +112,22 @@ public class TestRecyclerViewActivity extends SuperActivity implements RecyclerI
         }
     }
 
-    @Override
-    public void onItemClick(View view, int position) {
-        ToastUtil.show(this,"position="+position);
-    }
-
     public static class TestAdapter extends RecyclerViewAdapter<TestBean,Void,TestRecyclerViewHolder> {
         public TestAdapter(Context ctx) {
             super(ctx);
         }
 
         @Override
-        protected TestRecyclerViewHolder startCreateViewHolder(ViewGroup parent, int viewType) {
-            TestRecyclerViewHolder tvh;
-            if(viewType == 0){
-                tvh = new TestRecyclerViewHolder(getFirstHeaderView(),getCtx());
-                tvh.setNothingTodo(true);
-            }else{
-                View vv = inflater.inflate(R.layout.item_recycler_view,parent,false);
-                tvh = new TestRecyclerViewHolder(vv,getCtx());
-            }
-            return tvh;
+        public TestRecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View vv = inflater.inflate(R.layout.item_recycler_view,parent,false);
+            TestRecyclerViewHolder vh = new TestRecyclerViewHolder(vv,getCtx());
+            vh.initViews();
+            return vh;
         }
 
         @Override
-        public int getItemViewType(int position) {
-            return isHeader(position) ? 0 : 1;
-        }
-
-        @Override
-        protected void startBindViewHolder(TestRecyclerViewHolder holder, int position) {
-            if(isHeader(position)){
-                return;
-            }
-            int dataPos = position;
-            if(getHeaderViewCount() > 0) {
-                dataPos -= getHeaderViewCount();
-            }
-            holder.setItem(getItem(dataPos));
+        public void onBindViewHolder(TestRecyclerViewHolder holder, int position) {
+            holder.setItem(getItem(position));
         }
     }
 
@@ -158,7 +146,6 @@ public class TestRecyclerViewActivity extends SuperActivity implements RecyclerI
         @Override
         protected void onBindItem() {
             tv.setText(getItem().getData().getText());
-            ImageUtil.setLayoutParamsByPX(getRootView(), getRootView().getWidth(),getItem().getData().getHeight());
         }
 
 
@@ -180,7 +167,6 @@ public class TestRecyclerViewActivity extends SuperActivity implements RecyclerI
 
     public static class TestBean{
         private String text;
-        private int height;
 
         public String getText() {
             return text;
@@ -190,17 +176,9 @@ public class TestRecyclerViewActivity extends SuperActivity implements RecyclerI
             this.text = text;
         }
 
-        public int getHeight() {
-            return height;
-        }
 
-        public void setHeight(int height) {
-            this.height = height;
-        }
-
-        public TestBean(String text, int height) {
+        public TestBean(String text) {
             this.text = text;
-            this.height = height;
         }
     }
 }

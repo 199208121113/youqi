@@ -3,8 +3,6 @@ package com.lg.base.ui.recycle;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AbsListView;
 
 import com.lg.base.ui.adapter.AdapterItem;
 import com.lg.base.ui.holder.IViewHolder;
@@ -76,9 +74,6 @@ public abstract class RecyclerViewHolder<DATA, STATE> extends RecyclerView.ViewH
 
     @Override
     public final void initViews() {
-        if(isNothingTodo()){
-            return;
-        }
         onInitViews(getRootView());
     }
 
@@ -99,55 +94,5 @@ public abstract class RecyclerViewHolder<DATA, STATE> extends RecyclerView.ViewH
 
     public final Context getMyContext() {
         return context;
-    }
-
-    // ====================================================
-    protected int posIndex = -1;
-
-    public final int getPosIndex() {
-        return posIndex;
-    }
-
-    public final void setPosIndex(int posIndex) {
-        this.posIndex = posIndex;
-    }
-
-    protected int posGroupIndex = -1;
-
-    public final int getPosGroupIndex() {
-        return posGroupIndex;
-    }
-
-    public final void setPosGroupIndex(int posGroupIndex) {
-        this.posGroupIndex = posGroupIndex;
-    }
-
-    // ============================================
-
-   /* protected int scrollState = AbsListView.OnScrollListener.SCROLL_STATE_IDLE;
-    protected int firstVisibleItem = 0;
-    protected int visibleItemCount = 0;
-    protected int totalItemCount = 0;
-
-    @Override
-    public void onScrollStateChanged(ViewGroup vg, int scrollState) {
-        this.scrollState = scrollState;
-    }
-
-    @Override
-    public void onScroll(ViewGroup vg, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-        this.firstVisibleItem = firstVisibleItem;
-        this.visibleItemCount = visibleItemCount;
-        this.totalItemCount = totalItemCount;
-    }*/
-
-    private boolean nothingTodo = false;
-
-    public void setNothingTodo(boolean nothingTodo) {
-        this.nothingTodo = nothingTodo;
-    }
-
-    public boolean isNothingTodo() {
-        return nothingTodo;
     }
 }
