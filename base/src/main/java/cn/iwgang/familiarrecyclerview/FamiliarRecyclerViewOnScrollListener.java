@@ -76,6 +76,8 @@ public abstract class FamiliarRecyclerViewOnScrollListener extends RecyclerView.
             case RecyclerView.SCROLL_STATE_DRAGGING:
                 isCanScrolledCallback = true;
                 break;
+            default:
+                break;
         }
     }
 

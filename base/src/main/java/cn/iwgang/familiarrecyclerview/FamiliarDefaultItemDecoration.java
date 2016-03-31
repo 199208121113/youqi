@@ -335,6 +335,8 @@ public class FamiliarDefaultItemDecoration extends RecyclerView.ItemDecoration {
 
                     }
                     break;
+                default:
+                    break;
             }
         }
     }

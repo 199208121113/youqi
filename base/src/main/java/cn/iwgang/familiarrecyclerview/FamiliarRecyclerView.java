@@ -103,6 +103,8 @@ public class FamiliarRecyclerView extends RecyclerView {
                 case LAYOUT_MANAGER_TYPE_STAGGERED_GRID:
                     setLayoutManager(new StaggeredGridLayoutManager(gridSpanCount, layoutManagerOrientation));
                     break;
+                default:
+                    break;
             }
         }
         ta.recycle();
@@ -624,6 +626,8 @@ public class FamiliarRecyclerView extends RecyclerView {
                 tempStaggeredGridLayoutManager.findFirstCompletelyVisibleItemPositions(firstVisibleItemPositions);
                 ret = firstVisibleItemPositions[0] - getHeaderViewsCount();
                 break;
+            default:
+                break;
         }
 
         return ret < 0 ? 0 : ret;
@@ -663,6 +667,8 @@ public class FamiliarRecyclerView extends RecyclerView {
                         ret -= getFooterViewsCount();
                     }
                 }
+                break;
+            default:
                 break;
         }
 
