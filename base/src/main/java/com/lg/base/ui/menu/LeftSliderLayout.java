@@ -174,7 +174,7 @@ public class LeftSliderLayout extends ViewGroup {
 			int nLeftChildWidth = 0;
 			View leftChild = getChildAt(0);
 			LayoutParams layoutParams = leftChild.getLayoutParams();
-			if (layoutParams.width == LayoutParams.MATCH_PARENT || layoutParams.width == LayoutParams.MATCH_PARENT) {
+			if (layoutParams.width == LayoutParams.MATCH_PARENT) {
 				nLeftChildWidth = mDefShadowWidth;
 			} else {
 				nLeftChildWidth = layoutParams.width;
@@ -337,6 +337,8 @@ public class LeftSliderLayout extends ViewGroup {
 		case MotionEvent.ACTION_CANCEL:
 		case MotionEvent.ACTION_UP:
 			mTouchState = TOUCH_STATE_REST;
+			break;
+		default:
 			break;
 		}
 		return mTouchState != TOUCH_STATE_REST;

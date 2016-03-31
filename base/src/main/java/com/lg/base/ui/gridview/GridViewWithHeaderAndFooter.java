@@ -830,6 +830,7 @@ public class GridViewWithHeaderAndFooter extends GridView implements AbsListView
             mFlingEndMethod.setAccessible(true);
         } catch (Exception e) {
             mFlingEndMethod = null;
+            e.printStackTrace();
         }
     }
 

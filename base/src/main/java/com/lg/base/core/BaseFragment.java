@@ -60,7 +60,9 @@ public abstract class BaseFragment extends Fragment implements EventHandListener
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 		InjectManager.init(this);
-        mGlobalView = (ViewGroup)view;
+		if(view instanceof ViewGroup) {
+			mGlobalView = (ViewGroup) view;
+		}
 		if (actionBarView != null) {
 			calcViewSize(actionBarView, new OnViewSizeConfirmed() {
 				@Override

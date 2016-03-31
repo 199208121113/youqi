@@ -25,6 +25,7 @@ public abstract class BaseService extends Service implements EventHandListener {
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		app = (BaseApplication)getApplication();
 		EventBus.get().register(this);
 	}
 

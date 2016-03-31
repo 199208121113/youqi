@@ -287,14 +287,14 @@ public class PinnedHeaderExpandableListView extends ExpandableListView implement
         }
     }
 
-    private CheckBoxChangedCallBack callBackListener;
-
-    public void setCallBackListener(CheckBoxChangedCallBack callBackListener) {
-        this.callBackListener = callBackListener;
-    }
-
-    public interface CheckBoxChangedCallBack{
-        void onCheckBoxChanged(int groupIndex, boolean isChecked);
-    }
+//    private CheckBoxChangedCallBack callBackListener;
+//
+//    public void setCallBackListener(CheckBoxChangedCallBack callBackListener) {
+//        this.callBackListener = callBackListener;
+//    }
+//
+//    public interface CheckBoxChangedCallBack{
+//        void onCheckBoxChanged(int groupIndex, boolean isChecked);
+//    }
 
 }

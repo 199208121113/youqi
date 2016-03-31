@@ -95,12 +95,12 @@ public class FileUploadRequestBody extends RequestBody {
     public static class MySink extends ForwardingSink {
         private final long contentLength;
         private final OnTaskRunningListener listener;
-        boolean userCanceled = false;
+//        boolean userCanceled = false;
         public MySink(Sink delegate,long contentLength,OnTaskRunningListener uploadListener) {
             super(delegate);
             this.contentLength = contentLength;
             this.listener  = uploadListener;
-            this.userCanceled = false;
+//            this.userCanceled = false;
         }
 
         private long bytesWritten = 0L;
@@ -112,7 +112,7 @@ public class FileUploadRequestBody extends RequestBody {
             if(listener != null) {
                 listener.sendProgressChanged(bytesWritten, contentLength);
                 if(listener.getTaskStatus() == Status.CANCELED || listener.getTaskStatus() == Status.ERROR_STOPED){
-                    userCanceled = true;
+//                    userCanceled = true;
                     throw new IOException(OnTaskRunningListener.OPERATION_CANCELED_FLAG);
                 }
             }

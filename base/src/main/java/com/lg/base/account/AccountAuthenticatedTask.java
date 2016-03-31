@@ -13,16 +13,10 @@ public abstract class AccountAuthenticatedTask<T> extends BaseRoboAsyncTask<T> {
 		super(activity);
 	}
 
-	private String pwd = null;
-	private String uid = null;
-
 	@Override
 	protected final T run() throws Exception {
 		final AccountManager accountManager = AccountManager.get(getWeakActivity());
 		Account account = AccountUtils.getAccount(accountManager, getWeakActivity());
-
-		uid = account.name;
-		pwd = getPasswordFromAccount(account,accountManager);
 		return run(account);
 	}
 
@@ -38,6 +32,7 @@ public abstract class AccountAuthenticatedTask<T> extends BaseRoboAsyncTask<T> {
             }
 		} catch (Exception e) {
 			//ignored
+			e.printStackTrace();
 		}
 		return pwd;
 	}

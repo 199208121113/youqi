@@ -206,15 +206,18 @@ public class ImageUtil {
 		Matrix matrix = new Matrix();
 		matrix.setScale(scale, scale);
 		Bitmap roomedBitmap = Bitmap.createBitmap(bitmap, 0, 0, origWidth, origHeight, matrix, true);
-		origWidth = roomedBitmap.getWidth();
-		origHeight = roomedBitmap.getHeight();
+		if(roomedBitmap != null) {
+			origWidth = roomedBitmap.getWidth();
+			origHeight = roomedBitmap.getHeight();
+		}
 		Log.d(TAG, "roomedBitmap width,height = " + origWidth + "," + origHeight);
 
 		Bitmap cropedBitmap = Bitmap.createBitmap(roomedBitmap, origWidth / 2 - width / 2, origHeight / 2 - height / 2, width, height);
 		Log.d(TAG, "cropedBitmap width,height = " + cropedBitmap.getWidth() + "," + cropedBitmap.getHeight());
 
-		if (roomedBitmap != null)
+		if (roomedBitmap != null) {
 			roomedBitmap.recycle();
+		}
 
 		return cropedBitmap;
 	}
@@ -297,7 +300,7 @@ public class ImageUtil {
 				}
 			} else if (isDownloadsDocument(uri)) {
 				String id = DocumentsContract.getDocumentId(uri);
-				Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
+				Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.parseLong(id));
 				return getDataColumn(activity, contentUri, null, null);
 			} else if (isMediaDocument(uri)) {
 				String docId = DocumentsContract.getDocumentId(uri);

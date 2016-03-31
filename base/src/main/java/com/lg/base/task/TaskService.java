@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
@@ -91,12 +92,12 @@ public class TaskService extends BaseService implements Task.OnStateChangeListen
 			return sPollMap;
 		}else{
 			ConcurrentHashMap<String,Task> map = new ConcurrentHashMap<>();
-			for (String key : sPollMap.keySet()){
-				Task task = sPollMap.get(key);
+			for (Map.Entry<String,Task> entry : sPollMap.entrySet()){
+				Task task = entry.getValue();
 				if(task.getTaskType() != taskType){
 					continue;
 				}
-				map.put(key,task);
+				map.put(entry.getKey(),task);
 			}
 			return map;
 		}
@@ -501,6 +502,9 @@ public class TaskService extends BaseService implements Task.OnStateChangeListen
 				return filename.endsWith(".tsk");
 			}
 		});
+		if(files == null || files.length == 0){
+			return;
+		}
 		for (File f : files) {
 			Task t = null;
 			try {

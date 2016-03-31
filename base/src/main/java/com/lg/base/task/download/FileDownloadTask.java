@@ -84,7 +84,7 @@ public class FileDownloadTask extends Task<String> implements OnTaskRunningListe
         if (contentLength <= 0) {
             String lengthStr = response.header(HttpConstant.CONTENT_LENGTH,null);
             if (StringUtil.isNotEmpty(lengthStr)) {
-                contentLength = Long.valueOf(lengthStr.trim());
+                contentLength = Long.parseLong(lengthStr.trim());
             }
         }
         final long totalLenght = receivedLength + contentLength;

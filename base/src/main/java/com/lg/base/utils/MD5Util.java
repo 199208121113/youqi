@@ -3,6 +3,7 @@ package com.lg.base.utils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.math.BigInteger;
+import java.nio.charset.Charset;
 import java.security.MessageDigest;
 
 /**
@@ -31,7 +32,7 @@ public class MD5Util {
         char hexDigits[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
         String result = s;
         try {
-            byte[] strTemp = s.getBytes();
+            byte[] strTemp = s.getBytes(Charset.forName("UTF-8"));
             MessageDigest mdTemp = MessageDigest.getInstance("MD5");
             mdTemp.update(strTemp);
             byte[] md = mdTemp.digest();

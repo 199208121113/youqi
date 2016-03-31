@@ -17,7 +17,7 @@ public abstract class Task<T> implements Serializable {
 
 	protected final String tag = this.getClass().getSimpleName();
 
-	private final String lock = new String("TASKLOCK");
+	private final Object lock = new Object();
 
 	private String id = null;
 

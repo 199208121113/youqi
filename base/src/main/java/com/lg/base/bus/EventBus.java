@@ -49,15 +49,11 @@ public class EventBus {
         return new EventLocation(cls.getName());
     }
 
+    private static class EventBusHelper{
+        private static final EventBus INSTANCE = new EventBus();
+    }
     public static EventBus get(){
-        if(instance == null){
-            synchronized (EventBus.class) {
-                if(instance == null){
-                    instance = new EventBus();
-                }
-            }
-        }
-        return instance;
+        return EventBusHelper.INSTANCE;
     }
 
     private EventHandListener getMessageHandlerListener(String from){
@@ -291,8 +287,6 @@ public class EventBus {
         public void handleMessage(Message msg) {
             if (msg == null || msg.obj == null)
                 return ;
-            if(!(msg.obj instanceof BaseEvent))
-                return;
             BaseEvent evt = (BaseEvent)msg.obj;
             String to = evt.getTo().getUri();
             EventHandListener ttMsgListener = EventBus.get().getMessageHandlerListener(to);

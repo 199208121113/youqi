@@ -186,6 +186,8 @@ public class PullToRefreshRecyclerView extends RecyclerView {
                     headView.setPadding(0, (tempY - startY) / RATIO - headContentHeight+headContentHeight, 0, 0);
                 }
                 break;
+            default:
+                break;
         }
         return super.onTouchEvent(event);
     }
@@ -207,6 +209,8 @@ public class PullToRefreshRecyclerView extends RecyclerView {
             case DONE:
                 headView.setPadding(0, -1 * headContentHeight + bottomPadding, 0, 0);
                 scrollToPosition(1);
+                break;
+            default:
                 break;
         }
     }

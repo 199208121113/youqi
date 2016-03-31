@@ -94,7 +94,9 @@ public class BaseViewPager extends ViewPager {
 			PointF curP = new PointF();
 			int act = event.getAction();
 			if (act == MotionEvent.ACTION_DOWN || act == MotionEvent.ACTION_MOVE || act == MotionEvent.ACTION_UP) {
-				((ViewGroup) v).requestDisallowInterceptTouchEvent(true);
+				if(v instanceof ViewGroup) {
+					((ViewGroup) v).requestDisallowInterceptTouchEvent(true);
+				}
 				if (downP.x == curP.x && downP.y == curP.y) {
 					return false;
 				}

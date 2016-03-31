@@ -35,7 +35,22 @@ public abstract class BaseApplication extends Application implements UncaughtExc
 	private static volatile long uiTid = -1;
 
 
-	private static BaseApplication appContext;
+	private static volatile BaseApplication appContext;
+	private static void setAppInstance(BaseApplication instance){
+		if(instance == null){
+			return;
+		}
+		if(appContext == null){
+			synchronized (BaseApplication.class){
+				BaseApplication tmp = appContext;
+				if(tmp == null){
+					tmp = instance;
+				}
+				uiTid = Thread.currentThread().getId();
+				appContext = tmp;
+			}
+		}
+	}
 
 	public static BaseApplication getAppInstance() {
 		return appContext;
@@ -48,8 +63,7 @@ public abstract class BaseApplication extends Application implements UncaughtExc
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		appContext = this;
-		uiTid = Thread.currentThread().getId();
+		BaseApplication.setAppInstance(this);
 		Thread.currentThread().setName("T1-UI");
 		defaultHandler = Thread.getDefaultUncaughtExceptionHandler();
 		Thread.setDefaultUncaughtExceptionHandler(this);

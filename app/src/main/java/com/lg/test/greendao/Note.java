@@ -21,10 +21,10 @@ public class Note {
         this.id = id;
     }
 
-    public Note(Long id, String text, Date date) {
+    public Note(Long id, String text, Date d) {
         this.id = id;
         this.text = text;
-        this.date = date;
+        this.date = d;
     }
 
     public Long getId() {
@@ -49,8 +49,8 @@ public class Note {
         return date;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setDate(Date d) {
+        this.date = d;
     }
 
 }

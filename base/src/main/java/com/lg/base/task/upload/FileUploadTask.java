@@ -36,14 +36,15 @@ public class FileUploadTask extends Task<String> implements OnTaskRunningListene
 
         HashMap<String, Serializable> params = getParams();
         Map<String,String> newParams = new HashMap<>();
-        for (String key : params.keySet()){
+        for (Map.Entry<String,Serializable> entry : params.entrySet()) {
+            String key = entry.getKey();
             if(KEY_UPLOAD_FILE_PATH.equals(key) || KEY_UPLOAD_URL.equals(key)){
                 continue;
             }
             if(StringUtil.isEmpty(key)){
                 continue;
             }
-            String value = (String)params.get(key);
+            String value = (String)entry.getValue();
             if(StringUtil.isEmpty(value)){
                 continue;
             }
@@ -73,8 +74,8 @@ public class FileUploadTask extends Task<String> implements OnTaskRunningListene
         params.put(KEY_UPLOAD_FILE_PATH, uploadFile.getAbsolutePath());
         params.put(KEY_UPLOAD_URL,uploadUrl);
         if(otherParams != null && otherParams.size() > 0){
-            for (String key : otherParams.keySet()){
-                params.put(key, otherParams.get(key));
+            for (Map.Entry<String,String> entry : otherParams.entrySet()){
+                params.put(entry.getKey(), entry.getValue());
             }
         }
         te.setParams(params);
@@ -87,14 +88,14 @@ public class FileUploadTask extends Task<String> implements OnTaskRunningListene
 
         builder.addFormDataPart("fileData", file.getName(), RequestBody.create(MediaType.parse("application/octet-stream"),file) );
 
-        for (String key : paramsNew.keySet()){
-            builder.addFormDataPart(key,paramsNew.get(key));
+        for (Map.Entry<String,String> entry : paramsNew.entrySet()){
+            builder.addFormDataPart(entry.getKey(),entry.getValue());
         }
 
         Request.Builder requestBuilder = new Request.Builder().url(uploadUrl).post(new FileUploadRequestBody(builder.build(),listener));
         if(headers != null && headers.size() > 0) {
-            for (String name : headers.keySet()) {
-                requestBuilder.addHeader(name, headers.get(name));
+            for (Map.Entry<String,String> entry : headers.entrySet()) {
+                requestBuilder.addHeader(entry.getKey(), entry.getValue());
             }
         }
         Request request = requestBuilder.build();

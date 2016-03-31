@@ -1,11 +1,9 @@
 package com.lg.base.ui.adapter;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
-public class BaseExpandGroupData<C, CS> implements Serializable{
-	
-	private static final long serialVersionUID = 1L;
+public class BaseExpandGroupData<C, CS>{
+
 	private final ArrayList<AdapterItem<C, CS>> childItemList = new ArrayList<AdapterItem<C, CS>>();
 
 	public ArrayList<AdapterItem<C, CS>> getChildItemList() {

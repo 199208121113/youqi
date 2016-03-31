@@ -64,18 +64,9 @@ public class ImageLoadTask extends BaseRoboAsyncTask<Bitmap> {
             String tmpPath = FileDownloadTask.getTmpDataFileName(savePath);
             Request request = OKHttpUtil.buildRequest(url, HttpMethod.GET, null,null);
             Response response = OKHttpUtil.execute(request,null);
-            int responseCode = response.code();
-            FileOutputStream fos = null;
-            if (responseCode == 200) {
-                IOUtil.deleteByFilePath(tmpPath);
-                fos = new FileOutputStream(tmpPath);
-            } else if (responseCode == 206) {
-                fos = new FileOutputStream(tmpPath, true);
-            } else {
-                IOUtil.deleteByFilePath(tmpPath);
+            if(response == null || !response.isSuccessful()){
+                throw new Exception("下载失败");
             }
-            if(fos == null)
-                return null;
             ResponseBody rb = response.body();
             InputStream is = rb.byteStream();
 

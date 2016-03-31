@@ -13,10 +13,9 @@ public class AES256Cipher implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public static byte[] ivBytes = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-
     public static String AES_Encode(String str, String key) {
         String enc = "";
+        byte[] ivBytes = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
         try {
             byte[] textBytes = str.getBytes("UTF-8");
             AlgorithmParameterSpec ivSpec = new IvParameterSpec(ivBytes);
@@ -32,6 +31,7 @@ public class AES256Cipher implements Serializable {
 
     public static String AES_Decode(String str, String key) {
         String dec = "";
+        byte[] ivBytes = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
         try {
             byte[] textBytes = Base64.decode(str, 0);
             AlgorithmParameterSpec ivSpec = new IvParameterSpec(ivBytes);

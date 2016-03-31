@@ -17,7 +17,8 @@ import java.util.List;
  * Created by root on 16-1-28.
  */
 public abstract class RecyclerViewAdapter<T,STATE,VH extends RecyclerViewHolder<T,STATE>> extends RecyclerView.Adapter<VH> {
-    private final String TAG = "BaseRecyclerAdapter";
+    @SuppressWarnings("unused")
+    private static final String TAG = RecyclerViewAdapter.class.getSimpleName();
     private Context ctx;
     protected LayoutInflater inflater;
     private ArrayList<AdapterItem<T, STATE>> mDataList = new ArrayList<>();

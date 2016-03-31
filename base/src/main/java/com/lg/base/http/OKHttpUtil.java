@@ -60,8 +60,8 @@ public class OKHttpUtil {
             throw new RuntimeException(method.name()+" is Supported ?");
         }
         if(headers != null && headers.size() > 0){
-            for (String name : headers.keySet()) {
-                builder.addHeader(name, headers.get(name));
+            for (Map.Entry<String,String> entry : headers.entrySet()) {
+                builder.addHeader(entry.getKey(), entry.getValue());
             }
         }
         return builder.build();
@@ -131,14 +131,15 @@ public class OKHttpUtil {
             if(query != null && query.trim().length() > 0){
                 hasQuery=true;
             }
-            for (String key : params.keySet()) {
+            for (Map.Entry<String,String> entry : params.entrySet()) {
                 if(hasQuery){
                     sb.append("&");
                 }else{
                     sb.append("?");
                     hasQuery=true;
                 }
-                String value = params.get(key);
+                String key = entry.getKey();
+                String value = entry.getValue();
                 if(TextUtils.isEmpty(value))
                     continue;
                 try {
@@ -160,13 +161,13 @@ public class OKHttpUtil {
         FormBody.Builder bodyBuilder = new FormBody.Builder();
         if(params != null && params.size() > 0){
             String value;
-            for (String key : params.keySet()) {
-                value = params.get(key);
+            for (Map.Entry<String,String> entry : params.entrySet()) {
+                value = entry.getValue();
                 if(TextUtils.isEmpty(value)){
                     continue;
                 }
                 try {
-                    bodyBuilder.add(key,value);
+                    bodyBuilder.add(entry.getKey(),value);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

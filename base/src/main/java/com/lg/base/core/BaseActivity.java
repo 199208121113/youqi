@@ -47,20 +47,29 @@ public abstract class BaseActivity extends FragmentActivity implements EventHand
 	private final EventLocation from = new EventLocation(this.getClass().getName());
 	public final String DATA_SERIALIZABLE = "DATA_SERIALIZABLE";
 
-	protected int activityWidth = 0;
-	protected int activityHeight = 0;
+//	protected int activityWidth = 0;
+//	protected int activityHeight = 0;
 	private volatile boolean running = false;
 	private volatile boolean isSelfDestoryed=false;
 
 
-	private static ActivityManager activityManager;
-	
+	private static volatile ActivityManager AM_INSTANCE;
+	public static ActivityManager getActivityManager(Context ctx){
+		if(AM_INSTANCE == null){
+			synchronized (BaseActivity.class){
+				ActivityManager am = AM_INSTANCE;
+				if(am == null) {
+					am = (ActivityManager) ctx.getSystemService(Context.ACTIVITY_SERVICE);
+				}
+				AM_INSTANCE = am;
+			}
+		}
+		return AM_INSTANCE;
+
+	}
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if(activityManager == null){
-			activityManager = (ActivityManager)this.getSystemService(Context.ACTIVITY_SERVICE);
-		}
 		this.running = true;
         isSelfDestoryed = false;
 		initGlobalView();
@@ -123,8 +132,8 @@ public abstract class BaseActivity extends FragmentActivity implements EventHand
 	/** 获取activity的宽高 */
 	@Override
 	public void onViewSizeConfirmed(View v, int width, int height) {
-		activityWidth = v.getWidth();
-		activityHeight = v.getHeight();
+//		activityWidth = v.getWidth();
+//		activityHeight = v.getHeight();
 	}
 
 	/** 初始返回事件，并提供onGoBack()方法供子类实现具体的逻辑 */
@@ -199,7 +208,7 @@ public abstract class BaseActivity extends FragmentActivity implements EventHand
 		if (evt.isAvailable()) {
 			LogUtil.d(TAG, "当前网络可用,类型:" + evt.getNetWorkType().name());
 		} else {
-			List<RunningTaskInfo> runningTaskInfos = activityManager.getRunningTasks(1) ;
+			List<RunningTaskInfo> runningTaskInfos = getActivityManager(this).getRunningTasks(1) ;
 		    if(runningTaskInfos == null || runningTaskInfos.size() == 0)
 		    	return ;
 		    //必须判断当前Activity是否在栈顶，如果是才弹出网络提示框

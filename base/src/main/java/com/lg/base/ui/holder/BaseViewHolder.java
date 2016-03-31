@@ -117,7 +117,7 @@ public abstract class BaseViewHolder<DATA, STATE> implements IViewHolder<DATA, S
 	}
 	// ============================================
 
-	protected int scrollState = OnScrollListener.SCROLL_STATE_IDLE;
+	/*protected int scrollState = OnScrollListener.SCROLL_STATE_IDLE;
 	protected int firstVisibleItem = 0;
 	protected int visibleItemCount = 0;
 	protected int totalItemCount = 0;
@@ -132,7 +132,7 @@ public abstract class BaseViewHolder<DATA, STATE> implements IViewHolder<DATA, S
 		this.firstVisibleItem = firstVisibleItem;
 		this.visibleItemCount = visibleItemCount;
 		this.totalItemCount = totalItemCount;
-	}
+	}*/
 	
     public void onLayout(){
 

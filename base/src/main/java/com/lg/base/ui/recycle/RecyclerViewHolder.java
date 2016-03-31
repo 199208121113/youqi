@@ -124,7 +124,7 @@ public abstract class RecyclerViewHolder<DATA, STATE> extends RecyclerView.ViewH
 
     // ============================================
 
-    protected int scrollState = AbsListView.OnScrollListener.SCROLL_STATE_IDLE;
+   /* protected int scrollState = AbsListView.OnScrollListener.SCROLL_STATE_IDLE;
     protected int firstVisibleItem = 0;
     protected int visibleItemCount = 0;
     protected int totalItemCount = 0;
@@ -139,7 +139,7 @@ public abstract class RecyclerViewHolder<DATA, STATE> extends RecyclerView.ViewH
         this.firstVisibleItem = firstVisibleItem;
         this.visibleItemCount = visibleItemCount;
         this.totalItemCount = totalItemCount;
-    }
+    }*/
 
     private boolean nothingTodo = false;
 

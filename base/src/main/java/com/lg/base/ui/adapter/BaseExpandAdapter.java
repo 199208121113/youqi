@@ -60,7 +60,7 @@ public abstract class BaseExpandAdapter<G extends BaseExpandGroupData<C, CS>, GS
 
 	@Override
 	public long getChildId(int groupPosition, int childPosition) {
-		return (groupPosition + 1) * childPosition;
+		return (groupPosition + 1L) * childPosition;
 	}
 
 	@Override
@@ -73,7 +73,7 @@ public abstract class BaseExpandAdapter<G extends BaseExpandGroupData<C, CS>, GS
 	public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
 		BaseViewHolder<G, GS> holder = null;
 		if (convertView == null) {
-			convertView = inflateView(convertView, parent, this.groupLayoutResId);
+			convertView = inflateView(null, parent, this.groupLayoutResId);
 			holder = createGroupViewHolder(convertView);
 			convertView.setTag(holder);
 			viewMap.put(holder.toString(), holder);
@@ -91,7 +91,7 @@ public abstract class BaseExpandAdapter<G extends BaseExpandGroupData<C, CS>, GS
 	public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
 		BaseViewHolder<C, CS> holder = null;
 		if (convertView == null) {
-			convertView = inflateView(convertView, parent, this.childLayoutResId);
+			convertView = inflateView(null, parent, this.childLayoutResId);
 			holder = createChildViewHolder(convertView);
 			convertView.setTag(holder);
 			viewMapChild.put(holder.toString(), holder);
@@ -158,7 +158,6 @@ public abstract class BaseExpandAdapter<G extends BaseExpandGroupData<C, CS>, GS
 			h.destroy();
 		}
 		viewMapChild.clear();
-		System.gc();
 	}
 	
 	//==========================================================================

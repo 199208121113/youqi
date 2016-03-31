@@ -21,12 +21,12 @@ import java.util.concurrent.ConcurrentHashMap;
 public abstract class MyBaseAdapter<T,STATE> extends BaseAdapter {
 
 	protected final String TAG = this.getClass().getSimpleName();
-	private final ArrayList<AdapterItem<T, STATE>> mData = new ArrayList<AdapterItem<T, STATE>>();
-	private HashMap<String, Integer> mViewTypeMap = new HashMap<String, Integer>();
-	private SparseArray<IViewHolder<T, STATE>> mHolderList = new SparseArray<IViewHolder<T, STATE>>();
+	private final ArrayList<AdapterItem<T, STATE>> mData = new ArrayList<>();
+	private HashMap<String, Integer> mViewTypeMap = new HashMap<>();
+	private SparseArray<IViewHolder<T, STATE>> mHolderList = new SparseArray<>();
 	private Context context = null;
 	private LayoutInflater mInflater = null;
-	private final ConcurrentHashMap<String, IViewHolder<T, STATE>> viewMap = new ConcurrentHashMap<String, IViewHolder<T, STATE>>();
+	private final ConcurrentHashMap<String, IViewHolder<T, STATE>> viewMap = new ConcurrentHashMap<>();
 	
 	protected abstract void onInitViewType();
 
@@ -221,7 +221,7 @@ public abstract class MyBaseAdapter<T,STATE> extends BaseAdapter {
 		mHolderList.clear();
 		viewMap.clear();
 		mViewTypeMap.clear();
-		System.gc();
+
 	}
 
 	public ArrayList<AdapterItem<T, STATE>> getItems() {

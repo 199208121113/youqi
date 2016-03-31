@@ -100,7 +100,10 @@ public class IOUtil {
 			if (file.isDirectory()) {
 				return true;
 			} else {
-				file.delete();
+				boolean del = file.delete();
+				if(!del){
+					LogUtil.d(tag,"del="+del);
+				}
 			}
 		}
 		return file.mkdirs();
@@ -122,36 +125,6 @@ public class IOUtil {
 		long len = file.length();
 		file = null;
 		return len;
-	}
-
-	public static String convertStreamToString(InputStream is) {
-		/*
-		 * To convert the InputStream to String we use the
-		 * BufferedReader.readLine() method. We iterate until the BufferedReader
-		 * return null which means there's no more data to read. Each line will
-		 * appended to a StringBuilder and returned as String.
-		 */
-		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-		StringBuilder sb = new StringBuilder();
-
-		String line = null;
-		try {
-			while ((line = reader.readLine()) != null) {
-				sb.append(line + "\n");
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				is.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			is = null;
-		}
-
-		return sb.toString();
-
 	}
 
 	public static byte[] getFileForBytes(String fileFullName) throws Exception {
@@ -302,7 +275,10 @@ public class IOUtil {
 		if (!dir.exists())
 			return;
 		if(dir.isFile()){
-			dir.delete();
+			boolean del = dir.delete();
+			if(!del){
+				dir.deleteOnExit();
+			}
 			return;
 		}
 		if (!dir.isDirectory())
@@ -310,18 +286,30 @@ public class IOUtil {
 		try {
 			File[] allFiles = dir.listFiles();
 			if (allFiles == null || allFiles.length == 0) {
-				dir.delete();
+				boolean del = dir.delete();
+				if(!del){
+					dir.deleteOnExit();
+				}
 				return;
 			}
 			for (File f : allFiles) {
 				if (f.isDirectory()) {
 					deleteDir(f);
-					f.delete();
+					boolean del =f.delete();
+					if(!del){
+						f.deleteOnExit();
+					}
 				} else if (f.isFile()) {
-					f.delete();
+					boolean del =f.delete();
+					if(!del){
+						f.deleteOnExit();
+					}
 				}
 			}
-			dir.delete();
+			boolean del =dir.delete();
+			if(!del){
+				dir.deleteOnExit();
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

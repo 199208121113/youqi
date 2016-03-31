@@ -4,7 +4,7 @@ import android.view.View;
 
 import com.lg.base.ui.adapter.AdapterItem;
 
-public interface IViewHolder<DATA, STATE> extends IOnScrollListener {
+public interface IViewHolder<DATA, STATE>  {
 
 	void setItem(AdapterItem<DATA, STATE> item);
 
