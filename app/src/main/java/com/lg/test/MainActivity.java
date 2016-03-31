@@ -3,6 +3,7 @@ package com.lg.test;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Message;
+import android.os.PersistableBundle;
 import android.view.View;
 import android.widget.TextView;
 
@@ -70,6 +71,12 @@ public class MainActivity extends BaseActivity {
     @Override
     protected int getContentView() {
         return R.layout.activity_main;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
+        super.onCreate(savedInstanceState, persistentState);
+
     }
 
     @SuppressWarnings("all")
