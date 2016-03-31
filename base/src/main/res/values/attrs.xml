@@ -20,16 +20,4 @@
         <attr name="border_color" format="color" />
     </declare-styleable>
 
-    <!-- 以下皆为瀑布流的 -->
-
-    <attr name="absListViewStyle" format="reference" />
-    <attr name="listViewStyle" format="reference" />
-
-    <declare-styleable name="MultiColumnListView">
-        <attr name="plaColumnNumber" format="integer" />
-        <attr name="plaLandscapeColumnNumber" format="integer" />
-        <attr name="plaColumnPaddingLeft" format="dimension" />
-        <attr name="plaColumnPaddingRight" format="dimension" />
-    </declare-styleable>
-
 </resources>
