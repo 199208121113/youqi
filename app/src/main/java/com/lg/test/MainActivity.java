@@ -28,6 +28,8 @@ import com.lg.test.activity.TestQrCodeActivity;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 
 public class MainActivity extends BaseActivity {
@@ -79,6 +81,17 @@ public class MainActivity extends BaseActivity {
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(rateFuture != null){
+            if(!(rateFuture.isDone() || rateFuture.isCancelled())){
+                rateFuture.cancel(true);
+            }
+        }
+    }
+
+    Future rateFuture;
     @SuppressWarnings("all")
     public void onClick(View v) {
         if(v == testAccountView){
@@ -96,9 +109,9 @@ public class MainActivity extends BaseActivity {
             EventBus.get().sendEmptyMessageDelayed(getLocation(),100,0);
         }else if(v == testRecyclerView){
             //startActivity(TestRecyclerViewActivity.createIntent(this));
-            EventBus.get().sendEvent(new BaseEvent(getLocation(),1).setRunOnThread(EventThread.NEW));
-//            BaseEvent evt = new BaseEvent(getLocation(),3).setRunOnThread(EventThread.NEW);
-//            EventBus.get().sendEventAtFixedRate(evt,0,2000, TimeUnit.MILLISECONDS);
+//            EventBus.get().sendEvent(new BaseEvent(getLocation(),1).setRunOnThread(EventThread.NEW));
+            BaseEvent evt = new BaseEvent(getLocation(),3).setRunOnThread(EventThread.NEW);
+            rateFuture = EventBus.get().sendEventAtFixedRate(evt,0,2000, TimeUnit.MILLISECONDS);
         }
     }
 

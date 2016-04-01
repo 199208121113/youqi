@@ -8,8 +8,6 @@ import android.support.annotation.NonNull;
 import com.lg.base.core.LogUtil;
 import com.lg.base.core.UITask;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -25,7 +23,6 @@ public class EventBus {
     private static final String TAG = "EventBus";
     private volatile TempHandler tempHandler = null;
     private volatile ConcurrentHashMap<String, EventHandListener> eventHandListenerMap = null;
-    private volatile ConcurrentHashMap<String, Map<String,Future>> futureMap = null;
     // ====================================================
     public static final String T2_THREAD_NAME = "T2-MainThread#";
     /** 持久化线程工厂 */
@@ -44,7 +41,6 @@ public class EventBus {
         eventHandListenerMap = new ConcurrentHashMap<>();
         tempHandler = new TempHandler(Looper.getMainLooper());
         executors = Executors.newScheduledThreadPool(4,threadFactory);
-        futureMap = new ConcurrentHashMap<>();
     }
 
     @SuppressWarnings("unused")
@@ -65,16 +61,6 @@ public class EventBus {
 
     private ConcurrentHashMap<String, EventHandListener> getEventHandListenerMap(){
         return eventHandListenerMap;
-    }
-
-    private void removeFutureFromMap(final String to,final String workKey){
-        Map<String, Future> map = futureMap.get(to);
-        if (map == null || map.size() == 0) {
-            return;
-        }
-        if (map.containsKey(workKey)) {
-            map.remove(workKey);
-        }
     }
 
     private boolean isValid(BaseEvent evt){
@@ -118,9 +104,9 @@ public class EventBus {
      * @param period 从第1次执行后，就每隔period后执行一次
      * @param unit 时间单位
      */
-    public void sendEventAtFixedRate(BaseEvent evt,long delayed,long period,TimeUnit unit) {
+    public Future sendEventAtFixedRate(BaseEvent evt,long delayed,long period,TimeUnit unit) {
         if (!isValid(evt)) {
-            return;
+            return null;
         }
         EventThread et = evt.getRunOnThread();
         EventWorker worker = new EventWorker(evt);
@@ -147,17 +133,7 @@ public class EventBus {
         }else if(et == EventThread.UI){
             getHandler().post(worker);
         }
-        if(fu != null){
-            String kk = worker.toString();
-            String to = evt.getTo().getUri();
-            if(futureMap.containsKey(to)){
-                futureMap.get(to).put(kk,fu);
-            }else{
-                HashMap<String,Future> map = new HashMap<>();
-                map.put(kk,fu);
-                futureMap.put(to,map);
-            }
-        }
+        return fu;
     }
 
     /**
@@ -167,9 +143,9 @@ public class EventBus {
      * @param unit 时间单位
      */
     @SuppressWarnings("unused")
-    public void sendEventWithFixedDelay(BaseEvent evt,long initialDelay,long delay,TimeUnit unit) {
+    public Future sendEventWithFixedDelay(BaseEvent evt,long initialDelay,long delay,TimeUnit unit) {
         if (!isValid(evt)) {
-            return;
+            return null;
         }
         EventThread et = evt.getRunOnThread();
         EventWorker worker = new EventWorker(evt);
@@ -183,17 +159,7 @@ public class EventBus {
         }else if(et == EventThread.UI){
             throw new RuntimeException("un support ui thread");
         }
-        if(fu != null){
-            String kk = worker.toString();
-            String to = evt.getTo().getUri();
-            if(futureMap.containsKey(to)){
-                futureMap.get(to).put(kk,fu);
-            }else{
-                HashMap<String,Future> map = new HashMap<>();
-                map.put(kk,fu);
-                futureMap.put(to,map);
-            }
-        }
+        return fu;
     }
 
     public void sendMessage(EventLocation to,Message msg) {
@@ -234,19 +200,6 @@ public class EventBus {
     public void unRegister(EventHandListener tl) {
         String key = tl.getClass().getName();
         eventHandListenerMap.remove(key);
-        Map<String,Future> fMap = futureMap.get(key);
-        if(fMap == null || fMap.size() == 0){
-            LogUtil.e(TAG,"unRegister(),handler="+key+",fuMap.size()="+0);
-            return;
-        }
-        for (Future fu : fMap.values()){
-            if(!(fu.isDone() || fu.isCancelled())){
-                boolean canceled = fu.cancel(true);
-                LogUtil.e(TAG,"unRegister(),handler="+key+",fu.cancel="+canceled);
-            }
-        }
-        fMap.clear();
-        futureMap.remove(key);
     }
 
     //===================
@@ -298,7 +251,7 @@ public class EventBus {
                     el.executeEvent(evt);
                 }
             } finally {
-                EventBus.get().removeFutureFromMap(to,this.toString());
+                // nothing to do
             }
         }
     }
