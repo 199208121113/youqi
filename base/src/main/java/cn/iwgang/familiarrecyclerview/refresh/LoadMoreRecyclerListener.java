@@ -123,12 +123,14 @@ public class LoadMoreRecyclerListener extends RecyclerView.OnScrollListener {
     private void addFooterLoadingLayout(FamiliarRecyclerView recyclerView) {
         isLoading = true;
         if (null == mFooterLoadingLayout) {
-            mFooterLoadingLayout = new RotateLoadingLayout(mContext, RecyclerMode.BOTTOM);
+            mFooterLoadingLayout = new RefreshFooterLayout(mContext);
         }
         recyclerView.addFooterView(mFooterLoadingLayout);
         mOldItemCount = recyclerView.getAdapter().getItemCount();
-        recyclerView.smoothScrollToPosition(mOldItemCount - 1);
-        mFooterLoadingLayout.onRefresh();
+        if(mOldItemCount > 0) {
+            recyclerView.smoothScrollToPosition(mOldItemCount - 1);
+        }
+        mFooterLoadingLayout.requestLayout();
         mFooterLoadingLayout.setVisibility(View.VISIBLE);
     }
 

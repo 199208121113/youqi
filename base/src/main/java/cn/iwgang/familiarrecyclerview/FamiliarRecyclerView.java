@@ -111,6 +111,7 @@ public class FamiliarRecyclerView extends RecyclerView {
             }
         }
         ta.recycle();
+
     }
 
     private void processDefDivider(boolean isLinearLayoutManager, int layoutManagerOrientation) {

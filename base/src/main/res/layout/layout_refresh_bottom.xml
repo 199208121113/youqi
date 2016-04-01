@@ -1,58 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    android:id="@+id/fl_root"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingTop="12dp"
-    android:paddingBottom="12dp"
-    android:paddingLeft="24dp"
-    android:paddingRight="24dp"
-    >
 
+<!-- ListView的头部 -->
 
-    <LinearLayout
-        android:id="@+id/ll_text"
-        android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="40dp"
+    android:gravity="center_horizontal|center_vertical"
+    android:id="@+id/layout_refresh_bottom_root_layout"
+    android:background="#80000000">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:gravity="center"
-        android:orientation="horizontal">
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp" >
 
-        <ImageView
-            android:id="@+id/iv_image"
+        <!-- 进度条 -->
+
+        <ProgressBar
+            android:id="@+id/footer_progressBar"
+            style="?android:attr/progressBarStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            />
+            android:layout_centerVertical="true"
+            android:visibility="visible" />
+        <!-- 提示 -->
 
-        <LinearLayout
-            android:layout_marginLeft="20dp"
+        <TextView
+            android:id="@+id/footer_tipsTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@id/footer_progressBar"
+            android:text="加载中..."
+            android:textColor="@android:color/white"
+            android:textSize="14dp" />
+    </RelativeLayout>
 
-            <TextView
-                android:id="@+id/tv_refresh"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:singleLine="true"
-                android:textAppearance="?android:attr/textAppearance"
-                android:textColor="#4D4D4D"
-                android:textStyle="bold"/>
-
-            <TextView
-                android:id="@+id/tv_refresh_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:singleLine="true"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textColor="#4D4D4D"
-                android:visibility="gone"/>
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-
-
-</RelativeLayout>
+</LinearLayout>

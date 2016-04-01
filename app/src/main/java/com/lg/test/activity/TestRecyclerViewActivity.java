@@ -57,15 +57,16 @@ public class TestRecyclerViewActivity extends SuperActivity implements FamiliarR
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        LayoutInflater layoutInflater = LayoutInflater.from(this);
 
         //(1)添加headerView
-        int headerViewHeight = ScreenUtil.dip2px(this, 50);
-        View headerView = LayoutInflater.from(this).inflate(R.layout.item_recycler_header,null);
+        int headerViewHeight = ScreenUtil.dip2px(this, 100);
+        View headerView = layoutInflater.inflate(R.layout.item_recycler_header,null);
         headerView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,headerViewHeight));
         mRecyclerView.addHeaderView(headerView);
 
         //(2)添加footerView
-        View footerView = LayoutInflater.from(this).inflate(R.layout.item_recycler_footer,null);
+        View footerView = layoutInflater.inflate(R.layout.item_recycler_footer, null);
         footerView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, headerViewHeight));
         mRecyclerView.addFooterView(footerView);
 
@@ -73,7 +74,11 @@ public class TestRecyclerViewActivity extends SuperActivity implements FamiliarR
         //mRecyclerView.setDivider();
 
         //(4) 设置数据空View（设置isRetainShowHeadOrFoot为true时，可以让显示EmptyView时不会清除掉添加的HeadView和FooterView）
-        //mRecyclerView.setEmptyView()
+//        View emptyView =layoutInflater.inflate(com.lg.base.R.layout.layout_empty_view, null);
+//        int width = ScreenUtil.getDisplay(this).getWidth();
+//        int height = ScreenUtil.dip2px(this,40);
+//        emptyView.setLayoutParams(new LinearLayout.LayoutParams(width,height));
+//        mRecyclerView.setEmptyView(emptyView,true);
 
         //(5)Item单击事件
         mRecyclerView.setOnItemClickListener(this);
@@ -94,24 +99,17 @@ public class TestRecyclerViewActivity extends SuperActivity implements FamiliarR
             }
         });*/
 
-        //(4)初始化Adapter的数据
-        mAdapter = new TestAdapter(this);
-        for (int i = 1; i< 100;i++){
-            mAdapter.addItem(new TestBean(""+i),null);
-        }
-        mRecyclerView.setAdapter(mAdapter);
-
         //(7)============下拉刷新,上拉加载更多=============
         mPtrFramelayout.setResistance(1.7f);
         mPtrFramelayout.setRatioOfHeaderHeightToRefresh(1.2f);
         mPtrFramelayout.setDurationToClose(200);
         mPtrFramelayout.setDurationToCloseHeader(1000);
         mPtrFramelayout.setPullToRefresh(false);
-        //ViewPager滑动冲突
-        mPtrFramelayout.disableWhenHorizontalMove(true);
+        mPtrFramelayout.disableWhenHorizontalMove(true);  //ViewPager滑动冲突
         mPtrFramelayout.setKeepHeaderWhenRefresh(true);
+
         RefreshHeaderLayout rh = new RefreshHeaderLayout(this);
-        mPtrFramelayout.setHeaderView(rh);
+        mPtrFramelayout.setHeaderView(rh); //设置刷新的View
         mPtrFramelayout.addPtrUIHandler(rh);
 
         //(8)设置下拉刷新的事件
@@ -127,13 +125,19 @@ public class TestRecyclerViewActivity extends SuperActivity implements FamiliarR
             }
         });
 
-        //(9)设置加载更多的事情
+        //(9)设置加载更多的事件
         mRecyclerView.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
                 EventBus.get().sendEmptyMessageDelayed(getLocation(),2,3000);
             }
         });
+
+        //(10)初始化Adapter的数据
+        mAdapter = new TestAdapter(this);
+        addDataToAdapter();
+        mRecyclerView.setAdapter(mAdapter);
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -142,6 +146,7 @@ public class TestRecyclerViewActivity extends SuperActivity implements FamiliarR
         if(msg.what == 1){
             mPtrFramelayout.refreshComplete();
         }else if(msg.what == 2){
+            addDataToAdapter();
             mRecyclerView.refreshBootomComplete();
         }
     }
@@ -149,13 +154,13 @@ public class TestRecyclerViewActivity extends SuperActivity implements FamiliarR
     @Override
     public void onItemClick(FamiliarRecyclerView familiarRecyclerView, View view, int position) {
         String text = mAdapter.getItem(position).getData().getText();
-        ToastUtil.show(this,"text="+text);
+        ToastUtil.show(this, "onItemClick(),text=" + text);
     }
 
     @Override
     public boolean onItemLongClick(FamiliarRecyclerView familiarRecyclerView, View view, int position) {
         String text = mAdapter.getItem(position).getData().getText();
-        ToastUtil.show(this,"text="+text);
+        ToastUtil.show(this,"onItemLongClick(),text="+text);
         return true;
     }
 
@@ -165,6 +170,15 @@ public class TestRecyclerViewActivity extends SuperActivity implements FamiliarR
         if(mAdapter != null) {
             mAdapter.destroy();
         }
+    }
+
+    private void addDataToAdapter(){
+        int startIndex = mAdapter.getItemCount();
+        int endIndex = startIndex+5;
+        for (;startIndex < endIndex;startIndex++){
+            mAdapter.addItem(new TestBean(""+(startIndex+1)),null);
+        }
+        mAdapter.notifyDataSetChanged();
     }
 
     public static class TestAdapter extends RecyclerViewAdapter<TestBean,Void,TestRecyclerViewHolder> {

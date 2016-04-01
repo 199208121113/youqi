@@ -3,19 +3,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+
     <in.srain.cube.views.ptr.PtrFrameLayout
         android:id="@+id/act_v7_ptr_frame_layout"
-        xmlns:cube_ptr="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="match_parent">
 
-        cube_ptr:ptr_resistance="1.7"
-        cube_ptr:ptr_ratio_of_header_height_to_refresh="1.2"
-        cube_ptr:ptr_duration_to_close="300"
-        cube_ptr:ptr_duration_to_close_header="2000"
-        cube_ptr:ptr_keep_header_when_refresh="true"
-        cube_ptr:ptr_pull_to_fresh="false" >
-    <!-- ListView -->
     <cn.iwgang.familiarrecyclerview.FamiliarRecyclerView
         android:id="@+id/act_v7_rv"
         android:layout_width="match_parent"
@@ -26,9 +19,24 @@
         app:frv_layoutManager="linear"
         app:frv_layoutManagerOrientation="vertical" />
 
-    <!-- GridView
+    </in.srain.cube.views.ptr.PtrFrameLayout>
+
+    <!--
+        // LinearLayout （ListView）
     <cn.iwgang.familiarrecyclerview.FamiliarRecyclerView
-        android:id="@+id/act_v7_rv"
+        android:id="@+id/mRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"
+        app:frv_divider="#696969"
+        app:frv_dividerHeight="1dp"
+        app:frv_emptyView="@id/tv_empty"
+        app:frv_layoutManager="linear"
+        app:frv_layoutManagerOrientation="vertical" />
+
+    // GridLayout （GridView）
+    <cn.iwgang.familiarrecyclerview.FamiliarRecyclerView
+        android:id="@+id/mRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"
@@ -40,22 +48,20 @@
         app:frv_layoutManager="grid"
         app:frv_layoutManagerOrientation="vertical"
         app:frv_spanCount="3" />
-     -->
 
-    <!-- StaggeredGridLayout
+    // StaggeredGridLayout （瀑布流）
     <cn.iwgang.familiarrecyclerview.FamiliarRecyclerView
-        android:id="@+id/act_v7_rv"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="vertical"
-        app:frv_divider="#EFADEF"
-        app:frv_dividerHorizontalHeight="10dp"
-        app:frv_dividerVerticalHeight="10dp"
-        app:frv_itemViewBothSidesMargin="20dp"
-        app:frv_layoutManager="staggeredGrid"
-        app:frv_layoutManagerOrientation="vertical"
-        app:frv_spanCount="2" />
-     -->
-    </in.srain.cube.views.ptr.PtrFrameLayout>
+          android:id="@+id/mRecyclerView"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:scrollbars="vertical"
+          app:frv_divider="#EFADEF"
+          app:frv_dividerHorizontalHeight="10dp"
+          app:frv_dividerVerticalHeight="10dp"
+          app:frv_itemViewBothSidesMargin="20dp"
+          app:frv_layoutManager="staggeredGrid"
+          app:frv_layoutManagerOrientation="vertical"
+          app:frv_spanCount="2" />
+    -->
 
 </LinearLayout>
