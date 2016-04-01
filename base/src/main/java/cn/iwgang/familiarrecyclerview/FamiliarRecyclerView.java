@@ -18,6 +18,9 @@ import com.lg.base.R;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.iwgang.familiarrecyclerview.refresh.LoadMoreRecyclerListener;
+import cn.iwgang.familiarrecyclerview.refresh.OnLoadMoreListener;
+
 /**
  * FamiliarRecyclerView
  * Created by iWgang on 15/10/31.
@@ -606,6 +609,13 @@ public class FamiliarRecyclerView extends RecyclerView {
         return mFooterView.size();
     }
 
+    public View getLastFooterView(){
+        int size = getFooterViewsCount();
+        if(size < 1)
+            return null;
+        return mFooterView.get(size -1);
+    }
+
     public int getFirstVisiblePosition() {
         LayoutManager layoutManager = getLayoutManager();
 
@@ -761,5 +771,20 @@ public class FamiliarRecyclerView extends RecyclerView {
             mWrapFamiliarRecyclerViewAdapter.notifyItemMoved(getHeaderViewsCount() + fromPosition, getHeaderViewsCount() + toPosition);
         }
     };
+
+    private LoadMoreRecyclerListener loadMoreRecyclerListener = null;
+    public void setOnLoadMoreListener(OnLoadMoreListener onLoadMoreListener) {
+        if(loadMoreRecyclerListener == null){
+            loadMoreRecyclerListener = new LoadMoreRecyclerListener(this.getContext());
+        }
+        loadMoreRecyclerListener.setOnLoadMoreListener(onLoadMoreListener);
+        this.setOnScrollListener(loadMoreRecyclerListener);
+    }
+
+    public void refreshBootomComplete(){
+        if(loadMoreRecyclerListener != null){
+            loadMoreRecyclerListener.setRefreshComplete(this);
+        }
+    }
 
 }
