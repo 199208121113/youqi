@@ -90,6 +90,8 @@ public abstract class FamiliarRecyclerViewOnScrollListener extends RecyclerView.
             case 3:
                 mStaggeredGridLayoutManager.findFirstCompletelyVisibleItemPositions(mStaggeredFirstPositions);
                 return  mStaggeredFirstPositions[0] == 0;
+            default:
+                break;
         }
 
         return false;
@@ -111,6 +113,8 @@ public abstract class FamiliarRecyclerViewOnScrollListener extends RecyclerView.
                         }
                     }
                 }
+            default:
+                break;
         }
 
         return false;
