@@ -179,7 +179,7 @@ public abstract class BaseActivity extends FragmentActivity implements EventHand
 	@Override
 	public void executeEvent(BaseEvent evt) {
 		if (evt instanceof NetWorkEvent) {
-			EventBus.get().postRunOnUi(new UITask() {
+			EventBus.get().postRunOnUiThread(new UITask() {
 				@Override
 				public void run() {
 					NetWorkEvent event = (NetWorkEvent) getData();
@@ -188,7 +188,7 @@ public abstract class BaseActivity extends FragmentActivity implements EventHand
 			}.setData(evt));
 
 		}else if(evt != null && evt.getWhat() == exit_what){
-			EventBus.get().postRunOnUi(new UITask(this) {
+			EventBus.get().postRunOnUiThread(new UITask(this) {
 				@Override
 				public void run() {
 					finish();

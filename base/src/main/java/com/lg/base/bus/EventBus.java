@@ -8,9 +8,11 @@ import android.support.annotation.NonNull;
 import com.lg.base.core.LogUtil;
 import com.lg.base.core.UITask;
 
-import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
@@ -21,9 +23,9 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class EventBus {
     private static final String TAG = "EventBus";
-    private static EventBus instance = null;
     private volatile TempHandler tempHandler = null;
-    private volatile ConcurrentHashMap<String, WeakReference<EventHandListener>> ttListenerMap = null;
+    private volatile ConcurrentHashMap<String, EventHandListener> eventHandListenerMap = null;
+    private volatile ConcurrentHashMap<String, Map<String,Future>> futureMap = null;
     // ====================================================
     public static final String T2_THREAD_NAME = "T2-MainThread#";
     /** 持久化线程工厂 */
@@ -39,9 +41,10 @@ public class EventBus {
     private ScheduledExecutorService executors = null;
 
     private EventBus(){
-        ttListenerMap = new ConcurrentHashMap<>();
+        eventHandListenerMap = new ConcurrentHashMap<>();
         tempHandler = new TempHandler(Looper.getMainLooper());
         executors = Executors.newScheduledThreadPool(4,threadFactory);
+        futureMap = new ConcurrentHashMap<>();
     }
 
     @SuppressWarnings("unused")
@@ -56,13 +59,22 @@ public class EventBus {
         return EventBusHelper.INSTANCE;
     }
 
-    private EventHandListener getMessageHandlerListener(String from){
-        WeakReference<EventHandListener> rf = ttListenerMap.get(from);
-        return rf != null ? rf.get() : null;
+    private EventHandListener getEventHandlerListener(String to){
+        return eventHandListenerMap.get(to);
     }
 
-    private ConcurrentHashMap<String, WeakReference<EventHandListener>> getListenerMap(){
-        return ttListenerMap;
+    private ConcurrentHashMap<String, EventHandListener> getEventHandListenerMap(){
+        return eventHandListenerMap;
+    }
+
+    private void removeFutureFromMap(final String to,final String workKey){
+        Map<String, Future> map = futureMap.get(to);
+        if (map == null || map.size() == 0) {
+            return;
+        }
+        if (map.containsKey(workKey)) {
+            map.remove(workKey);
+        }
     }
 
     private boolean isValid(BaseEvent evt){
@@ -75,7 +87,7 @@ public class EventBus {
             return false;
         }
         String to = evt.getTo().getUri().trim();
-        if (!(ttListenerMap.containsKey(to) || EventLocation.any.getUri().equals(to))) {
+        if (!(eventHandListenerMap.containsKey(to) || EventLocation.any.getUri().equals(to))) {
             LogUtil.e(TAG, "to:" + to + " can't register");
             return false;
         }
@@ -83,47 +95,21 @@ public class EventBus {
     }
 
     public void sendEvent(BaseEvent evt) {
-        if (!isValid(evt)) {
-            return;
-        }
-        EventThread et = evt.getRunOnThread();
-        EventWorker worker = new EventWorker(evt);
-        if(et == null){
-            worker.run();
-        }else if(et == EventThread.IO){
-            executors.execute(worker);
-        }else if(et == EventThread.NEW){
-            Executors.newSingleThreadExecutor(threadFactory).execute(worker);
-        }else if(et == EventThread.UI){
-            getHandler().post(worker);
-        }
 //        Scheduler scheduler = evt.getScheduler();
 //        if(scheduler == null){
 //            scheduler = Schedulers.immediate();
 //        }
 //        scheduler.createWorker().schedule(new RxAction(evt));
+        sendEventDelayed(evt, 0, TimeUnit.SECONDS);
     }
 
     /**
      * @param evt 事件
      * @param delayed 延迟多少秒后执行
-     * @param timeUnit 时间单位
+     * @param unit 时间单位
      */
-    public void sendEventDelayed(BaseEvent evt,long delayed,TimeUnit timeUnit) {
-        if (!isValid(evt)) {
-            return;
-        }
-        EventThread et = evt.getRunOnThread();
-        EventWorker worker = new EventWorker(evt);
-        if(et == null){
-            worker.run();
-        }else if(et == EventThread.IO){
-            executors.schedule(worker, delayed, timeUnit);
-        }else if(et == EventThread.NEW){
-            Executors.newSingleThreadScheduledExecutor(threadFactory).schedule(worker, delayed, timeUnit);
-        }else if(et == EventThread.UI){
-            getHandler().post(worker);
-        }
+    public void sendEventDelayed(BaseEvent evt,long delayed,TimeUnit unit) {
+        sendEventAtFixedRate(evt,delayed,0,unit);
     }
 
     /**
@@ -138,61 +124,98 @@ public class EventBus {
         }
         EventThread et = evt.getRunOnThread();
         EventWorker worker = new EventWorker(evt);
+        Future fu = null;
         if(et == null){
             worker.run();
         }else if(et == EventThread.IO){
-            executors.scheduleAtFixedRate(worker, delayed, period, unit);
+            if(period > 0) {
+               fu = executors.scheduleAtFixedRate(worker, delayed, period, unit);
+            }else if(delayed > 0){
+               fu = executors.schedule(worker, delayed, unit);
+            }else{
+               fu = executors.submit(worker);
+            }
         }else if(et == EventThread.NEW){
-            Executors.newSingleThreadScheduledExecutor(threadFactory).scheduleAtFixedRate(worker, delayed, period, unit);
+            ScheduledExecutorService ses = Executors.newSingleThreadScheduledExecutor(threadFactory);
+            if(period > 0) {
+                fu = ses.scheduleAtFixedRate(worker, delayed, period, unit);
+            }else if(delayed > 0){
+                fu = ses.schedule(worker, delayed, unit);
+            }else{
+                fu = ses.submit(worker);
+            }
         }else if(et == EventThread.UI){
             getHandler().post(worker);
+        }
+        if(fu != null){
+            String kk = worker.toString();
+            String to = evt.getTo().getUri();
+            if(futureMap.containsKey(to)){
+                futureMap.get(to).put(kk,fu);
+            }else{
+                HashMap<String,Future> map = new HashMap<>();
+                map.put(kk,fu);
+                futureMap.put(to,map);
+            }
         }
     }
 
     /**
-     *
      * @param evt 事件
      * @param initialDelay 首次延迟时间
      * @param delay 每次执行之间的间隔
      * @param unit 时间单位
      */
+    @SuppressWarnings("unused")
     public void sendEventWithFixedDelay(BaseEvent evt,long initialDelay,long delay,TimeUnit unit) {
         if (!isValid(evt)) {
             return;
         }
         EventThread et = evt.getRunOnThread();
         EventWorker worker = new EventWorker(evt);
+        Future fu = null;
         if(et == null){
-            worker.run();
+            throw new RuntimeException("un support current thread");
         }else if(et == EventThread.IO){
-            executors.scheduleWithFixedDelay(worker, initialDelay, delay, unit);
+            fu = executors.scheduleWithFixedDelay(worker, initialDelay, delay, unit);
         }else if(et == EventThread.NEW){
-            Executors.newSingleThreadScheduledExecutor(threadFactory).scheduleWithFixedDelay(worker, initialDelay, delay, unit);
+            fu = Executors.newSingleThreadScheduledExecutor(threadFactory).scheduleWithFixedDelay(worker, initialDelay, delay, unit);
         }else if(et == EventThread.UI){
-            getHandler().post(worker);
+            throw new RuntimeException("un support ui thread");
+        }
+        if(fu != null){
+            String kk = worker.toString();
+            String to = evt.getTo().getUri();
+            if(futureMap.containsKey(to)){
+                futureMap.get(to).put(kk,fu);
+            }else{
+                HashMap<String,Future> map = new HashMap<>();
+                map.put(kk,fu);
+                futureMap.put(to,map);
+            }
         }
     }
 
     public void sendMessage(EventLocation to,Message msg) {
-        sendMsg(toMessage(to,msg,msg.what),0);
+        sendMsg(toMessage(to, msg, msg.what), 0);
     }
 
     @SuppressWarnings("unused")
     public void sendEmptyMessage(EventLocation to,int what) {
         Message msg = Message.obtain();
         msg.what = what;
-        sendMessage(to,msg);
+        sendMessage(to, msg);
     }
 
     public void sendMessageDelayed(EventLocation to,Message msg, long delayMillis) {
-        sendMsg(toMessage(to,msg,msg.what), delayMillis);
+        sendMsg(toMessage(to, msg, msg.what), delayMillis);
     }
 
     @SuppressWarnings("unused")
     public void sendEmptyMessageDelayed(EventLocation to,int what,long delayMillis){
         Message msg = Message.obtain();
         msg.what = what;
-        sendMessageDelayed(to,msg,delayMillis);
+        sendMessageDelayed(to, msg, delayMillis);
     }
 
     @SuppressWarnings("unused")
@@ -200,16 +223,30 @@ public class EventBus {
         getHandler().removeMessages(what);
     }
 
-    public void postRunOnUi(UITask task) {
+    public void postRunOnUiThread(UITask task) {
         getHandler().post(task);
     }
 
     public void register(EventHandListener tl) {
-        ttListenerMap.put(tl.getClass().getName(), new WeakReference<>(tl));
+        eventHandListenerMap.put(tl.getClass().getName(), tl);
     }
 
     public void unRegister(EventHandListener tl) {
-        ttListenerMap.remove(tl.getClass().getName());
+        String key = tl.getClass().getName();
+        eventHandListenerMap.remove(key);
+        Map<String,Future> fMap = futureMap.get(key);
+        if(fMap == null || fMap.size() == 0){
+            LogUtil.e(TAG,"unRegister(),handler="+key+",fuMap.size()="+0);
+            return;
+        }
+        for (Future fu : fMap.values()){
+            if(!(fu.isDone() || fu.isCancelled())){
+                boolean canceled = fu.cancel(true);
+                LogUtil.e(TAG,"unRegister(),handler="+key+",fu.cancel="+canceled);
+            }
+        }
+        fMap.clear();
+        futureMap.remove(key);
     }
 
     //===================
@@ -246,22 +283,22 @@ public class EventBus {
             String to = evt.getTo().getUri();
             if (to == null || to.trim().length() == 0)
                 return;
-            ConcurrentHashMap<String, WeakReference<EventHandListener>> result = EventBus.get().getListenerMap();
-            if (EventLocation.any.getUri().equals(to)) {
-                for (WeakReference<EventHandListener> rf : result.values()) {
-                    EventHandListener el = rf.get();
-                    if(el != null) {
-                        el.executeEvent(evt);
+            try {
+                ConcurrentHashMap<String, EventHandListener> result = EventBus.get().getEventHandListenerMap();
+                if (EventLocation.any.getUri().equals(to)) {
+                    for (EventHandListener el : result.values()) {
+                        if(el != null) {
+                            el.executeEvent(evt);
+                        }
                     }
+                    return;
                 }
-                return;
-            }
-            WeakReference<EventHandListener> rf = result.get(to);
-            if (rf == null)
-                return;
-            EventHandListener el = rf.get();
-            if(el != null) {
-                el.executeEvent(evt);
+                EventHandListener el = result.get(to);
+                if(el != null) {
+                    el.executeEvent(evt);
+                }
+            } finally {
+                EventBus.get().removeFutureFromMap(to,this.toString());
             }
         }
     }
@@ -289,7 +326,7 @@ public class EventBus {
                 return ;
             BaseEvent evt = (BaseEvent)msg.obj;
             String to = evt.getTo().getUri();
-            EventHandListener ttMsgListener = EventBus.get().getMessageHandlerListener(to);
+            EventHandListener ttMsgListener = EventBus.get().getEventHandlerListener(to);
             if (ttMsgListener != null) {
                 ttMsgListener.executeMessage((Message)evt.getData());
             }

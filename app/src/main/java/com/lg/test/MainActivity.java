@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.lg.base.bus.BaseEvent;
 import com.lg.base.bus.EventBus;
+import com.lg.base.bus.EventThread;
 import com.lg.base.core.ActionBarMenu;
 import com.lg.base.core.BaseActivity;
 import com.lg.base.core.InjectView;
@@ -16,18 +17,17 @@ import com.lg.base.core.LogUtil;
 import com.lg.base.core.UITask;
 import com.lg.base.task.download.SimpleFileDownloadTask;
 import com.lg.base.task.upload.SimpleFileUploadTask;
+import com.lg.base.utils.DateUtil;
 import com.lg.base.utils.NumberUtil;
 import com.lg.base.utils.StringUtil;
 import com.lg.base.utils.ToastUtil;
 import com.lg.test.account.CollectTask;
 import com.lg.test.activity.TestDbActivity;
 import com.lg.test.activity.TestQrCodeActivity;
-import com.lg.test.activity.TestRecyclerViewActivity;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-
 
 
 public class MainActivity extends BaseActivity {
@@ -95,22 +95,31 @@ public class MainActivity extends BaseActivity {
             //startActivity(TestEncodeActivity.createIntent(this));
             EventBus.get().sendEmptyMessageDelayed(getLocation(),100,0);
         }else if(v == testRecyclerView){
-            startActivity(TestRecyclerViewActivity.createIntent(this));
-            //EventBus.get().sendEvent(new BaseEvent(getLocation(),1).setData("hello").setRunOnThread(EventThread.UI));
+            //startActivity(TestRecyclerViewActivity.createIntent(this));
+            EventBus.get().sendEvent(new BaseEvent(getLocation(),1).setRunOnThread(EventThread.NEW));
+//            BaseEvent evt = new BaseEvent(getLocation(),3).setRunOnThread(EventThread.NEW);
+//            EventBus.get().sendEventAtFixedRate(evt,0,2000, TimeUnit.MILLISECONDS);
         }
     }
 
     @Override
     public void executeMessage(Message msg) {
         super.executeMessage(msg);
-        ToastUtil.show(this, "executeMessage,msg.what=" + msg.what);
+        ToastUtil.show(this, "executeMessage(),msg.what=" + msg.what);
     }
 
     @Override
     public void executeEvent(BaseEvent evt) {
         super.executeEvent(evt);
         if(evt.getWhat() == 1) {
-            ToastUtil.show(this, "executeEvent,evt.what=" + evt.getWhat());
+            for (int i = 1;i<=10000;i++){
+                BaseEvent event = new BaseEvent(getLocation(),2).setData(""+i);
+                EventBus.get().sendEvent(event);
+            }
+        }else if(evt.getWhat() == 2){
+            LogUtil.e(TAG,"2="+evt.getData().toString());
+        }else if(evt.getWhat() == 3){
+            LogUtil.e(TAG,"3="+ DateUtil.formatDate(System.currentTimeMillis(),"yyyy-MM-dd HH:mm:ss"));
         }
     }
 
@@ -150,7 +159,7 @@ public class MainActivity extends BaseActivity {
                 if(totalBytes > 0) {
                     bd.putString("scale", NumberUtil.format2(handBytes * 100f / totalBytes));
                 }
-                EventBus.get().postRunOnUi(new UITask() {
+                EventBus.get().postRunOnUiThread(new UITask() {
                     @Override
                     public void run() {
                         Bundle bd = getExtra();
@@ -186,7 +195,7 @@ public class MainActivity extends BaseActivity {
                 if(totalBytes > 0) {
                     bd.putString("scale", NumberUtil.format2(handBytes * 100f / totalBytes));
                 }
-                EventBus.get().postRunOnUi(new UITask() {
+                EventBus.get().postRunOnUiThread(new UITask() {
                     @Override
                     public void run() {
                         String scale = getExtra().getString("scale");
