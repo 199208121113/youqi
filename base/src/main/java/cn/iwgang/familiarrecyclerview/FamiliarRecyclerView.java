@@ -199,11 +199,11 @@ public class FamiliarRecyclerView extends RecyclerView {
             if (null != getParent()) {
                 ViewGroup parentView = ((ViewGroup)getParent());
                 View tempEmptyView1 = parentView.findViewById(mEmptyViewResId);
-
                 if (null != tempEmptyView1) {
                     mEmptyView = tempEmptyView1;
-
-                    if (isKeepShowHeadOrFooter) parentView.removeView(tempEmptyView1);
+                    if (isKeepShowHeadOrFooter) {
+                        parentView.removeView(tempEmptyView1);
+                    }
                 } else {
                     ViewParent pParentView = parentView.getParent();
                     if (null != pParentView && pParentView instanceof ViewGroup) {
@@ -218,7 +218,9 @@ public class FamiliarRecyclerView extends RecyclerView {
             }
             mEmptyViewResId = -1;
         } else if (isKeepShowHeadOrFooter && null != mEmptyView) {
-            ((ViewGroup)mEmptyView.getParent()).removeView(mEmptyView);
+            if(mEmptyView.getParent() != null){
+                ((ViewGroup)mEmptyView.getParent()).removeView(mEmptyView);
+            }
         }
 
         if (null == adapter) {

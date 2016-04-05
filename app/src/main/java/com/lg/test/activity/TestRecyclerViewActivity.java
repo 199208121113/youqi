@@ -74,11 +74,11 @@ public class TestRecyclerViewActivity extends SuperActivity implements FamiliarR
         //mRecyclerView.setDivider();
 
         //(4) 设置数据空View（设置isRetainShowHeadOrFoot为true时，可以让显示EmptyView时不会清除掉添加的HeadView和FooterView）
-//        View emptyView =layoutInflater.inflate(com.lg.base.R.layout.layout_empty_view, null);
-//        int width = ScreenUtil.getDisplay(this).getWidth();
-//        int height = ScreenUtil.dip2px(this,40);
-//        emptyView.setLayoutParams(new LinearLayout.LayoutParams(width,height));
-//        mRecyclerView.setEmptyView(emptyView,true);
+        View emptyView =layoutInflater.inflate(R.layout.layout_empty_view, null);
+        int width = ScreenUtil.getDisplay(this).getWidth();
+        int height = ScreenUtil.dip2px(this,40);
+        emptyView.setLayoutParams(new LinearLayout.LayoutParams(width,height));
+        mRecyclerView.setEmptyView(emptyView,true);
 
         //(5)Item单击事件
         mRecyclerView.setOnItemClickListener(this);
