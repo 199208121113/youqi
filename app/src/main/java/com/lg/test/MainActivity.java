@@ -3,7 +3,6 @@ package com.lg.test;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Message;
-import android.os.PersistableBundle;
 import android.view.View;
 import android.widget.TextView;
 
@@ -69,6 +68,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EventBus.get().sendEvent(new BaseEvent(getLocation(), WHAT_TEST).setRunOnThread(EventThread.NEW));
     }
 
     @Override
@@ -76,11 +76,6 @@ public class MainActivity extends BaseActivity {
         return R.layout.activity_main;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
-
-    }
 
     @Override
     protected void onDestroy() {
@@ -93,6 +88,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private static final int WHAT_RATE = 1;
+    private static final int WHAT_TEST = 2;
     Future rateFuture;
     @SuppressWarnings("all")
     public void onClick(View v) {
@@ -126,7 +122,13 @@ public class MainActivity extends BaseActivity {
         super.executeEvent(evt);
         if(evt.getWhat() == WHAT_RATE) {
             String time = DateUtil.formatDate(System.currentTimeMillis(), "yyyy-MM-dd HH:mm:ss");
-            LogUtil.d(TAG, "time=" + time + ",tid=" + Thread.currentThread().getId());
+            LogUtil.d(TAG, "executeEvent(),time=" + time + ",tid=" + Thread.currentThread().getId());
+        }else if(evt.getWhat() == WHAT_TEST){
+            long start = System.currentTimeMillis();
+            for (int i =1 ;i < 100000 ; i++){
+                EventBus.get().sendEvent(new BaseEvent(getLocation(),101));
+            }
+            LogUtil.d(TAG, "executeEvent(),usedTime="+((System.currentTimeMillis()-start)/1000f));
         }
     }
 

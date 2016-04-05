@@ -138,7 +138,6 @@ public class EventBus {
                 getHandler().post(worker);
             }
         }
-        LogUtil.d(TAG, "evt.what=" + evt.getWhat() + ",delayed=" + delayed + ",period=" + period + ",unit=" + unit.name());
         return fu;
     }
 
