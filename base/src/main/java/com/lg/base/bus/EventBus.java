@@ -86,7 +86,7 @@ public class EventBus {
 //            scheduler = Schedulers.immediate();
 //        }
 //        scheduler.createWorker().schedule(new RxAction(evt));
-        sendEventDelayed(evt, 0, TimeUnit.SECONDS);
+        sendEvent(evt, 0, TimeUnit.SECONDS);
     }
 
     /**
@@ -94,8 +94,8 @@ public class EventBus {
      * @param delayed 延迟多少秒后执行
      * @param unit 时间单位
      */
-    public void sendEventDelayed(BaseEvent evt,long delayed,TimeUnit unit) {
-        sendEventAtFixedRate(evt,delayed,0,unit);
+    public void sendEvent(BaseEvent evt,long delayed,TimeUnit unit) {
+        sendEvent(evt, delayed, 0, unit);
     }
 
     /**
@@ -104,7 +104,7 @@ public class EventBus {
      * @param period 从第1次执行后，就每隔period后执行一次
      * @param unit 时间单位
      */
-    public Future sendEventAtFixedRate(BaseEvent evt,long delayed,long period,TimeUnit unit) {
+    public Future sendEvent(BaseEvent evt,long delayed,long period,TimeUnit unit) {
         if (!isValid(evt)) {
             return null;
         }
@@ -166,15 +166,16 @@ public class EventBus {
         sendMsg(toMessage(to, msg, msg.what), 0);
     }
 
+    public void sendMessageDelayed(EventLocation to,Message msg, long delayMillis) {
+        sendMsg(toMessage(to, msg, msg.what), delayMillis);
+    }
+
+
     @SuppressWarnings("unused")
     public void sendEmptyMessage(EventLocation to,int what) {
         Message msg = Message.obtain();
         msg.what = what;
         sendMessage(to, msg);
-    }
-
-    public void sendMessageDelayed(EventLocation to,Message msg, long delayMillis) {
-        sendMsg(toMessage(to, msg, msg.what), delayMillis);
     }
 
     @SuppressWarnings("unused")
