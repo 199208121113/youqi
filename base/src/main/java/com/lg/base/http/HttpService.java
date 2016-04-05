@@ -1,6 +1,6 @@
 package com.lg.base.http;
 
-import com.lg.base.core.LogUtil;
+import com.lg.base.bus.LogUtil;
 import com.lg.base.http.resp.DefaultHandler;
 import com.lg.base.http.resp.HttpResponseHandler;
 import com.lg.base.utils.GsonUtil;

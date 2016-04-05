@@ -11,7 +11,7 @@ import android.app.Activity;
 import android.os.Bundle;
 
 import com.lg.base.core.BaseApplication;
-import com.lg.base.core.LogUtil;
+import com.lg.base.bus.LogUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;

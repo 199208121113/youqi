@@ -10,7 +10,7 @@ import com.lg.base.bus.BaseEvent;
 import com.lg.base.core.BaseService;
 import com.lg.base.bus.EventBus;
 import com.lg.base.bus.EventLocation;
-import com.lg.base.core.LogUtil;
+import com.lg.base.bus.LogUtil;
 import com.lg.base.utils.ToastUtil;
 
 import java.util.Date;

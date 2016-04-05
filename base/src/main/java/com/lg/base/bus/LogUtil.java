@@ -1,4 +1,4 @@
-package com.lg.base.core;
+package com.lg.base.bus;
 
 import android.util.Log;
 

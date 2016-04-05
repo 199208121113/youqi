@@ -2,7 +2,7 @@ package com.lg.base.task;
 
 import android.os.Process;
 
-import com.lg.base.core.LogUtil;
+import com.lg.base.bus.LogUtil;
 
 import java.io.Serializable;
 import java.util.HashMap;

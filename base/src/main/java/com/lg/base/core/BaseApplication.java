@@ -15,6 +15,7 @@ import android.support.multidex.MultiDex;
 import android.util.Log;
 
 import com.lg.base.bus.EventBus;
+import com.lg.base.bus.LogUtil;
 import com.lg.base.init.FilePathManager;
 import com.lg.base.init.SharedPreferenceManager;
 import com.lg.base.receiver.NetWorkReceiver;

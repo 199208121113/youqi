@@ -3,7 +3,7 @@ package com.lg.base.init;
 import android.content.Context;
 import android.os.Environment;
 
-import com.lg.base.core.LogUtil;
+import com.lg.base.bus.LogUtil;
 import com.lg.base.utils.IOUtil;
 import com.lg.base.utils.StringUtil;
 

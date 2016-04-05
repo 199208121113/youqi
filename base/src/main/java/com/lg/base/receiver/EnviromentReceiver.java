@@ -7,7 +7,7 @@ import com.lg.base.bus.BaseEvent;
 import com.lg.base.core.BaseReceiver;
 import com.lg.base.bus.EventBus;
 import com.lg.base.bus.EventLocation;
-import com.lg.base.core.LogUtil;
+import com.lg.base.bus.LogUtil;
 import com.lg.base.event.PackageEvent;
 import com.lg.base.event.SdCardEvent;
 import com.lg.base.event.SdCardEvent.SdCardState;

@@ -5,9 +5,6 @@ import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.NonNull;
 
-import com.lg.base.core.LogUtil;
-import com.lg.base.core.UITask;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;

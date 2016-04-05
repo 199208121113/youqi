@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.telephony.SmsMessage;
 
 import com.lg.base.core.BaseReceiver;
-import com.lg.base.core.LogUtil;
+import com.lg.base.bus.LogUtil;
 
 /**
  * 需要把我们自己的App设置为默认的短信应用程序才能[阻止广播继续下发|删除短信记录]

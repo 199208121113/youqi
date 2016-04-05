@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 
-import com.lg.base.core.LogUtil;
+import com.lg.base.bus.LogUtil;
 import com.lg.base.ui.viewpager.FixedSpeedScroller;
 import com.lg.base.utils.ScreenUtil;
 

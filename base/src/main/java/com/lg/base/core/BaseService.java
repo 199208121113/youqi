@@ -9,6 +9,7 @@ import com.lg.base.bus.BaseEvent;
 import com.lg.base.bus.EventBus;
 import com.lg.base.bus.EventHandListener;
 import com.lg.base.bus.EventLocation;
+import com.lg.base.bus.LogUtil;
 import com.lg.base.event.NetWorkEvent;
 
 public abstract class BaseService extends Service implements EventHandListener {
@@ -64,7 +65,7 @@ public abstract class BaseService extends Service implements EventHandListener {
 	/** this method is running on Main-Thread,not on UI-Thread */
 	protected void onNetworkStateChanged(NetWorkEvent evt){
 		if(evt.isAvailable()){
-			LogUtil.d(tag, "当前网络可用,类型:"+evt.getNetWorkType().name());
+			LogUtil.d(tag, "当前网络可用,类型:" + evt.getNetWorkType().name());
 		}else{
 			LogUtil.d(tag, "当前网络不可用");
 		}

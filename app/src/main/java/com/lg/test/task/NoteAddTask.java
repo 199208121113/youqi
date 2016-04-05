@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.lg.base.core.BaseRoboAsyncTask;
-import com.lg.base.core.LogUtil;
+import com.lg.base.bus.LogUtil;
 import com.lg.test.greendao.DaoMaster;
 import com.lg.test.greendao.DaoSession;
 import com.lg.test.greendao.Note;

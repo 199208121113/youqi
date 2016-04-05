@@ -15,7 +15,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.lg.base.R;
-import com.lg.base.core.LogUtil;
+import com.lg.base.bus.LogUtil;
 import com.lg.base.utils.ScreenUtil;
 
 import java.util.ArrayList;
