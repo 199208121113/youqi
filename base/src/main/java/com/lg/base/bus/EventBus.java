@@ -130,8 +130,8 @@ public class EventBus {
         }else if(et == EventThread.UI){
             if(period > 0) {
                 EventWorkerByUI ewb = new EventWorkerByUI(evt,unit.toMillis(period),1);
-                getHandler().postDelayed(ewb,unit.toMillis(delayed));
                 addRunnableToFutureMap(evt, ewb);
+                getHandler().postDelayed(ewb,unit.toMillis(delayed));
             }else if(delayed > 0){
                 getHandler().postDelayed(worker,unit.toMillis(delayed));
             }else{
@@ -161,8 +161,8 @@ public class EventBus {
             fu = Executors.newSingleThreadScheduledExecutor(threadFactory).scheduleWithFixedDelay(worker, initialDelay, delay, unit);
         }else if(et == EventThread.UI){
             EventWorkerByUI ewb = new EventWorkerByUI(evt,unit.toMillis(delay),2);
-            getHandler().postDelayed(ewb,unit.toMillis(initialDelay));
             addRunnableToFutureMap(evt, ewb);
+            getHandler().postDelayed(ewb,unit.toMillis(initialDelay));
         }
         return fu;
     }
