@@ -8,6 +8,8 @@ import android.support.annotation.NonNull;
 import com.lg.base.core.LogUtil;
 import com.lg.base.core.UITask;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -23,6 +25,7 @@ public class EventBus {
     private static final String TAG = "EventBus";
     private volatile TempHandler tempHandler = null;
     private volatile ConcurrentHashMap<String, EventHandListener> eventHandListenerMap = null;
+    private volatile ConcurrentHashMap<String, List<Runnable>> futureMap = null;
     // ====================================================
     public static final String T2_THREAD_NAME = "T2-MainThread#";
     /** 持久化线程工厂 */
@@ -41,6 +44,7 @@ public class EventBus {
         eventHandListenerMap = new ConcurrentHashMap<>();
         tempHandler = new TempHandler(Looper.getMainLooper());
         executors = Executors.newScheduledThreadPool(4,threadFactory);
+        futureMap = new ConcurrentHashMap<>();
     }
 
     @SuppressWarnings("unused")
@@ -69,7 +73,7 @@ public class EventBus {
             return false;
         }
         if (evt.getTo() == null) {
-            LogUtil.e(TAG,"evt.to is null");
+            LogUtil.e(TAG, "evt.to is null");
             return false;
         }
         String to = evt.getTo().getUri().trim();
@@ -81,11 +85,6 @@ public class EventBus {
     }
 
     public void sendEvent(BaseEvent evt) {
-//        Scheduler scheduler = evt.getScheduler();
-//        if(scheduler == null){
-//            scheduler = Schedulers.immediate();
-//        }
-//        scheduler.createWorker().schedule(new RxAction(evt));
         sendEvent(evt, 0, TimeUnit.SECONDS);
     }
 
@@ -111,9 +110,7 @@ public class EventBus {
         EventThread et = evt.getRunOnThread();
         EventWorker worker = new EventWorker(evt);
         Future fu = null;
-        if(et == null){
-            worker.run();
-        }else if(et == EventThread.IO){
+        if(et == null || et == EventThread.IO){
             if(period > 0) {
                fu = executors.scheduleAtFixedRate(worker, delayed, period, unit);
             }else if(delayed > 0){
@@ -131,8 +128,17 @@ public class EventBus {
                 fu = ses.submit(worker);
             }
         }else if(et == EventThread.UI){
-            getHandler().post(worker);
+            if(period > 0) {
+                EventWorkerByUI ewb = new EventWorkerByUI(evt,unit.toMillis(period),1);
+                getHandler().postDelayed(ewb,unit.toMillis(delayed));
+                addRunnableToFutureMap(evt, ewb);
+            }else if(delayed > 0){
+                getHandler().postDelayed(worker,unit.toMillis(delayed));
+            }else{
+                getHandler().post(worker);
+            }
         }
+        LogUtil.d(TAG, "evt.what=" + evt.getWhat() + ",delayed=" + delayed + ",period=" + period + ",unit=" + unit.name());
         return fu;
     }
 
@@ -150,14 +156,14 @@ public class EventBus {
         EventThread et = evt.getRunOnThread();
         EventWorker worker = new EventWorker(evt);
         Future fu = null;
-        if(et == null){
-            throw new RuntimeException("un support current thread");
-        }else if(et == EventThread.IO){
+        if(et == null || et == EventThread.IO){
             fu = executors.scheduleWithFixedDelay(worker, initialDelay, delay, unit);
         }else if(et == EventThread.NEW){
             fu = Executors.newSingleThreadScheduledExecutor(threadFactory).scheduleWithFixedDelay(worker, initialDelay, delay, unit);
         }else if(et == EventThread.UI){
-            throw new RuntimeException("un support ui thread");
+            EventWorkerByUI ewb = new EventWorkerByUI(evt,unit.toMillis(delay),2);
+            getHandler().postDelayed(ewb,unit.toMillis(initialDelay));
+            addRunnableToFutureMap(evt, ewb);
         }
         return fu;
     }
@@ -199,11 +205,31 @@ public class EventBus {
     }
 
     public void unRegister(EventHandListener tl) {
-        String key = tl.getClass().getName();
-        eventHandListenerMap.remove(key);
+        final String key = tl.getClass().getName();
+        if(eventHandListenerMap.containsKey(key)) {
+            eventHandListenerMap.remove(key);
+        }
+        List<Runnable> rl = futureMap.get(key);
+        if(rl != null && rl.size() > 0){
+            for (Runnable rr : rl){
+                EventBus.get().getHandler().removeCallbacks(rr);
+            }
+            futureMap.remove(key);
+        }
     }
 
     //===================
+
+    private void addRunnableToFutureMap(BaseEvent evt,Runnable ewb){
+        String to = evt.getTo().getUri();
+        if(futureMap.containsKey(to)){
+            futureMap.get(to).add(ewb);
+        }else{
+            List<Runnable> rl = new ArrayList<>();
+            rl.add(ewb);
+            futureMap.put(to,rl);
+        }
+    }
     private void sendMsg(Message msg,long delayMillis){
         if(delayMillis <= 0) {
             getHandler().sendMessage(msg);
@@ -257,19 +283,28 @@ public class EventBus {
         }
     }
 
-   /* private static class RxAction implements Action0 {
-        private BaseEvent evt;
+    private static class EventWorkerByUI extends EventWorker {
+        long delay;
+        /** 1:每隔多少秒执行一次  2:每次执行的间隔是多少 */
+        int mode = 1;
+        public EventWorkerByUI(BaseEvent evt,long delay, int mode) {
+            super(evt);
 
-        public RxAction(BaseEvent evt) {
-            super();
-            this.evt = evt;
+            this.delay = delay;
+            this.mode = mode;
         }
 
         @Override
-        public void call() {
-            new EventWorker(evt).run();
+        public void run() {
+            if(mode == 1){
+                EventBus.get().getHandler().postDelayed(this, delay);
+            }
+            super.run();
+            if(mode == 2){
+                EventBus.get().getHandler().postDelayed(this, delay);
+            }
         }
-    }*/
+    }
 
     private static class TempHandler extends Handler{
         public TempHandler(Looper looper) {

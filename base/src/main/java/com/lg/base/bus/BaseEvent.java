@@ -93,16 +93,4 @@ public class BaseEvent implements Cloneable{
 		}
 		return e;
 	}
-
-	//======================rxJava scheduler====================
-	/*Scheduler scheduler = null;
-
-	public Scheduler getScheduler() {
-		return scheduler;
-	}
-
-	public BaseEvent setScheduler(Scheduler scheduler) {
-		this.scheduler = scheduler;
-		return this;
-	}*/
 }

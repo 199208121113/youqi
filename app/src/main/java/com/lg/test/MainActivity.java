@@ -23,6 +23,7 @@ import com.lg.base.utils.StringUtil;
 import com.lg.base.utils.ToastUtil;
 import com.lg.test.account.CollectTask;
 import com.lg.test.activity.TestDbActivity;
+import com.lg.test.activity.TestEncodeActivity;
 import com.lg.test.activity.TestQrCodeActivity;
 
 import java.io.File;
@@ -91,6 +92,7 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+    private static final int WHAT_RATE = 1;
     Future rateFuture;
     @SuppressWarnings("all")
     public void onClick(View v) {
@@ -105,13 +107,11 @@ public class MainActivity extends BaseActivity {
         }else if(v == testQrCode){
             startActivity(TestQrCodeActivity.createIntent(this));
         }else if(v == testEncode){
-            //startActivity(TestEncodeActivity.createIntent(this));
-            EventBus.get().sendEmptyMessageDelayed(getLocation(),100,0);
+            startActivity(TestEncodeActivity.createIntent(this));
         }else if(v == testRecyclerView){
             //startActivity(TestRecyclerViewActivity.createIntent(this));
-//            EventBus.get().sendEvent(new BaseEvent(getLocation(),1).setRunOnThread(EventThread.NEW));
-            BaseEvent evt = new BaseEvent(getLocation(),3).setRunOnThread(EventThread.NEW);
-            rateFuture = EventBus.get().sendEventAtFixedRate(evt,0,2000, TimeUnit.MILLISECONDS);
+            BaseEvent evt = new BaseEvent(getLocation(),WHAT_RATE).setRunOnThread(EventThread.IO);
+            rateFuture = EventBus.get().sendEventWithFixedDelay(evt, 1, 2, TimeUnit.SECONDS);
         }
     }
 
@@ -124,15 +124,9 @@ public class MainActivity extends BaseActivity {
     @Override
     public void executeEvent(BaseEvent evt) {
         super.executeEvent(evt);
-        if(evt.getWhat() == 1) {
-            for (int i = 1;i<=10000;i++){
-                BaseEvent event = new BaseEvent(getLocation(),2).setData(""+i);
-                EventBus.get().sendEvent(event);
-            }
-        }else if(evt.getWhat() == 2){
-            LogUtil.e(TAG,"2="+evt.getData().toString());
-        }else if(evt.getWhat() == 3){
-            LogUtil.e(TAG,"3="+ DateUtil.formatDate(System.currentTimeMillis(),"yyyy-MM-dd HH:mm:ss"));
+        if(evt.getWhat() == WHAT_RATE) {
+            String time = DateUtil.formatDate(System.currentTimeMillis(), "yyyy-MM-dd HH:mm:ss");
+            LogUtil.d(TAG, "time=" + time + ",tid=" + Thread.currentThread().getId());
         }
     }
 

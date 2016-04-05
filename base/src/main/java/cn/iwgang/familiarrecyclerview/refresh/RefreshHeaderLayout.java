@@ -17,6 +17,7 @@ import com.lg.base.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import in.srain.cube.views.ptr.PtrFrameLayout;
 import in.srain.cube.views.ptr.PtrUIHandler;
@@ -28,7 +29,7 @@ import in.srain.cube.views.ptr.indicator.PtrIndicator;
 public class RefreshHeaderLayout extends FrameLayout implements PtrUIHandler {
 
     private final static String KEY_SharedPreferences = "cube_ptr_classic_last_update";
-    private static SimpleDateFormat sDataFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private SimpleDateFormat sDataFormat = null;
     private int mRotateAniTime = 150;
     private RotateAnimation mFlipAnimation;
     private RotateAnimation mReverseFlipAnimation;
@@ -72,6 +73,7 @@ public class RefreshHeaderLayout extends FrameLayout implements PtrUIHandler {
         mProgressBar = header.findViewById(R.id.ptr_classic_header_rotate_view_progressbar);
 
         resetView();
+        sDataFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
     }
 
     @Override
@@ -151,11 +153,12 @@ public class RefreshHeaderLayout extends FrameLayout implements PtrUIHandler {
 
         mRotateView.setVisibility(VISIBLE);
         mTitleTextView.setVisibility(VISIBLE);
-        if (frame.isPullToRefresh()) {
+        mTitleTextView.setText(getResources().getString(R.string.cube_ptr_pull_down_to_refresh));
+        /*if (frame.isPullToRefresh()) {
             mTitleTextView.setText(getResources().getString(R.string.cube_ptr_pull_down_to_refresh));
         } else {
             mTitleTextView.setText(getResources().getString(R.string.cube_ptr_pull_down_to_refresh));
-        }
+        }*/
     }
 
     @Override
@@ -275,11 +278,12 @@ public class RefreshHeaderLayout extends FrameLayout implements PtrUIHandler {
 
     private void crossRotateLineFromBottomUnderTouch(PtrFrameLayout frame) {
         mTitleTextView.setVisibility(VISIBLE);
-        if (frame.isPullToRefresh()) {
+        /*if (frame.isPullToRefresh()) {
             mTitleTextView.setText(getResources().getString(R.string.cube_ptr_pull_down_to_refresh));
         } else {
             mTitleTextView.setText(getResources().getString(R.string.cube_ptr_pull_down_to_refresh));
-        }
+        }*/
+        mTitleTextView.setText(getResources().getString(R.string.cube_ptr_pull_down_to_refresh));
     }
 
     private class LastUpdateTimeUpdater implements Runnable {

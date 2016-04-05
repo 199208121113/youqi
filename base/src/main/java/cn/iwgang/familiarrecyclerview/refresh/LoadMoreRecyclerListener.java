@@ -56,12 +56,7 @@ public class LoadMoreRecyclerListener extends RecyclerView.OnScrollListener {
 
         //初始化firstVisibleItemPosition和lastVisibleItemPosition
         if (null != mLayoutManager) {
-            if (mLayoutManager instanceof LinearLayoutManager) {
-                firstVisibleItemPosition = ((LinearLayoutManager) mLayoutManager)
-                        .findFirstVisibleItemPosition();
-                lastVisibleItemPosition = ((LinearLayoutManager) mLayoutManager)
-                        .findLastVisibleItemPosition();
-            } else if (mLayoutManager instanceof GridLayoutManager) {
+             if (mLayoutManager instanceof GridLayoutManager) {
                 firstVisibleItemPosition = ((GridLayoutManager) mLayoutManager)
                         .findFirstVisibleItemPosition();
                 lastVisibleItemPosition = ((GridLayoutManager) mLayoutManager)
@@ -76,7 +71,12 @@ public class LoadMoreRecyclerListener extends RecyclerView.OnScrollListener {
                 mStaggeredGridLayoutManager.findLastVisibleItemPositions(mPositions);
                 firstVisibleItemPosition = getFirst(mPositions);
                 lastVisibleItemPosition = getLast(mPositions);
-            } else {
+            } else if (mLayoutManager instanceof LinearLayoutManager) {
+                 firstVisibleItemPosition = ((LinearLayoutManager) mLayoutManager)
+                         .findFirstVisibleItemPosition();
+                 lastVisibleItemPosition = ((LinearLayoutManager) mLayoutManager)
+                         .findLastVisibleItemPosition();
+             } else {
                 throw new IllegalArgumentException(
                         "The layoutManager must be one of LinearLayoutManager, " +
                                 "GridLayoutManager or StaggeredGridLayoutManager");
@@ -87,8 +87,12 @@ public class LoadMoreRecyclerListener extends RecyclerView.OnScrollListener {
     @Override
     public void onScrollStateChanged(RecyclerView rv, int newState) {
         super.onScrollStateChanged(rv, newState);
-        FamiliarRecyclerView recyclerView = (FamiliarRecyclerView)rv;
-
+        FamiliarRecyclerView recyclerView = null;
+        if(rv instanceof FamiliarRecyclerView) {
+            recyclerView = (FamiliarRecyclerView) rv;
+        }
+        if(recyclerView == null)
+            return;
         mScrollState = newState;
         RecyclerView.LayoutManager mLayoutManager = recyclerView.getLayoutManager();
         int visibleItemCount = mLayoutManager.getChildCount();
