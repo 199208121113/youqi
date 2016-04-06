@@ -17,7 +17,7 @@ public class LoadMoreRecyclerListener extends RecyclerView.OnScrollListener {
 
     private Context mContext;
 
-    public int firstVisibleItemPosition;
+//    private int firstVisibleItemPosition;
     private int lastVisibleItemPosition;
 
     private int[] mPositions;
@@ -57,29 +57,22 @@ public class LoadMoreRecyclerListener extends RecyclerView.OnScrollListener {
         //初始化firstVisibleItemPosition和lastVisibleItemPosition
         if (null != mLayoutManager) {
              if (mLayoutManager instanceof GridLayoutManager) {
-                firstVisibleItemPosition = ((GridLayoutManager) mLayoutManager)
-                        .findFirstVisibleItemPosition();
-                lastVisibleItemPosition = ((GridLayoutManager) mLayoutManager)
-                        .findLastVisibleItemPosition();
+//                firstVisibleItemPosition = ((GridLayoutManager) mLayoutManager).findFirstVisibleItemPosition();
+                lastVisibleItemPosition = ((GridLayoutManager) mLayoutManager).findLastVisibleItemPosition();
             } else if (mLayoutManager instanceof StaggeredGridLayoutManager) {
-                StaggeredGridLayoutManager mStaggeredGridLayoutManager =
-                        (StaggeredGridLayoutManager) mLayoutManager;
+                StaggeredGridLayoutManager mStaggeredGridLayoutManager = (StaggeredGridLayoutManager) mLayoutManager;
                 if (null == mPositions) {
                     mPositions = new int[mStaggeredGridLayoutManager.getSpanCount()];
                 }
                 mStaggeredGridLayoutManager.findFirstVisibleItemPositions(mPositions);
                 mStaggeredGridLayoutManager.findLastVisibleItemPositions(mPositions);
-                firstVisibleItemPosition = getFirst(mPositions);
+//                firstVisibleItemPosition = getFirst(mPositions);
                 lastVisibleItemPosition = getLast(mPositions);
             } else if (mLayoutManager instanceof LinearLayoutManager) {
-                 firstVisibleItemPosition = ((LinearLayoutManager) mLayoutManager)
-                         .findFirstVisibleItemPosition();
-                 lastVisibleItemPosition = ((LinearLayoutManager) mLayoutManager)
-                         .findLastVisibleItemPosition();
+//                 firstVisibleItemPosition = ((LinearLayoutManager) mLayoutManager).findFirstVisibleItemPosition();
+                 lastVisibleItemPosition = ((LinearLayoutManager) mLayoutManager).findLastVisibleItemPosition();
              } else {
-                throw new IllegalArgumentException(
-                        "The layoutManager must be one of LinearLayoutManager, " +
-                                "GridLayoutManager or StaggeredGridLayoutManager");
+                throw new IllegalArgumentException( "The layoutManager must be one of LinearLayoutManager, " + "GridLayoutManager or StaggeredGridLayoutManager");
             }
         }
     }
@@ -117,7 +110,6 @@ public class LoadMoreRecyclerListener extends RecyclerView.OnScrollListener {
                 mOnLoadMoreListener.onLoadMore();
                 return;
             }
-
         }
     }
 

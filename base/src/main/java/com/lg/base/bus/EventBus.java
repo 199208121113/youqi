@@ -3,7 +3,6 @@ package com.lg.base.bus;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,39 +18,41 @@ import java.util.concurrent.atomic.AtomicLong;
  * Created by root on 16-3-23
  */
 public class EventBus {
-    private static final String TAG = "EventBus";
+    private static final String TAG = EventBus.class.getSimpleName();
     private volatile TempHandler tempHandler = null;
+    private volatile ScheduledExecutorService executors = null;
     private volatile ConcurrentHashMap<String, EventHandListener> eventHandListenerMap = null;
     private volatile ConcurrentHashMap<String, List<Runnable>> futureMap = null;
-    // ====================================================
     public static final String T2_THREAD_NAME = "T2-MainThread#";
     /** 持久化线程工厂 */
     private static final ThreadFactory threadFactory = new ThreadFactory() {
         private final AtomicLong mCount = new AtomicLong(1);
 
         @Override
-        public Thread newThread(@NonNull Runnable r) {
+        public Thread newThread(Runnable r) {
+            if(r == null)
+                return null;
             return new Thread(r, T2_THREAD_NAME + mCount.getAndIncrement());
         }
     };
 
-    private ScheduledExecutorService executors = null;
-
     private EventBus(){
         eventHandListenerMap = new ConcurrentHashMap<>();
         tempHandler = new TempHandler(Looper.getMainLooper());
-        executors = Executors.newScheduledThreadPool(4,threadFactory);
+        int CPU_COUNT = Math.max(Runtime.getRuntime().availableProcessors(),0);
+        executors = Executors.newScheduledThreadPool(CPU_COUNT+1,threadFactory);
         futureMap = new ConcurrentHashMap<>();
     }
 
     @SuppressWarnings("unused")
-    public EventLocation findLocation(Class<?> cls) {
+    public static EventLocation findLocation(Class<?> cls) {
         return new EventLocation(cls.getName());
     }
 
     private static class EventBusHelper{
         private static final EventBus INSTANCE = new EventBus();
     }
+
     public static EventBus get(){
         return EventBusHelper.INSTANCE;
     }
@@ -65,12 +66,8 @@ public class EventBus {
     }
 
     private boolean isValid(BaseEvent evt){
-        if (evt == null) {
-            LogUtil.e(TAG, "evt is null");
-            return false;
-        }
-        if (evt.getTo() == null) {
-            LogUtil.e(TAG, "evt.to is null");
+        if (evt == null || evt.getTo() == null) {
+            LogUtil.e(TAG, "evt or evt.to is null");
             return false;
         }
         String to = evt.getTo().getUri().trim();
@@ -214,8 +211,6 @@ public class EventBus {
         }
     }
 
-    //===================
-
     private void addRunnableToFutureMap(BaseEvent evt,Runnable ewb){
         String to = evt.getTo().getUri();
         if(futureMap.containsKey(to)){
@@ -259,22 +254,18 @@ public class EventBus {
             String to = evt.getTo().getUri();
             if (to == null || to.trim().length() == 0)
                 return;
-            try {
-                ConcurrentHashMap<String, EventHandListener> result = EventBus.get().getEventHandListenerMap();
-                if (EventLocation.any.getUri().equals(to)) {
-                    for (EventHandListener el : result.values()) {
-                        if(el != null) {
-                            el.executeEvent(evt);
-                        }
+            ConcurrentHashMap<String, EventHandListener> result = EventBus.get().getEventHandListenerMap();
+            if (EventLocation.any.getUri().equals(to)) {
+                for (EventHandListener el : result.values()) {
+                    if(el != null) {
+                        el.executeEvent(evt);
                     }
-                    return;
                 }
-                EventHandListener el = result.get(to);
-                if(el != null) {
-                    el.executeEvent(evt);
-                }
-            } finally {
-                // nothing to do
+                return;
+            }
+            EventHandListener el = result.get(to);
+            if(el != null) {
+                el.executeEvent(evt);
             }
         }
     }
