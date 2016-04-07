@@ -40,7 +40,7 @@ public class ImageUtil {
 
 	/**
 	 * Get a bitmap from the image path
-	 * 
+	 *
 	 * @param imagePath
 	 * @return bitmap or null if read fails
 	 */
@@ -50,7 +50,7 @@ public class ImageUtil {
 
 	/**
 	 * Get a bitmap from the image path
-	 * 
+	 *
 	 * @param imagePath
 	 * @param sampleSize
 	 * @return bitmap or null if read fails
@@ -79,7 +79,7 @@ public class ImageUtil {
 
 	/**
 	 * Get a bitmap from the image
-	 * 
+	 *
 	 * @param image
 	 * @param sampleSize
 	 * @return bitmap or null if read fails
@@ -93,7 +93,7 @@ public class ImageUtil {
 
 	/**
 	 * Get scale for image of size and max height/width
-	 * 
+	 *
 	 * @param size
 	 * @param width
 	 * @param height
@@ -108,7 +108,7 @@ public class ImageUtil {
 
 	/**
 	 * Get size of image
-	 * 
+	 *
 	 * @param imagePath
 	 * @return size
 	 */
@@ -136,7 +136,7 @@ public class ImageUtil {
 
 	/**
 	 * Get size of image
-	 * 
+	 *
 	 * @param image
 	 * @return size
 	 */
@@ -149,7 +149,7 @@ public class ImageUtil {
 
 	/**
 	 * Get bitmap with maximum height or width
-	 * 
+	 *
 	 * @param imagePath
 	 * @param width
 	 * @param height
@@ -162,7 +162,7 @@ public class ImageUtil {
 
 	/**
 	 * Get bitmap with maximum height or width
-	 * 
+	 *
 	 * @param image
 	 * @param width
 	 * @param height
@@ -175,7 +175,7 @@ public class ImageUtil {
 
 	/**
 	 * Get bitmap with maximum height or width
-	 * 
+	 *
 	 * @param image
 	 * @param width
 	 * @param height
@@ -187,7 +187,7 @@ public class ImageUtil {
 
 	/**
 	 * Get a bitmap from the image file
-	 * 
+	 *
 	 * @param image
 	 * @return bitmap or null if read fails
 	 */
@@ -206,18 +206,15 @@ public class ImageUtil {
 		Matrix matrix = new Matrix();
 		matrix.setScale(scale, scale);
 		Bitmap roomedBitmap = Bitmap.createBitmap(bitmap, 0, 0, origWidth, origHeight, matrix, true);
-		if(roomedBitmap != null) {
-			origWidth = roomedBitmap.getWidth();
-			origHeight = roomedBitmap.getHeight();
-		}
+		origWidth = roomedBitmap.getWidth();
+		origHeight = roomedBitmap.getHeight();
 		Log.d(TAG, "roomedBitmap width,height = " + origWidth + "," + origHeight);
 
 		Bitmap cropedBitmap = Bitmap.createBitmap(roomedBitmap, origWidth / 2 - width / 2, origHeight / 2 - height / 2, width, height);
 		Log.d(TAG, "cropedBitmap width,height = " + cropedBitmap.getWidth() + "," + cropedBitmap.getHeight());
 
-		if (roomedBitmap != null) {
+		if (roomedBitmap != null)
 			roomedBitmap.recycle();
-		}
 
 		return cropedBitmap;
 	}
@@ -249,21 +246,21 @@ public class ImageUtil {
 		return bmp;
 	}
 
-    public static Object invoke(String clsName,String methodName,Class<?>[] methodParams,Object entityObj,Object[] args) throws Exception{
-        Class<?> cls = Class.forName(clsName);
-        Method method = cls.getDeclaredMethod(methodName, methodParams);
-        method.setAccessible(true);
-        return method.invoke(entityObj, args);
-    }
+	public static Object invoke(String clsName,String methodName,Class<?>[] methodParams,Object entityObj,Object[] args) throws Exception{
+		Class<?> cls = Class.forName(clsName);
+		Method method = cls.getDeclaredMethod(methodName, methodParams);
+		method.setAccessible(true);
+		return method.invoke(entityObj, args);
+	}
 
-    public static Object invoke(Class<?> cls,String methodName,Class<?>[] methodParams,Object entityObj,Object[] args) throws Exception{
-        Method method = cls.getDeclaredMethod(methodName, methodParams);
-        method.setAccessible(true);
-        return method.invoke(entityObj, args);
-    }
+	public static Object invoke(Class<?> cls,String methodName,Class<?>[] methodParams,Object entityObj,Object[] args) throws Exception{
+		Method method = cls.getDeclaredMethod(methodName, methodParams);
+		method.setAccessible(true);
+		return method.invoke(entityObj, args);
+	}
 
 	@TargetApi(Build.VERSION_CODES.KITKAT)
-    public static String getLocalPathFromUri(Uri uri, Activity activity) {
+	public static String getLocalPathFromUri(Uri uri, Activity activity) {
 		if(uri == null)
 			return null;
 		if(Build.VERSION.SDK_INT >= 19 && DocumentsContract.isDocumentUri(activity,uri)){
@@ -300,7 +297,7 @@ public class ImageUtil {
 				}
 			} else if (isDownloadsDocument(uri)) {
 				String id = DocumentsContract.getDocumentId(uri);
-				Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.parseLong(id));
+				Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
 				return getDataColumn(activity, contentUri, null, null);
 			} else if (isMediaDocument(uri)) {
 				String docId = DocumentsContract.getDocumentId(uri);
@@ -319,11 +316,11 @@ public class ImageUtil {
 				return getDataColumn(activity, contentUri, selection, selectionArgs);
 			}
 		}
-		
+
 		/**
-		   (1) file:///sdcard/DCIM/Camera/1397608571759.jpg
-		   (2) content://media/external/images/media/178107
-		*/
+		 (1) file:///sdcard/DCIM/Camera/1397608571759.jpg
+		 (2) content://media/external/images/media/178107
+		 */
 		if ("file".equalsIgnoreCase(uri.getScheme())) {
 			return uri.getPath();
 		}
@@ -352,7 +349,7 @@ public class ImageUtil {
 
 	/**
 	 * 设置ImageView跟据图片内容自动缩放
-	 * 
+	 *
 	 * @param iv
 	 * @param widthDp
 	 *            水平间隔,单位dp
@@ -376,7 +373,7 @@ public class ImageUtil {
 
 	/**
 	 * 设置ImageView的LayoutParams
-	 * 
+	 *
 	 * @param iv
 	 * @param widthDp
 	 *            LayoutParams的宽度
@@ -418,7 +415,7 @@ public class ImageUtil {
 		}
 		ByteArrayInputStream isBm = new ByteArrayInputStream(baos.toByteArray());
 		Bitmap bitmap = BitmapFactory.decodeStream(isBm, null, null);
-		LogUtil.d(TAG, "baos.size()=" + baos.size() / 1024.0);
+		LogUtil.d(TAG, "baos.size()="+baos.size()/1024.0);
 		return bitmap;
 	}
 
@@ -453,7 +450,7 @@ public class ImageUtil {
 	 * @return Whether the Uri authority is ExternalStorageProvider.
 	 */
 	public static boolean isExternalStorageDocument(Uri uri) {
-		return "com.android.externalstorage.documents".equalsIgnoreCase(uri.getAuthority());
+		return "com.android.externalstorage.documents".equals(uri.getAuthority());
 	}
 
 	/**
@@ -461,7 +458,7 @@ public class ImageUtil {
 	 * @return Whether the Uri authority is DownloadsProvider.
 	 */
 	public static boolean isDownloadsDocument(Uri uri) {
-		return "com.android.providers.downloads.documents".equalsIgnoreCase(uri.getAuthority());
+		return "com.android.providers.downloads.documents".equals(uri.getAuthority());
 	}
 
 	/**
@@ -469,11 +466,11 @@ public class ImageUtil {
 	 * @return Whether the Uri authority is MediaProvider.
 	 */
 	public static boolean isMediaDocument(Uri uri) {
-		return "com.android.providers.media.documents".equalsIgnoreCase(uri.getAuthority());
+		return "com.android.providers.media.documents".equals(uri.getAuthority());
 	}
 
 	public static boolean isGooglePhotosUri(Uri uri) {
-		return "com.google.android.apps.photos.content".equalsIgnoreCase(uri.getAuthority());
+		return "com.google.android.apps.photos.content".equals(uri.getAuthority());
 	}
 
 }
