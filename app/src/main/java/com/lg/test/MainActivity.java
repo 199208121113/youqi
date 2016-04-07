@@ -1,29 +1,32 @@
 package com.lg.test;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Message;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.lg.base.bus.BaseEvent;
 import com.lg.base.bus.EventBus;
 import com.lg.base.bus.EventThread;
+import com.lg.base.bus.LogUtil;
 import com.lg.base.core.ActionBarMenu;
 import com.lg.base.core.BaseActivity;
 import com.lg.base.core.InjectView;
-import com.lg.base.bus.LogUtil;
-import com.lg.base.bus.UITask;
 import com.lg.base.task.download.SimpleFileDownloadTask;
 import com.lg.base.task.upload.SimpleFileUploadTask;
+import com.lg.base.ui.recycle.RecyclerViewAdapter;
+import com.lg.base.ui.recycle.RecyclerViewHolder;
 import com.lg.base.utils.DateUtil;
-import com.lg.base.utils.NumberUtil;
-import com.lg.base.utils.StringUtil;
 import com.lg.base.utils.ToastUtil;
 import com.lg.test.account.CollectTask;
 import com.lg.test.activity.TestDbActivity;
 import com.lg.test.activity.TestEncodeActivity;
 import com.lg.test.activity.TestQrCodeActivity;
+import com.lg.test.activity.TestRecyclerViewActivity;
+import com.lg.test.model.SimpleRow;
 
 import java.io.File;
 import java.util.HashMap;
@@ -31,35 +34,15 @@ import java.util.Map;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import cn.iwgang.familiarrecyclerview.FamiliarRecyclerView;
 
-public class MainActivity extends BaseActivity {
 
-    /** 帐户测试 */
-    @InjectView(value = R.id.act_main_test_account_tv,click = "onClick")
-    View testAccountView;
+public class MainActivity extends BaseActivity implements FamiliarRecyclerView.OnItemClickListener {
 
-    /** 数据库测试 */
-    @InjectView(value = R.id.act_main_test_db_tv,click = "onClick")
-    View testDBView;
+    @InjectView(R.id.act_main_rv)
+    FamiliarRecyclerView frv;
 
-    /** 文件上传测试 */
-    @InjectView(value = R.id.act_main_test_file_upload,click = "onClick")
-    TextView testUploadFile;
-
-    /** 文件下载测试 */
-    @InjectView(value = R.id.act_main_test_file_download,click = "onClick")
-    TextView testDownloadFile;
-
-    /** 二维码测试 */
-    @InjectView(value = R.id.act_main_test_qr_code,click = "onClick")
-    TextView testQrCode;
-
-    @InjectView(value = R.id.act_main_test_encode,click = "onClick")
-    TextView testEncode;
-
-    @InjectView(value = R.id.act_main_test_recycler_view,click = "onClick")
-    TextView testRecyclerView;
-
+    MainAdapter mainAdapter;
     @Override
     protected ActionBarMenu onActionBarCreate() {
         return new ActionBarMenu("app demo");
@@ -68,7 +51,21 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EventBus.get().sendEvent(new BaseEvent(getLocation(), WHAT_TEST).setRunOnThread(EventThread.NEW));
+        frv.setOnItemClickListener(this);
+        mainAdapter = new MainAdapter(this);
+        initAdapterData();
+        frv.setAdapter(mainAdapter);
+        mainAdapter.notifyDataSetChanged();
+    }
+
+    private void initAdapterData(){
+        mainAdapter.addItem(new SimpleRow(1,"Account"),null);
+        mainAdapter.addItem(new SimpleRow(2,"DataBase"),null);
+        mainAdapter.addItem(new SimpleRow(3,"FileUpload"),null);
+        mainAdapter.addItem(new SimpleRow(4,"FileDownload"),null);
+        mainAdapter.addItem(new SimpleRow(5,"ScanQrCode"),null);
+        mainAdapter.addItem(new SimpleRow(6,"Encode"),null);
+        mainAdapter.addItem(new SimpleRow(7,"RecyclerView"),null);
     }
 
     @Override
@@ -76,6 +73,32 @@ public class MainActivity extends BaseActivity {
         return R.layout.activity_main;
     }
 
+    private static final int WHAT_RATE = 1;
+    Future rateFuture;
+    @Override
+    public void onItemClick(FamiliarRecyclerView familiarRecyclerView, View view, int position) {
+        int v = mainAdapter.getItem(position).getData().getId();
+        if(v == 1){
+            collect();
+        }else if(v == 2){
+            startActivity(TestDbActivity.createIntent(this));
+        }else if(v == 3){
+            upload();
+        }else if(v == 4){
+            download();
+        }else if(v == 5){
+            startActivity(TestQrCodeActivity.createIntent(this));
+        }else if(v == 6){
+            startActivity(TestEncodeActivity.createIntent(this));
+        }else if(v == 7){
+            startActivity(TestRecyclerViewActivity.createIntent(this));
+            if(rateFuture != null && !rateFuture.isDone() && !rateFuture.isCancelled()){
+                rateFuture.cancel(true);
+            }
+            BaseEvent evt = new BaseEvent(getLocation(),WHAT_RATE).setRunOnThread(EventThread.UI);
+            rateFuture = EventBus.get().sendEvent(evt,0, 5, TimeUnit.SECONDS);
+        }
+    }
 
     @Override
     protected void onDestroy() {
@@ -84,30 +107,6 @@ public class MainActivity extends BaseActivity {
             if(!(rateFuture.isDone() || rateFuture.isCancelled())){
                 rateFuture.cancel(true);
             }
-        }
-    }
-
-    private static final int WHAT_RATE = 1;
-    private static final int WHAT_TEST = 2;
-    Future rateFuture;
-    @SuppressWarnings("all")
-    public void onClick(View v) {
-        if(v == testAccountView){
-            collect();
-        }else if(v == testDBView){
-            startActivity(TestDbActivity.createIntent(this));
-        }else if(v == testUploadFile){
-            upload();
-        }else if(v == testDownloadFile){
-            download();
-        }else if(v == testQrCode){
-            startActivity(TestQrCodeActivity.createIntent(this));
-        }else if(v == testEncode){
-            startActivity(TestEncodeActivity.createIntent(this));
-        }else if(v == testRecyclerView){
-            //startActivity(TestRecyclerViewActivity.createIntent(this));
-            BaseEvent evt = new BaseEvent(getLocation(),WHAT_RATE).setRunOnThread(EventThread.IO);
-            rateFuture = EventBus.get().sendEventWithFixedDelay(evt, 1, 2, TimeUnit.SECONDS);
         }
     }
 
@@ -123,12 +122,6 @@ public class MainActivity extends BaseActivity {
         if(evt.getWhat() == WHAT_RATE) {
             String time = DateUtil.formatDate(System.currentTimeMillis(), "yyyy-MM-dd HH:mm:ss");
             LogUtil.d(TAG, "executeEvent(),time=" + time + ",tid=" + Thread.currentThread().getId());
-        }else if(evt.getWhat() == WHAT_TEST){
-            long start = System.currentTimeMillis();
-            for (int i =1 ;i < 100000 ; i++){
-                EventBus.get().sendEvent(new BaseEvent(getLocation(),101));
-            }
-            LogUtil.d(TAG, "executeEvent(),usedTime="+((System.currentTimeMillis()-start)/1000f));
         }
     }
 
@@ -162,25 +155,6 @@ public class MainActivity extends BaseActivity {
             @Override
             protected void onProgressChanged(long handBytes, long totalBytes) {
                 LogUtil.e(TAG, "uploadedBytes=" + handBytes + ",totalBytes=" + totalBytes);
-                Bundle bd = new Bundle();
-                bd.putLong("rec", handBytes);
-                bd.putLong("total", totalBytes);
-                if(totalBytes > 0) {
-                    bd.putString("scale", NumberUtil.format2(handBytes * 100f / totalBytes));
-                }
-                EventBus.get().postRunOnUiThread(new UITask() {
-                    @Override
-                    public void run() {
-                        Bundle bd = getExtra();
-                        String scale = bd.getString("scale");
-                        if (StringUtil.isNotEmpty(scale)) {
-                            testUploadFile.setText(scale + "%");
-                        } else {
-                            long handBytes = getExtra().getLong("rec");
-                            testUploadFile.setText(NumberUtil.format2((handBytes * 1f) / (1024 * 1024)) + "MB");
-                        }
-                    }
-                }.setExtra(bd));
             }
         }.execute();
     }
@@ -198,37 +172,74 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onProgressChanged(long handBytes, long totalBytes) {
                 LogUtil.e(TAG, "handBytes=" + handBytes + ",totalBytes=" + totalBytes);
-                Bundle bd = new Bundle();
-                bd.putLong("rec", handBytes);
-                bd.putLong("total", totalBytes);
-                if(totalBytes > 0) {
-                    bd.putString("scale", NumberUtil.format2(handBytes * 100f / totalBytes));
-                }
-                EventBus.get().postRunOnUiThread(new UITask() {
-                    @Override
-                    public void run() {
-                        String scale = getExtra().getString("scale");
-                        if (StringUtil.isNotEmpty(scale)) {
-                            testDownloadFile.setText(scale + "%");
-                        } else {
-                            long handBytes = getExtra().getLong("rec");
-                            testDownloadFile.setText(NumberUtil.format2((handBytes * 1f) / (1024 * 1024)) + "MB");
-                        }
-                    }
-                }.setExtra(bd));
             }
         }.execute();
     }
 
     public static Map<String,String> getGenericParams(){
         Map<String,String> pm = new HashMap<>();
-        pm.put("appID", "com.youloft.glsc");
-        pm.put("passID", "books by AireaderCity_1234567890");
-        pm.put("deviceID", "5ecc403e012bf23b391146f0438b5863");
-        pm.put("deviceType", "Android");
-        pm.put("ver", "4.65");
+        pm.put("deviceID","5ecc403e012bf23b391146f0438b5863");
+        pm.put("passID","books by AireaderCity_1234567890");
+        pm.put("ver","4.65");
+        pm.put("clientVersion","5.2");
+        pm.put("appID","com.youloft.glsc");
         pm.put("appPackageName","com.ireadercity");
-        pm.put("clientVersion", "5.2");
+        pm.put("deviceType","Android");
         return pm;
+    }
+
+    private static class MainAdapter extends RecyclerViewAdapter<SimpleRow,Void,RecyclerViewHolder<SimpleRow,Void>> {
+        public MainAdapter(Context ctx) {
+            super(ctx);
+        }
+
+        @Override
+        public RecyclerViewHolder<SimpleRow, Void> onCreateViewHolder(ViewGroup parent, int viewType) {
+            View vv = inflater.inflate(R.layout.item_simple_row,parent,false);
+            MainHolder holder = new MainHolder(vv,getCtx());
+            holder.initViews();
+            return holder;
+        }
+
+        @Override
+        public void onBindViewHolder(RecyclerViewHolder<SimpleRow, Void> holder, int position) {
+            holder.setItem(getItem(position));
+        }
+    }
+
+    private static class MainHolder extends RecyclerViewHolder<SimpleRow,Void>{
+        public MainHolder(View rootView, Context ctx) {
+            super(rootView, ctx);
+        }
+        TextView tv;
+        @Override
+        protected void onInitViews(View view) {
+            tv = find(R.id.item_simple_row_tv);
+        }
+
+        @Override
+        protected void onBindItem() {
+            bindText();
+        }
+
+        @Override
+        protected void onRecycleItem() {
+
+        }
+
+        @Override
+        protected void onRefreshView() {
+            bindText();
+        }
+
+        private void bindText(){
+            SimpleRow sr = getItem().getData();
+            tv.setText(sr.getText());
+        }
+
+        @Override
+        protected void onDestroy() {
+            tv = null;
+        }
     }
 }

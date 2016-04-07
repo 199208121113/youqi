@@ -36,7 +36,7 @@ public class TestRecyclerViewActivity extends SuperActivity implements FamiliarR
     FamiliarRecyclerView mRecyclerView;
 
     @InjectView(R.id.act_v7_ptr_frame_layout)
-    PtrFrameLayout mPtrFramelayout;
+    PtrFrameLayout mPtrFrameLayout;
 
     TestAdapter mAdapter;
 
@@ -64,11 +64,13 @@ public class TestRecyclerViewActivity extends SuperActivity implements FamiliarR
         View headerView = layoutInflater.inflate(R.layout.item_recycler_header,null);
         headerView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,headerViewHeight));
         mRecyclerView.addHeaderView(headerView);
+        mRecyclerView.setHeaderDividersEnabled(true);
 
         //(2)添加footerView
         View footerView = layoutInflater.inflate(R.layout.item_recycler_footer, null);
         footerView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, headerViewHeight));
         mRecyclerView.addFooterView(footerView);
+        mRecyclerView.setFooterDividersEnabled(true);
 
         //(3)设置分割线(也可以在布局文件中直接指定分割线Divider及分割线大小，当然你也可以使用自己的分割线实现),如果是网格或瀑布流视图，你甚至可以设置横竖不同的分割线Divider及分割线大小
         //mRecyclerView.setDivider();
@@ -76,8 +78,8 @@ public class TestRecyclerViewActivity extends SuperActivity implements FamiliarR
         //(4) 设置数据空View（设置isRetainShowHeadOrFoot为true时，可以让显示EmptyView时不会清除掉添加的HeadView和FooterView）
         View emptyView =layoutInflater.inflate(R.layout.layout_empty_view, null);
         int width = ScreenUtil.getDisplay(this).getWidth();
-        int height = ScreenUtil.dip2px(this,40);
-        emptyView.setLayoutParams(new LinearLayout.LayoutParams(width,height));
+        int height = ScreenUtil.dip2px(this, 40);
+        emptyView.setLayoutParams(new LinearLayout.LayoutParams(width, height));
         mRecyclerView.setEmptyView(emptyView,true);
 
         //(5)Item单击事件
@@ -100,20 +102,20 @@ public class TestRecyclerViewActivity extends SuperActivity implements FamiliarR
         });*/
 
         //(7)============下拉刷新,上拉加载更多=============
-        mPtrFramelayout.setResistance(1.7f);
-        mPtrFramelayout.setRatioOfHeaderHeightToRefresh(1.2f);
-        mPtrFramelayout.setDurationToClose(200);
-        mPtrFramelayout.setDurationToCloseHeader(1000);
-        mPtrFramelayout.setPullToRefresh(false);
-        mPtrFramelayout.disableWhenHorizontalMove(true);  //ViewPager滑动冲突
-        mPtrFramelayout.setKeepHeaderWhenRefresh(true);
+        mPtrFrameLayout.setResistance(1.7f);
+        mPtrFrameLayout.setRatioOfHeaderHeightToRefresh(1.2f);
+        mPtrFrameLayout.setDurationToClose(200);
+        mPtrFrameLayout.setDurationToCloseHeader(1000);
+        mPtrFrameLayout.setPullToRefresh(false);
+        mPtrFrameLayout.disableWhenHorizontalMove(true);  //ViewPager滑动冲突
+        mPtrFrameLayout.setKeepHeaderWhenRefresh(true);
 
         RefreshHeaderLayout rh = new RefreshHeaderLayout(this);
-        mPtrFramelayout.setHeaderView(rh); //设置刷新的View
-        mPtrFramelayout.addPtrUIHandler(rh);
+        mPtrFrameLayout.setHeaderView(rh); //设置刷新的View
+        mPtrFrameLayout.addPtrUIHandler(rh);
 
         //(8)设置下拉刷新的事件
-        mPtrFramelayout.setPtrHandler(new PtrHandler() {
+        mPtrFrameLayout.setPtrHandler(new PtrHandler() {
             @Override
             public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
                 return PtrDefaultHandler.checkContentCanBePulledDown(frame, content, header);
@@ -121,7 +123,7 @@ public class TestRecyclerViewActivity extends SuperActivity implements FamiliarR
 
             @Override
             public void onRefreshBegin(PtrFrameLayout frame) {
-                EventBus.get().sendEmptyMessageDelayed(getLocation(),1,3000);
+                EventBus.get().sendEmptyMessageDelayed(getLocation(), 1, 3000);
             }
         });
 
@@ -144,7 +146,7 @@ public class TestRecyclerViewActivity extends SuperActivity implements FamiliarR
     public void executeMessage(Message msg) {
         super.executeMessage(msg);
         if(msg.what == 1){
-            mPtrFramelayout.refreshComplete();
+            mPtrFrameLayout.refreshComplete();
         }else if(msg.what == 2){
             addDataToAdapter();
             mRecyclerView.refreshBootomComplete();
@@ -174,7 +176,7 @@ public class TestRecyclerViewActivity extends SuperActivity implements FamiliarR
 
     private void addDataToAdapter(){
         int startIndex = mAdapter.getItemCount();
-        int endIndex = startIndex+5;
+        int endIndex = startIndex+20;
         for (;startIndex < endIndex;startIndex++){
             mAdapter.addItem(new TestBean(""+(startIndex+1)),null);
         }

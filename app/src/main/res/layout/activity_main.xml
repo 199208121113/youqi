@@ -1,76 +1,34 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/act_main_test_account_tv"
+    <!--
+    <cn.iwgang.familiarrecyclerview.FamiliarRecyclerView
+        android:id="@+id/act_main_rv"
         android:layout_width="match_parent"
-        android:layout_marginTop="10dp"
-        android:background="@color/holo_blue"
-        android:gravity="center"
-        android:layout_height="50dp"
-        android:textSize="18sp"
-        android:text="Account" />
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"
+        app:frv_divider="#E1E1E1"
+        app:frv_dividerHeight="1px"
+        app:frv_layoutManager="linear"
+        app:frv_layoutManagerOrientation="vertical" />
+    -->
 
-    <TextView
-        android:id="@+id/act_main_test_db_tv"
+    <cn.iwgang.familiarrecyclerview.FamiliarRecyclerView
+        android:id="@+id/act_main_rv"
         android:layout_width="match_parent"
-        android:layout_marginTop="10dp"
-        android:background="@color/holo_blue"
-        android:gravity="center"
-        android:layout_height="50dp"
-        android:textSize="18sp"
-        android:text="database" />
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"
+        app:frv_dividerHorizontal="@color/red"
+        app:frv_dividerVertical="@color/blue"
+        app:frv_dividerHorizontalHeight="1px"
+        app:frv_dividerVerticalHeight="1px"
+        app:frv_itemViewBothSidesMargin="0dp"
+        app:frv_layoutManager="grid"
+        app:frv_layoutManagerOrientation="vertical"
+        app:frv_spanCount="3" />
 
-    <TextView
-        android:id="@+id/act_main_test_file_upload"
-        android:layout_width="match_parent"
-        android:layout_marginTop="10dp"
-        android:background="@color/holo_blue"
-        android:gravity="center"
-        android:layout_height="50dp"
-        android:textSize="18sp"
-        android:text="file upload" />
-
-    <TextView
-        android:id="@+id/act_main_test_file_download"
-        android:layout_width="match_parent"
-        android:layout_marginTop="10dp"
-        android:background="@color/holo_blue"
-        android:gravity="center"
-        android:layout_height="50dp"
-        android:textSize="18sp"
-        android:text="file download" />
-
-    <TextView
-        android:id="@+id/act_main_test_qr_code"
-        android:layout_width="match_parent"
-        android:layout_marginTop="10dp"
-        android:background="@color/holo_blue"
-        android:gravity="center"
-        android:layout_height="50dp"
-        android:textSize="18sp"
-        android:text="qrcode" />
-
-    <TextView
-        android:id="@+id/act_main_test_encode"
-        android:layout_width="match_parent"
-        android:layout_marginTop="10dp"
-        android:background="@color/holo_blue"
-        android:gravity="center"
-        android:layout_height="50dp"
-        android:textSize="18sp"
-        android:text="encode" />
-
-    <TextView
-        android:id="@+id/act_main_test_recycler_view"
-        android:layout_width="match_parent"
-        android:layout_marginTop="10dp"
-        android:background="@color/holo_blue"
-        android:gravity="center"
-        android:layout_height="50dp"
-        android:textSize="18sp"
-        android:text="recycler-view" />
 
 </LinearLayout>
