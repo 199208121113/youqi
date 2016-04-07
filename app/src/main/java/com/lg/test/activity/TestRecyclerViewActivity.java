@@ -156,13 +156,13 @@ public class TestRecyclerViewActivity extends SuperActivity implements FamiliarR
     @Override
     public void onItemClick(FamiliarRecyclerView familiarRecyclerView, View view, int position) {
         String text = mAdapter.getItem(position).getData().getText();
-        ToastUtil.show(this, "onItemClick(),text=" + text);
+        ToastUtil.show("onItemClick(),text=" + text);
     }
 
     @Override
     public boolean onItemLongClick(FamiliarRecyclerView familiarRecyclerView, View view, int position) {
         String text = mAdapter.getItem(position).getData().getText();
-        ToastUtil.show(this,"onItemLongClick(),text="+text);
+        ToastUtil.show("onItemLongClick(),text="+text);
         return true;
     }
 

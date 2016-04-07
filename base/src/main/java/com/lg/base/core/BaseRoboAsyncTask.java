@@ -169,7 +169,7 @@ public abstract class BaseRoboAsyncTask<T> extends RoboAsyncTask<T> {
         }
 
         if (!available) {
-            ToastUtil.show(act, "网络已断开,请检查网络!");
+            ToastUtil.show("网络已断开,请检查网络!");
             return;
         }
         String errMsg = getErrorMsgStr(e);

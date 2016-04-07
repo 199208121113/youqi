@@ -7,10 +7,10 @@ import android.net.Uri;
 import android.os.Handler;
 
 import com.lg.base.bus.BaseEvent;
-import com.lg.base.core.BaseService;
 import com.lg.base.bus.EventBus;
 import com.lg.base.bus.EventLocation;
 import com.lg.base.bus.LogUtil;
+import com.lg.base.core.BaseService;
 import com.lg.base.utils.ToastUtil;
 
 import java.util.Date;
@@ -92,7 +92,7 @@ public class SmsService extends BaseService {
 
             if (id != -1) {
                 int count = resolver.delete(Uri.parse("content://sms"), "_id=" + id, null);
-                ToastUtil.show(SmsService.this, count == 1 ? "删除成功" : "删除失败");
+                ToastUtil.show(count == 1 ? "删除成功" : "删除失败");
             }
         }
     }

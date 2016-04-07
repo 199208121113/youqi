@@ -3,25 +3,17 @@ package com.lg.base.utils;
 import android.content.Context;
 import android.widget.Toast;
 
+import com.lg.base.core.BaseApplication;
 import com.lg.base.core.RoboAsyncTask;
 
 public class ToastUtil {
 
-	public static void show(Context context, String msg) {
-		show(context, msg, Toast.LENGTH_SHORT);
+	public static void show(String msg) {
+		show(msg, Toast.LENGTH_SHORT);
 	}
 
-	public static void show(Context context, int resourceId, int mode) {
-		String msg = context.getResources().getString(resourceId);
-		show(context, msg, mode);
-	}
-
-	public static void show(Context context, int resourceId) {
-		show(context, resourceId, Toast.LENGTH_SHORT);
-	}
-
-	public static void show(Context context, String msg, int mode) {
-        showToast(context, msg, mode);
+	public static void show(String msg, int mode) {
+        showToast(BaseApplication.getAppInstance(), msg, mode);
 	}
 
     private static Toast mToast=null;

@@ -7,6 +7,7 @@ import android.widget.EditText;
 
 import com.lg.base.core.ActionBarMenu;
 import com.lg.base.utils.StringUtil;
+import com.lg.base.utils.ToastUtil;
 import com.lg.test.R;
 import com.lg.test.core.SuperActivity;
 import com.lg.test.task.NoteAddTask;
@@ -44,7 +45,13 @@ public class TestDbActivity extends SuperActivity {
         if (StringUtil.isEmpty(text)) {
             return;
         }
+
         new NoteAddTask(this, text) {
+            @Override
+            protected void onSuccess(Boolean result) {
+                super.onSuccess(result);
+                ToastUtil.show("笔记添加成功!");
+            }
         }.execute();
     }
 

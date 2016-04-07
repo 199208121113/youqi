@@ -1,12 +1,10 @@
 package com.lg.test.task;
 
 import android.app.Activity;
-import android.database.sqlite.SQLiteDatabase;
 
-import com.lg.base.core.BaseRoboAsyncTask;
 import com.lg.base.bus.LogUtil;
-import com.lg.test.greendao.DaoMaster;
-import com.lg.test.greendao.DaoSession;
+import com.lg.base.core.BaseRoboAsyncTask;
+import com.lg.test.core.DBHelper;
 import com.lg.test.greendao.Note;
 import com.lg.test.greendao.NoteDao;
 
@@ -26,12 +24,7 @@ public class NoteAddTask extends BaseRoboAsyncTask<Boolean> {
 
     @Override
     protected Boolean run() throws Exception {
-        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(getWeakActivity(), "notes-db", null);
-        SQLiteDatabase db = helper.getWritableDatabase();
-        // 注意：该数据库连接属于 DaoMaster，所以多个 Session 指的是相同的数据库连接。
-        DaoMaster daoMaster = new DaoMaster(db);
-        DaoSession daoSession = daoMaster.newSession();
-        NoteDao noteDao = daoSession.getNoteDao();
+        NoteDao noteDao = DBHelper.get().getDaoSession().getNoteDao();
 
         Note note = new Note();
         note.setText(text);

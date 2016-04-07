@@ -113,7 +113,7 @@ public class MainActivity extends BaseActivity implements FamiliarRecyclerView.O
     @Override
     public void executeMessage(Message msg) {
         super.executeMessage(msg);
-        ToastUtil.show(this, "executeMessage(),msg.what=" + msg.what);
+        ToastUtil.show("executeMessage(),msg.what=" + msg.what);
     }
 
     @Override
@@ -131,7 +131,7 @@ public class MainActivity extends BaseActivity implements FamiliarRecyclerView.O
             @Override
             protected void onSuccess(String s) {
                 super.onSuccess(s);
-                ToastUtil.show(getWeakActivity(), "account.name=" + s);
+                ToastUtil.show("account.name=" + s);
             }
         }.execute();
     }
@@ -149,7 +149,7 @@ public class MainActivity extends BaseActivity implements FamiliarRecyclerView.O
             @Override
             protected void onSuccess(String s) {
                 super.onSuccess(s);
-                ToastUtil.show(getWeakActivity(), "上传成功");
+                ToastUtil.show("上传成功");
             }
 
             @Override
@@ -166,7 +166,7 @@ public class MainActivity extends BaseActivity implements FamiliarRecyclerView.O
             @Override
             protected void onSuccess(String t) {
                 super.onSuccess(t);
-                ToastUtil.show(getWeakActivity(), "下载成功");
+                ToastUtil.show("下载成功");
             }
 
             @Override
