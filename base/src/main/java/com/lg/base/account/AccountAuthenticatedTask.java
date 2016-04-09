@@ -9,14 +9,20 @@ import com.lg.base.utils.StringUtil;
 
 public abstract class AccountAuthenticatedTask<T> extends BaseRoboAsyncTask<T> {
 
+	private volatile Activity act;
 	public AccountAuthenticatedTask(Activity activity) {
-		super(activity);
+		super();
+		this.act = activity;
+	}
+
+	public Activity getAct() {
+		return act;
 	}
 
 	@Override
 	protected final T run() throws Exception {
-		final AccountManager accountManager = AccountManager.get(getWeakActivity());
-		Account account = AccountUtils.getAccount(accountManager, getWeakActivity());
+		final AccountManager accountManager = AccountManager.get(this.getAct());
+		Account account = AccountUtils.getAccount(accountManager, getAct());
 		return run(account);
 	}
 

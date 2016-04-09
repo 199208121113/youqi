@@ -15,8 +15,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
-import android.view.ViewTreeObserver;
-import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
@@ -42,17 +40,15 @@ import java.util.List;
  * @author liguo
  *
  */
-public abstract class BaseActivity extends FragmentActivity implements EventHandListener, OnViewSizeConfirmed, OnActionBarItemSelectedListener {
+public abstract class BaseActivity extends FragmentActivity implements EventHandListener, OnActionBarItemClickListener {
 
 	protected String TAG = this.getClass().getSimpleName();
 	private volatile BaseApplication app = null;
-	private final EventLocation from = new EventLocation(this.getClass().getName());
-	public final String DATA_SERIALIZABLE = "DATA_SERIALIZABLE";
+//	private final EventLocation from = new EventLocation(this.getClass().getName());
+//	public final String DATA_SERIALIZABLE = "DATA_SERIALIZABLE";
 
-//	protected int activityWidth = 0;
-//	protected int activityHeight = 0;
 	private volatile boolean running = false;
-	private volatile boolean isSelfDestoryed=false;
+	private volatile boolean isSelfDestroyed =false;
 
 
 	private static volatile ActivityManager AM_INSTANCE;
@@ -73,7 +69,7 @@ public abstract class BaseActivity extends FragmentActivity implements EventHand
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.running = true;
-        isSelfDestoryed = false;
+        isSelfDestroyed = false;
 		initGlobalView();
 		if(validFullScreen()){
 			enableFullScreen();
@@ -84,15 +80,6 @@ public abstract class BaseActivity extends FragmentActivity implements EventHand
 		EventBus.get().register(this);
 
 		initGoBack();
-		calcViewSize(mGlobalView, this);
-		if (actionBarView != null) {
-			calcViewSize(actionBarView, new OnViewSizeConfirmed() {
-				@Override
-				public void onViewSizeConfirmed(View v, int width, int height) {
-					actionBarHeight = height;
-				}
-			});
-		}
 	}
 	
 	@Override
@@ -111,33 +98,14 @@ public abstract class BaseActivity extends FragmentActivity implements EventHand
 		return this.running;
 	}
 
-    public boolean isSelfDestoryed() {
-        return isSelfDestoryed;
+    public boolean isSelfDestroyed() {
+        return isSelfDestroyed;
     }
 
 	protected final ViewGroup getGlobalView(){
 		return this.mGlobalView;
 	}
 	
-	/** 计算View的宽高 */
-	protected final void calcViewSize(final View v, final OnViewSizeConfirmed listener) {
-		ViewTreeObserver vto = v.getViewTreeObserver();
-		vto.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
-			@Override
-			public void onGlobalLayout() {
-				v.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-				listener.onViewSizeConfirmed(v, v.getWidth(), v.getHeight());
-			}
-		});
-	}
-
-	/** 获取activity的宽高 */
-	@Override
-	public void onViewSizeConfirmed(View v, int width, int height) {
-//		activityWidth = v.getWidth();
-//		activityHeight = v.getHeight();
-	}
-
 	/** 初始返回事件，并提供onGoBack()方法供子类实现具体的逻辑 */
 	private void initGoBack() {
         View goBackView = getGoBackView();
@@ -154,7 +122,7 @@ public abstract class BaseActivity extends FragmentActivity implements EventHand
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-        isSelfDestoryed = true;
+        isSelfDestroyed = true;
 		EventBus.get().unRegister(this);
 	}
 

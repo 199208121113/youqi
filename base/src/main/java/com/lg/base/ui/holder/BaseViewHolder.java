@@ -2,8 +2,6 @@ package com.lg.base.ui.holder;
 
 import android.content.Context;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AbsListView.OnScrollListener;
 
 import com.lg.base.ui.adapter.AdapterItem;
 

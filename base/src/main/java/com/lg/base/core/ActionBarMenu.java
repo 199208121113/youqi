@@ -109,7 +109,7 @@ public class ActionBarMenu implements OnClickListener {
 		}
 	}
 
-	OnActionBarItemSelectedListener listener = null;
+	OnActionBarItemClickListener listener = null;
 
 	ViewGroup viewGroup = null;
 	private ImageView iconView;
@@ -117,7 +117,7 @@ public class ActionBarMenu implements OnClickListener {
 	private LinearLayout itemLayout = null;
 	private LinearLayout leftLayout = null;
 
-	void setViewAndListener(View v, OnActionBarItemSelectedListener listener) {
+	void setViewAndListener(View v, OnActionBarItemClickListener listener) {
 		this.listener = listener;
 		this.viewGroup = (ViewGroup) v;
 		if (this.bgResId > 0) {

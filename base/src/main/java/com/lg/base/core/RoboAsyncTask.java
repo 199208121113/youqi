@@ -12,10 +12,6 @@ import java.util.concurrent.FutureTask;
  */
 public abstract class RoboAsyncTask<T> implements Callable<T> {
 
-    public final String TAG = this.getClass().getSimpleName();
-
-    private static volatile Handler taskHandler = null;
-
     protected abstract T doInBackground() throws Exception;
 
     protected void onPreExecute() {
@@ -35,16 +31,11 @@ public abstract class RoboAsyncTask<T> implements Callable<T> {
     }
 
     public static Handler getTaskHandler(){
-        if(taskHandler == null){
-            synchronized (RoboAsyncTask.class) {
-                Handler tmp = taskHandler;
-                if(tmp == null) {
-                    tmp = new Handler(Looper.getMainLooper());
-                }
-                taskHandler = tmp;
-            }
-        }
-        return taskHandler;
+        return TaskHandlerFactory.INSTANCE;
+    }
+
+    private static class TaskHandlerFactory{
+       private static Handler INSTANCE = new Handler(Looper.getMainLooper());
     }
 
     @Override

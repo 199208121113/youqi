@@ -10,8 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
-import android.view.ViewTreeObserver;
-import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -33,7 +31,7 @@ import com.lg.base.ui.dialog.LightProgressDialog;
  * @author liguo
  *
  */
-public abstract class BaseFragment extends Fragment implements EventHandListener,OnActionBarItemSelectedListener {
+public abstract class BaseFragment extends Fragment implements EventHandListener,OnActionBarItemClickListener {
     protected final String TAG = this.getClass().getSimpleName();
     private final EventLocation from = new EventLocation(this.getClass().getName());
     protected abstract int getContentView();
@@ -63,26 +61,7 @@ public abstract class BaseFragment extends Fragment implements EventHandListener
 		if(view instanceof ViewGroup) {
 			mGlobalView = (ViewGroup) view;
 		}
-		if (actionBarView != null) {
-			calcViewSize(actionBarView, new OnViewSizeConfirmed() {
-				@Override
-				public void onViewSizeConfirmed(View v, int width, int height) {
-					actionBarHeight = height;
-				}
-			});
-		}
     }
-    
-    protected void calcViewSize(final View v, final OnViewSizeConfirmed listener) {
-		ViewTreeObserver vto = v.getViewTreeObserver();
-		vto.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
-			@Override
-			public void onGlobalLayout() {
-				v.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-				listener.onViewSizeConfirmed(v, v.getWidth(), v.getHeight());
-			}
-		});
-	}
 
     @SuppressWarnings("unchecked")
     protected  <V extends View> V find(int id){
@@ -127,7 +106,6 @@ public abstract class BaseFragment extends Fragment implements EventHandListener
 
  	protected ViewGroup mGlobalView = null;
  	ActionBarMenu mActionBar = null;
- 	protected volatile int actionBarHeight = 0;
  	View actionBarView = null;
 
  	private void initGlobalView() {
@@ -137,7 +115,6 @@ public abstract class BaseFragment extends Fragment implements EventHandListener
  		if (mActionBar != null) {
  			LinearLayout myLinearLayout = getLinearLayout();
  			actionBarView = inflateActionBarView();
- 			actionBarHeight = actionBarView.getHeight();
  			mActionBar.setViewAndListener(actionBarView, this);
  			myLinearLayout.addView(actionBarView);
  			
@@ -181,9 +158,6 @@ public abstract class BaseFragment extends Fragment implements EventHandListener
 
  	}
 
-	protected int getActionBarHeight() {
-		return this.actionBarHeight;
-	}
 	protected ActionBarMenu getActionBarMenu(){
 		return this.mActionBar;
 	}	

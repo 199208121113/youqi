@@ -1,7 +1,5 @@
 package com.lg.test.task;
 
-import android.app.Activity;
-
 import com.lg.base.bus.LogUtil;
 import com.lg.base.core.BaseRoboAsyncTask;
 import com.lg.test.core.DBHelper;
@@ -17,8 +15,8 @@ import java.util.List;
 public class NoteAddTask extends BaseRoboAsyncTask<Boolean> {
     private String text;
     private String TAG = "NoteAddTask";
-    public NoteAddTask(Activity context, String text) {
-        super(context);
+    public NoteAddTask(String text) {
+        super();
         this.text = text;
     }
 

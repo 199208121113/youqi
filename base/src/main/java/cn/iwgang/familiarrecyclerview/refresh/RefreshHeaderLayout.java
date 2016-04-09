@@ -12,7 +12,6 @@ import android.view.animation.RotateAnimation;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-
 import com.lg.base.R;
 
 import java.text.SimpleDateFormat;

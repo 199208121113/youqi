@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class EventBus {
     private static final String TAG = EventBus.class.getSimpleName();
-    private volatile TempHandler tempHandler = null;
+    private volatile EventHandler tempHandler = null;
     private volatile ScheduledExecutorService executors = null;
     private volatile ConcurrentHashMap<String, EventHandListener> eventHandListenerMap = null;
     private volatile ConcurrentHashMap<String, List<Runnable>> futureMap = null;
@@ -38,7 +38,7 @@ public class EventBus {
 
     private EventBus(){
         eventHandListenerMap = new ConcurrentHashMap<>();
-        tempHandler = new TempHandler(Looper.getMainLooper());
+        tempHandler = new EventHandler(Looper.getMainLooper());
         int CPU_COUNT = Math.max(Runtime.getRuntime().availableProcessors(),0);
         executors = Executors.newScheduledThreadPool(CPU_COUNT+1,threadFactory);
         futureMap = new ConcurrentHashMap<>();
@@ -49,12 +49,12 @@ public class EventBus {
         return new EventLocation(cls.getName());
     }
 
-    private static class EventBusHelper{
+    private static class EventBusFactory{
         private static final EventBus INSTANCE = new EventBus();
     }
 
     public static EventBus get(){
-        return EventBusHelper.INSTANCE;
+        return EventBusFactory.INSTANCE;
     }
 
     private EventHandListener getEventHandlerListener(String to){
@@ -293,8 +293,8 @@ public class EventBus {
         }
     }
 
-    private static class TempHandler extends Handler{
-        public TempHandler(Looper looper) {
+    private static class EventHandler extends Handler{
+        public EventHandler(Looper looper) {
             super(looper);
         }
         public void handleMessage(Message msg) {

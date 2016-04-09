@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.lg.base.core.ActionBarMenu;
-import com.lg.base.core.BaseActivity;
 import com.lg.base.core.InjectView;
 import com.lg.qrcode.sample.CaptureActivity;
 import com.lg.test.R;

@@ -1,6 +1,5 @@
 package com.lg.base.task.image;
 
-import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 
@@ -12,7 +11,6 @@ import com.lg.base.utils.IOUtil;
 import com.lg.base.utils.ImageUtil;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.InputStream;
 
 import okhttp3.Request;
@@ -27,8 +25,7 @@ public class ImageLoadTask extends BaseRoboAsyncTask<Bitmap> {
     String savePath = null;
     OnImageLoadFinishCallBack callBack = null;
     Bundle param = new Bundle();
-    public ImageLoadTask(Activity context,String url,String savePath) {
-        super(context);
+    public ImageLoadTask(String url,String savePath) {
         this.url = url;
         this.savePath = savePath;
     }

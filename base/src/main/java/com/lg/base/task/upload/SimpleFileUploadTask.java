@@ -1,7 +1,5 @@
 package com.lg.base.task.upload;
 
-import android.app.Activity;
-
 import com.lg.base.core.BaseRoboAsyncTask;
 import com.lg.base.task.OnTaskRunningListener;
 import com.lg.base.task.Status;
@@ -16,8 +14,8 @@ public class SimpleFileUploadTask extends BaseRoboAsyncTask<String> implements O
 	final File uploadFile ;
 	final String uploadUrl ;
 	Map<String,String> params;
-	public SimpleFileUploadTask(Activity context, String uploadUrl, File uploadFile,Map<String,String> params) {
-		super(context);
+	public SimpleFileUploadTask(String uploadUrl, File uploadFile,Map<String,String> params) {
+		super();
 		this.uploadUrl = uploadUrl;
 		this.uploadFile = uploadFile;
 		this.params = params;

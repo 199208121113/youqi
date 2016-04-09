@@ -6,8 +6,8 @@ import android.accounts.AccountManagerFuture;
 import android.accounts.AccountsException;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.OperationCanceledException;
 
@@ -17,43 +17,21 @@ import com.lg.base.dialog.ProxyOnDismissListener;
 import com.lg.base.task.OnTaskRunningListener;
 import com.lg.base.task.Status;
 import com.lg.base.ui.dialog.LightAlertDialog;
-import com.lg.base.ui.dialog.LightNetWorkSetDialog;
 import com.lg.base.utils.ExceptionUtil;
 import com.lg.base.utils.NetworkUtil;
 import com.lg.base.utils.StringUtil;
 import com.lg.base.utils.ToastUtil;
 
-import java.lang.ref.WeakReference;
 import java.util.concurrent.TimeUnit;
 
 
 public abstract class BaseRoboAsyncTask<T> extends RoboAsyncTask<T> {
-
+    private static final String TAG = BaseRoboAsyncTask.class.getSimpleName();
     @SuppressWarnings("unused")
     public static final long MINUTES_1 = 1000 * 60;
 
     @SuppressWarnings("unused")
     public static final long DAY_1 = 60000 * 60 * 24;
-
-    private volatile WeakReference<Activity> mActivity;
-    public BaseRoboAsyncTask(Activity activity) {
-        this.mActivity = new WeakReference<>(activity);
-    }
-    public Activity getWeakActivity(){
-        Activity act = mActivity.get();
-        if(act == null){
-            return null;
-        }
-        if(Build.VERSION.SDK_INT >= 17) {
-            if (act.isDestroyed()) {
-                return null;
-            }
-        }
-        if(act.isFinishing()){
-            return null;
-        }
-        return act;
-    }
 
     protected abstract T run() throws Exception;
 
@@ -78,6 +56,15 @@ public abstract class BaseRoboAsyncTask<T> extends RoboAsyncTask<T> {
     public boolean cancel(boolean mayInterruptIfRunning) {
         status = Status.CANCELED;
         return super.cancel(mayInterruptIfRunning);
+    }
+    private volatile Context ctx;
+
+    public BaseRoboAsyncTask() {
+        this.ctx = BaseApplication.getAppInstance();
+    }
+
+    public Context getCtx() {
+        return ctx;
     }
 
     @Override
@@ -129,39 +116,13 @@ public abstract class BaseRoboAsyncTask<T> extends RoboAsyncTask<T> {
         return 0;
     }
 
-    // ==================网络设置dialog=================
-    AlertDialog networkDialog = null;
-
-    @SuppressWarnings("unused")
-    protected AlertDialog showNetWorkDialog(String title, String message) {
-        if (networkDialog != null)
-            closeNetWorkDialog();
-        Activity act = getWeakActivity();
-        if(act == null)
-            return null;
-        networkDialog = LightNetWorkSetDialog.create(act, title, message);
-        networkDialog.show();
-        return networkDialog;
-    }
-
-    protected void closeNetWorkDialog() {
-        if (networkDialog == null)
-            return;
-        networkDialog.dismiss();
-        networkDialog = null;
-    }
-
     @Override
     protected void onException(Exception e) {
         if(isDontNeedRetryException(e)){
             return;
         }
 
-        Activity act = getWeakActivity();
-        if(act == null)
-            return ;
-
-        final boolean available = NetworkUtil.isAvailable(act);
+        final boolean available = NetworkUtil.isAvailable(BaseApplication.getAppInstance());
 
         LogUtil.e(TAG, "ExceptionInfo:", e);
         if (!isOpened()) {
@@ -170,18 +131,9 @@ public abstract class BaseRoboAsyncTask<T> extends RoboAsyncTask<T> {
 
         if (!available) {
             ToastUtil.show("网络已断开,请检查网络!");
-            return;
         }
-        String errMsg = getErrorMsgStr(e);
-        showErrorDialog(errMsg);
     }
 
-    @SuppressWarnings("unused")
-    public static String getErrorMessage(Exception e){
-        String errMsg;
-        errMsg = getErrorMsgStr(e);
-        return errMsg;
-    }
 
     public static String getErrorMsgStr(Exception e){
         String errMsg = e.getMessage();
@@ -196,33 +148,24 @@ public abstract class BaseRoboAsyncTask<T> extends RoboAsyncTask<T> {
         return true;
     }
 
-    protected void showErrorDialog(String errMsg) {
-        Activity act = getWeakActivity();
-        if(act == null)
-            return ;
+    public static void showErrorDialog(Activity act,String errMsg,ProxyOnDismissListener.DialogCloseCallBack closeCallBack) {
         AlertDialog dialog = LightAlertDialog.create(act);
         dialog.setTitle("提示");
-        String errSux = getExceptionTitle();
-        if (!StringUtil.isEmpty(errSux)) {
-            errSux += "#";
-        }
-        dialog.setMessage(errSux + errMsg);
+        dialog.setMessage(errMsg);
         dialog.setButton(DialogInterface.BUTTON_POSITIVE,"确定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
             }
         });
-        dialog.setOnDismissListener(new ProxyOnDismissListener(mActivity.get(),getOnDialogCloseListener(),null));
+        if(closeCallBack != null) {
+            dialog.setOnDismissListener(new ProxyOnDismissListener(closeCallBack, null));
+        }
         dialog.show();
     }
 
-    protected ProxyOnDismissListener.DialogCloseCallBack getOnDialogCloseListener() {
-        return null;
-    }
-
-    protected String getExceptionTitle() {
-        return "";
+    public static void showErrorDialog(Activity act,String errMsg) {
+        showErrorDialog(act,errMsg,null);
     }
 
     /** 删除旧帐户 */
@@ -269,10 +212,8 @@ public abstract class BaseRoboAsyncTask<T> extends RoboAsyncTask<T> {
                 removeOldAccount(am, oldAccount);
             }
         }
-        Activity act = getWeakActivity();
-        if(act == null)
-            return false;
-        Account newAccount = new Account(loginName, act.getPackageName());
+
+        Account newAccount = new Account(loginName, ctx.getPackageName());
         Bundle bd = new Bundle();
         bd.putString("uid", loginName);
         bd.putString("pwd", loginPwd);
@@ -294,6 +235,7 @@ public abstract class BaseRoboAsyncTask<T> extends RoboAsyncTask<T> {
                 }
             }
         } catch (Exception e) {
+            e.printStackTrace();
             //ignore
         }
         if(StringUtil.isEmpty(loginPwd)){

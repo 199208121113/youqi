@@ -5,15 +5,12 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 import android.widget.TextView;
 
 import com.lg.base.R;
-import com.lg.base.core.OnViewSizeConfirmed;
 import com.lg.base.ui.adapter.AdapterItem;
 
 import java.util.ArrayList;
@@ -104,16 +101,5 @@ public class DatePickerAdapter extends PagerAdapter implements OnItemClickListen
 	@Override
 	public int getItemPosition(Object object) {
 		return PagerAdapter.POSITION_NONE;
-	}
-
-	protected void calcViewSize(final View v, final OnViewSizeConfirmed listener) {
-		ViewTreeObserver vto = v.getViewTreeObserver();
-		vto.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
-			@Override
-			public void onGlobalLayout() {
-				v.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-				listener.onViewSizeConfirmed(v, v.getWidth(), v.getHeight());
-			}
-		});
 	}
 }

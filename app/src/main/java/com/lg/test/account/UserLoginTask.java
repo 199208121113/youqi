@@ -1,7 +1,6 @@
 package com.lg.test.account;
 
 import android.accounts.AccountManager;
-import android.app.Activity;
 
 import com.lg.base.core.BaseRoboAsyncTask;
 
@@ -12,15 +11,15 @@ public class UserLoginTask extends BaseRoboAsyncTask<Boolean> {
     private String username;
     private String pwd;
 
-    public UserLoginTask(Activity context,String uid,String pwd) {
-        super(context);
+    public UserLoginTask(String uid,String pwd) {
+        super();
         this.username = uid;
         this.pwd = pwd;
     }
 
     @Override
     protected Boolean run() throws Exception {
-        AccountManager am = AccountManager.get(getWeakActivity());
+        AccountManager am = AccountManager.get(getCtx());
         boolean added = createOrUpdateAccount(this.username,this.pwd,am);
         return added;
     }

@@ -126,7 +126,7 @@ public class MainActivity extends BaseActivity implements FamiliarRecyclerView.O
     }
 
     /** 收藏 */
-    private void collect(){
+    private  void collect(){
         new CollectTask(this){
             @Override
             protected void onSuccess(String s) {
@@ -145,7 +145,7 @@ public class MainActivity extends BaseActivity implements FamiliarRecyclerView.O
         params.put("bookDesc", "test-bookDesc");
         params.put("bookAuthor", "test-bookAuthor");
         params.put("bookUploadedUserID", "liguo6568");
-        new SimpleFileUploadTask(this,uploadLoadUrl,uploadFile,params){
+        new SimpleFileUploadTask(uploadLoadUrl,uploadFile,params){
             @Override
             protected void onSuccess(String s) {
                 super.onSuccess(s);
@@ -162,7 +162,7 @@ public class MainActivity extends BaseActivity implements FamiliarRecyclerView.O
     private void download(){
         String url = "http://andfls.qiniudn.com/AIReader.apk";
         String pp = Environment.getExternalStorageDirectory().getAbsolutePath()+"/AIReader.apk";
-        new SimpleFileDownloadTask(this,url,pp){
+        new SimpleFileDownloadTask(url,pp){
             @Override
             protected void onSuccess(String t) {
                 super.onSuccess(t);

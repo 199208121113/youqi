@@ -2,8 +2,6 @@ package com.lg.base.ui.adapter;
 
 import android.view.View;
 
-import java.io.Serializable;
-
 
 
 public class AdapterItem<DATA, STATE> {

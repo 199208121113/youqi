@@ -46,7 +46,7 @@ public class LoginActivity extends AccountLoginActivity implements View.OnClickL
         if(StringUtil.isEmpty(username) || StringUtil.isEmpty(pwd)){
             return;
         }
-        new UserLoginTask(this,username,pwd){
+        new UserLoginTask(username,pwd){
             @Override
             protected void onSuccess(Boolean aBoolean) {
                 super.onSuccess(aBoolean);

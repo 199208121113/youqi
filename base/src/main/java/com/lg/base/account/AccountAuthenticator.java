@@ -10,8 +10,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import com.lg.base.core.BaseApplication;
 import com.lg.base.bus.LogUtil;
+import com.lg.base.core.BaseApplication;
 import com.lg.base.utils.StringUtil;
 
 public class AccountAuthenticator extends AbstractAccountAuthenticator{

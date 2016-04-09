@@ -1,7 +1,5 @@
 package com.lg.base.task.download;
 
-import android.app.Activity;
-
 import com.lg.base.core.BaseRoboAsyncTask;
 import com.lg.base.http.HttpConstant;
 import com.lg.base.task.OnTaskRunningListener;
@@ -20,14 +18,13 @@ public class SimpleFileDownloadTask extends BaseRoboAsyncTask<String> implements
 
 	private List<TaskFilter<String,ProgressInfo>> taskFilters;
     private static final HashMap<String, String> downloadMap = new HashMap<>();
-	public SimpleFileDownloadTask(Activity context, String downloadUrl, String savePath) {
-		super(context);
+	public SimpleFileDownloadTask(String downloadUrl, String savePath) {
 		this.downloadUrl = downloadUrl;
 		this.fileSavePath = savePath;
 
 	}
-	public SimpleFileDownloadTask(Activity context, String url, String savePath, TaskFilter<String, ProgressInfo> filter) {
-		this(context,url,savePath);
+	public SimpleFileDownloadTask(String url, String savePath, TaskFilter<String, ProgressInfo> filter) {
+		this(url,savePath);
 		this.addTaskFilter(filter);
 	}
 	

@@ -46,7 +46,7 @@ public class TestDbActivity extends SuperActivity {
             return;
         }
 
-        new NoteAddTask(this, text) {
+        new NoteAddTask(text) {
             @Override
             protected void onSuccess(Boolean result) {
                 super.onSuccess(result);
