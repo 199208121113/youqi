@@ -8,10 +8,6 @@ import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
-import android.support.multidex.MultiDex;
 import android.util.Log;
 
 import com.lg.base.bus.EventBus;
@@ -63,13 +59,15 @@ public abstract class BaseApplication extends Application implements UncaughtExc
 
 	@Override
 	public void onCreate() {
+		long start = System.currentTimeMillis();
 		super.onCreate();
 		BaseApplication.setAppInstance(this);
 		Thread.currentThread().setName("T1-UI");
 		defaultHandler = Thread.getDefaultUncaughtExceptionHandler();
 		Thread.setDefaultUncaughtExceptionHandler(this);
 		init();
-
+		long end = System.currentTimeMillis();
+		LogUtil.i(TAG,"onCreate(),usedTime="+(end-start));
 	}
 
 	private void init() {
@@ -113,8 +111,7 @@ public abstract class BaseApplication extends Application implements UncaughtExc
 	public void uncaughtException(Thread thread, Throwable ex) {
 		LogUtil.e(TAG, "App crash:", ex);
 		if (handleException(ex)) {
-			ErrorHandler eh = new ErrorHandler(Looper.getMainLooper());
-			eh.sendEmptyMessage(2);
+			RoboAsyncTask.getTaskHandler().post(new ErrorRunnable());
 		} else if (defaultHandler != null) {
 			defaultHandler.uncaughtException(thread, ex);
 		} else {
@@ -228,14 +225,10 @@ public abstract class BaseApplication extends Application implements UncaughtExc
 		return null;
 	}
 
-	private static class ErrorHandler extends Handler{
-		public ErrorHandler(Looper looper) {
-			super(looper);
-		}
-		public void handleMessage(Message msg) {
-			if(msg.what == 2){
-				exitAndReStart(getAppInstance());
-			}
+	private static class ErrorRunnable implements Runnable{
+		@Override
+		public void run() {
+			exitAndReStart(getAppInstance());
 		}
 	}
     
@@ -243,10 +236,4 @@ public abstract class BaseApplication extends Application implements UncaughtExc
     protected boolean isRecordErrLog(){
     	return true;
     }
-
-	@Override
-	protected void attachBaseContext(Context base) {
-		super.attachBaseContext(base);
-		MultiDex.install(this);
-	}
 }
