@@ -13,7 +13,6 @@ import com.lg.base.bus.EventBus;
 import com.lg.base.bus.EventThread;
 import com.lg.base.bus.LogUtil;
 import com.lg.base.core.ActionBarMenu;
-import com.lg.base.core.BaseActivity;
 import com.lg.base.core.InjectView;
 import com.lg.base.task.download.SimpleFileDownloadTask;
 import com.lg.base.task.upload.SimpleFileUploadTask;
@@ -26,7 +25,9 @@ import com.lg.test.activity.TestDbActivity;
 import com.lg.test.activity.TestEncodeActivity;
 import com.lg.test.activity.TestQrCodeActivity;
 import com.lg.test.activity.TestRecyclerViewActivity;
+import com.lg.test.core.SuperActivity;
 import com.lg.test.model.SimpleRow;
+import com.zhy.changeskin.SkinManager;
 
 import java.io.File;
 import java.util.HashMap;
@@ -37,7 +38,7 @@ import java.util.concurrent.TimeUnit;
 import cn.iwgang.familiarrecyclerview.FamiliarRecyclerView;
 
 
-public class MainActivity extends BaseActivity implements FamiliarRecyclerView.OnItemClickListener {
+public class MainActivity extends SuperActivity implements FamiliarRecyclerView.OnItemClickListener {
 
     @InjectView(R.id.act_main_rv)
     FamiliarRecyclerView frv;
@@ -46,6 +47,11 @@ public class MainActivity extends BaseActivity implements FamiliarRecyclerView.O
     @Override
     protected ActionBarMenu onActionBarCreate() {
         return new ActionBarMenu("app demo");
+    }
+
+    @Override
+    protected int getDefaultLeftIcon() {
+        return 0;
     }
 
     @Override
@@ -66,6 +72,8 @@ public class MainActivity extends BaseActivity implements FamiliarRecyclerView.O
         mainAdapter.addItem(new SimpleRow(5,"ScanQrCode"),null);
         mainAdapter.addItem(new SimpleRow(6,"Encode"),null);
         mainAdapter.addItem(new SimpleRow(7,"RecyclerView"),null);
+        mainAdapter.addItem(new SimpleRow(8,"change to green"),null);
+        mainAdapter.addItem(new SimpleRow(9,"change to default"),null);
     }
 
     @Override
@@ -97,6 +105,10 @@ public class MainActivity extends BaseActivity implements FamiliarRecyclerView.O
             }
             BaseEvent evt = new BaseEvent(getLocation(),WHAT_RATE).setRunOnThread(EventThread.UI);
             rateFuture = EventBus.get().sendEvent(evt,0, 5, TimeUnit.SECONDS);
+        }else if(v == 8){
+            SkinManager.getInstance().changeSkin("green");
+        }else if(v == 9){
+            SkinManager.getInstance().changeSkin("");
         }
     }
 

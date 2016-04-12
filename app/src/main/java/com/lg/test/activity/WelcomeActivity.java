@@ -23,7 +23,7 @@ public class WelcomeActivity extends Activity implements EventHandListener {
         setContentView(R.layout.activity_welcome);
         EventBus.get().register(this);
         EventLocation loc = EventBus.findLocation(WelcomeActivity.class);
-        EventBus.get().sendEmptyMessageDelayed(loc,1,3000);
+        EventBus.get().sendEmptyMessageDelayed(loc,1,1000);
     }
 
     @Override

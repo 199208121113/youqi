@@ -5,4 +5,10 @@
     <color name="col_action_bar_background">#FF0000</color>
     -->
     <drawable name="col_18b0f4">#18b0f4</drawable>
+    <!-- default style -->
+    <color name="bg_action_bar">#EEEEEE</color>
+    <color name="col_action_bar_title">#565656</color>
+    <!-- base style -->
+    <color name="bg_action_bar_green">#00FF00</color>
+    <color name="col_action_bar_title_green">#0000FF</color>
 </resources>

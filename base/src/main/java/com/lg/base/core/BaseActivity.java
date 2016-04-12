@@ -287,7 +287,7 @@ public abstract class BaseActivity extends FragmentActivity implements EventHand
  		return ll;
  	}
 
- 	private View inflateActionBarView() {
+ 	protected View inflateActionBarView() {
 
  		return LayoutInflater.from(getActivity()).inflate(R.layout.layout_actionbar, null);
  	}

@@ -20,5 +20,5 @@
 
     <item name="act_tabhost_viewpager" type="id"/>
     <item name="act_viewpager" type="id"/>
-
+    <item name="skin_tag_id" type="id"></item>
 </resources>

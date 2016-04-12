@@ -149,7 +149,7 @@ public abstract class BaseFragment extends Fragment implements EventHandListener
  		return ll;
  	}
  	
- 	private View inflateActionBarView() {
+ 	protected View inflateActionBarView() {
  		return LayoutInflater.from(getActivity()).inflate(R.layout.layout_actionbar, null);
  	}
 

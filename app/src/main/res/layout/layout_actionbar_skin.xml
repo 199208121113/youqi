@@ -2,8 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="51dp"
-    android:background="@color/col_EEEEEE"
+    android:background="@color/bg_action_bar"
     android:focusable="true"
+    android:tag="skin:bg_action_bar:background"
     android:focusableInTouchMode="true"
     android:orientation="vertical">
 
@@ -59,9 +60,10 @@
             android:layout_marginRight="50dp"
             android:ellipsize="end"
             android:gravity="center"
+            android:tag="skin:col_action_bar_title:textColor"
             android:maxLines="2"
             android:text="ActionBarTitle"
-            android:textColor="@color/black"
+            android:textColor="@color/col_action_bar_title"
             android:textSize="18sp" />
     </RelativeLayout>
 
