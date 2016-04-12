@@ -5,11 +5,12 @@
         <item name="android:listDivider">@drawable/sh_recycler_linear_hor</item>
     </style>
 
-    <style name="Theme_Welcome" parent="android:Theme.Light.NoTitleBar">
-        <item name="android:windowIsTranslucent">true</item>
+    <style name="Theme_Launcher" parent="android:Theme.NoTitleBar.Fullscreen">
         <item name="android:windowNoTitle">true</item>
-        <item name="android:windowActionBar">false</item>
+        <item name="android:windowBackground">@drawable/col_18b0f4</item>
+        <!--
         <item name="android:windowBackground">@android:color/transparent</item>
+        -->
     </style>
 
 </resources>

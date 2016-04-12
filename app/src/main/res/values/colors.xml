@@ -4,4 +4,5 @@
     <color name="col_action_bar_bottom_line">#00FF00</color>
     <color name="col_action_bar_background">#FF0000</color>
     -->
+    <drawable name="col_18b0f4">#18b0f4</drawable>
 </resources>
