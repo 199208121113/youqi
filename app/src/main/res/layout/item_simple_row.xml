@@ -1,14 +1,17 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="60dp"
-              android:background="@drawable/bg_for_item_list"
-              android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:background="@color/bg_action_bar"
+    android:orientation="vertical"
+    android:tag="skin:bg_action_bar:background">
 
     <TextView
         android:id="@+id/item_simple_row_tv"
-        android:gravity="center"
-        android:textSize="16sp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:tag="skin:col_action_bar_title:textColor"
+        android:textColor="@color/col_action_bar_title"
+        android:textSize="16sp" />
 
 </LinearLayout>

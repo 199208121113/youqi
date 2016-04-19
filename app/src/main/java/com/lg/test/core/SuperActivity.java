@@ -26,6 +26,7 @@ public abstract class SuperActivity extends BaseActivity {
         if (leftIconPaddingSize == 0) {
             leftIconPaddingSize = ScreenUtil.dip2px(this, 10);
         }
+        //http://p.codekk.com/detail/Android/hongyangAndroid/AndroidChangeSkin
         SkinManager.getInstance().register(mGlobalView);
         ActionBarMenu bar = getActionBarMenu();
         processActionBarMenu(bar);
