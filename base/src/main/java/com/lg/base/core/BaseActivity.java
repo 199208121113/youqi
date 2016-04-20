@@ -68,6 +68,7 @@ public abstract class BaseActivity extends FragmentActivity implements EventHand
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		app = (BaseApplication) getApplication();
 		this.running = true;
         isSelfDestroyed = false;
 		initGlobalView();
@@ -75,8 +76,8 @@ public abstract class BaseActivity extends FragmentActivity implements EventHand
 			enableFullScreen();
 		}
 		setContentView(mGlobalView);
+
 		InjectManager.init(this);
-		app = (BaseApplication) getApplication();
 		EventBus.get().register(this);
 
 		initGoBack();
