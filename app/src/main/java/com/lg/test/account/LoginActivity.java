@@ -10,6 +10,7 @@ import com.lg.base.core.InjectManager;
 import com.lg.base.core.InjectView;
 import com.lg.base.utils.StringUtil;
 import com.lg.test.R;
+import com.zhy.changeskin.SkinManager;
 
 
 /**
@@ -30,11 +31,14 @@ public class LoginActivity extends AccountLoginActivity implements View.OnClickL
     @InjectView(value = R.id.act_login_action_bar_icon_left,click = "onBack")
     View backView;
 
+    @InjectView(R.id.act_login_root_layout)
+    View rootLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         InjectManager.init(this);
+        SkinManager.getInstance().register(rootLayout);
         btnOK.setOnClickListener(this);
         backView.setBackgroundResource(R.drawable.sl_back_bg);
     }
@@ -56,7 +60,14 @@ public class LoginActivity extends AccountLoginActivity implements View.OnClickL
         }.execute();
     }
 
+    @SuppressWarnings("unused")
     public void onBack(View v){
         finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        SkinManager.getInstance().unregister(rootLayout);
     }
 }

@@ -12,22 +12,24 @@ import com.lg.base.utils.ScreenUtil;
 import com.lg.test.R;
 import com.zhy.changeskin.SkinManager;
 
+import butterknife.ButterKnife;
+
 /**
  *
  * Created by liguo on 2015/11/13.
  */
 public abstract class SuperActivity extends BaseActivity {
 
-    private static int leftIconPaddingSize = 0;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (leftIconPaddingSize == 0) {
-            leftIconPaddingSize = ScreenUtil.dip2px(this, 10);
-        }
-        //http://p.codekk.com/detail/Android/hongyangAndroid/AndroidChangeSkin
+
+        //(1)http://p.codekk.com/detail/Android/hongyangAndroid/AndroidChangeSkin
         SkinManager.getInstance().register(mGlobalView);
+
+        //(2)依懒注入
+        ButterKnife.bind(this);
+
         ActionBarMenu bar = getActionBarMenu();
         processActionBarMenu(bar);
     }
@@ -36,6 +38,7 @@ public abstract class SuperActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         SkinManager.getInstance().unregister(mGlobalView);
+        ButterKnife.unbind(this);
     }
 
     @Override
@@ -50,9 +53,11 @@ public abstract class SuperActivity extends BaseActivity {
         if (defaultIcon != 0) {
             ImageView iv = bar.getIconView();
             if (iv != null) {
+                int top = ScreenUtil.dip2px(this, 10);
+                int bottom = (int)(top*1f);
                 iv.setVisibility(View.VISIBLE);
                 iv.setImageResource(defaultIcon);
-                iv.setPadding(0, leftIconPaddingSize, 0, leftIconPaddingSize);
+                iv.setPadding(0, top, 0, bottom);
             }
         }
         /*

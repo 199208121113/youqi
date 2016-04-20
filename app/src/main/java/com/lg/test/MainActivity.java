@@ -19,6 +19,7 @@ import com.lg.base.task.upload.SimpleFileUploadTask;
 import com.lg.base.ui.recycle.RecyclerViewAdapter;
 import com.lg.base.ui.recycle.RecyclerViewHolder;
 import com.lg.base.utils.DateUtil;
+import com.lg.base.utils.IOUtil;
 import com.lg.base.utils.ToastUtil;
 import com.lg.test.account.CollectTask;
 import com.lg.test.activity.TestDbActivity;
@@ -28,6 +29,7 @@ import com.lg.test.activity.TestRecyclerViewActivity;
 import com.lg.test.core.SuperActivity;
 import com.lg.test.model.SimpleRow;
 import com.zhy.changeskin.SkinManager;
+import com.zhy.changeskin.callback.ISkinChangingCallback;
 
 import java.io.File;
 import java.util.HashMap;
@@ -74,6 +76,7 @@ public class MainActivity extends SuperActivity implements FamiliarRecyclerView.
         mainAdapter.addItem(new SimpleRow(7,"RecyclerView"),null);
         mainAdapter.addItem(new SimpleRow(8,"change to green"),null);
         mainAdapter.addItem(new SimpleRow(9,"change to default"),null);
+        mainAdapter.addItem(new SimpleRow(10,"change to orange(apk plugin)"),null);
     }
 
     @Override
@@ -109,6 +112,24 @@ public class MainActivity extends SuperActivity implements FamiliarRecyclerView.
             SkinManager.getInstance().changeSkin("green");
         }else if(v == 9){
             SkinManager.getInstance().changeSkin("");
+        }else if(v == 10){
+            String skinPlugPath = IOUtil.getExternalStoragePath()+"skin_orange.apk";
+            SkinManager.getInstance().changeSkin(skinPlugPath, "com.skin.orange", "orange", new ISkinChangingCallback() {
+                @Override
+                public void onStart() {
+
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    e.printStackTrace();
+                }
+
+                @Override
+                public void onComplete() {
+                    ToastUtil.show("切换成功");
+                }
+            });
         }
     }
 

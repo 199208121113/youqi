@@ -13,7 +13,6 @@ import com.lg.test.core.SuperActivity;
 import com.lg.test.task.NoteAddTask;
 
 import butterknife.Bind;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
@@ -58,6 +57,5 @@ public class TestDbActivity extends SuperActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ButterKnife.bind(this);
     }
 }
