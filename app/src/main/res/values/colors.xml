@@ -8,7 +8,12 @@
     <!-- default style -->
     <color name="bg_action_bar">#EEEEEE</color>
     <color name="col_action_bar_title">#565656</color>
-    <!-- base style -->
-    <color name="bg_action_bar_green">#00FF00</color>
-    <color name="col_action_bar_title_green">#0000FF</color>
+    <color name="bg_item_view">#F8F8F8</color>
+    <color name="col_item_text">#1a1a1a</color>
+    <!-- green style -->
+    <color name="bg_action_bar_green">#43CFC3</color>
+    <color name="col_action_bar_title_green">#ff9423</color>
+    <color name="bg_item_view_green">#80669900</color>
+    <color name="col_item_text_green">#24a7fc</color>
+
 </resources>
