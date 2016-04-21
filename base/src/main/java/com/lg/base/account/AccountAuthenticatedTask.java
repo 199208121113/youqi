@@ -4,10 +4,10 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
 
-import com.lg.base.core.BaseRoboAsyncTask;
+import com.lg.base.core.BaseSimpleAsyncTask;
 import com.lg.base.utils.StringUtil;
 
-public abstract class AccountAuthenticatedTask<T> extends BaseRoboAsyncTask<T> {
+public abstract class AccountAuthenticatedTask<T> extends BaseSimpleAsyncTask<T> {
 
 	private volatile Activity act;
 	public AccountAuthenticatedTask(Activity activity) {

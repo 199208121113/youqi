@@ -1,7 +1,7 @@
 package com.lg.test.task;
 
 import com.lg.base.bus.LogUtil;
-import com.lg.base.core.BaseRoboAsyncTask;
+import com.lg.base.core.BaseSimpleAsyncTask;
 import com.lg.test.core.DBHelper;
 import com.lg.test.greendao.Note;
 import com.lg.test.greendao.NoteDao;
@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Created by liguo on 2015/10/15.
  */
-public class NoteAddTask extends BaseRoboAsyncTask<Boolean> {
+public class NoteAddTask extends BaseSimpleAsyncTask<Boolean> {
     private String text;
     private String TAG = "NoteAddTask";
     public NoteAddTask(String text) {

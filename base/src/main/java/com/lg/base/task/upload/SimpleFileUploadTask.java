@@ -1,6 +1,6 @@
 package com.lg.base.task.upload;
 
-import com.lg.base.core.BaseRoboAsyncTask;
+import com.lg.base.core.BaseSimpleAsyncTask;
 import com.lg.base.task.OnTaskRunningListener;
 import com.lg.base.task.Status;
 
@@ -9,7 +9,7 @@ import java.util.Map;
 
 import okhttp3.Response;
 
-public class SimpleFileUploadTask extends BaseRoboAsyncTask<String> implements OnTaskRunningListener{
+public class SimpleFileUploadTask extends BaseSimpleAsyncTask<String> implements OnTaskRunningListener{
 
 	final File uploadFile ;
 	final String uploadUrl ;

@@ -111,7 +111,7 @@ public abstract class BaseApplication extends Application implements UncaughtExc
 	public void uncaughtException(Thread thread, Throwable ex) {
 		LogUtil.e(TAG, "App crash:", ex);
 		if (handleException(ex)) {
-			RoboAsyncTask.getTaskHandler().post(new ErrorRunnable());
+			SimpleAsyncTask.getTaskHandler().post(new ErrorRunnable());
 		} else if (defaultHandler != null) {
 			defaultHandler.uncaughtException(thread, ex);
 		} else {

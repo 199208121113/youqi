@@ -1,6 +1,6 @@
 package com.lg.base.task.download;
 
-import com.lg.base.core.BaseRoboAsyncTask;
+import com.lg.base.core.BaseSimpleAsyncTask;
 import com.lg.base.http.HttpConstant;
 import com.lg.base.task.OnTaskRunningListener;
 import com.lg.base.task.Status;
@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SimpleFileDownloadTask extends BaseRoboAsyncTask<String> implements OnTaskRunningListener {
+public class SimpleFileDownloadTask extends BaseSimpleAsyncTask<String> implements OnTaskRunningListener {
 
 	private static final String TAG = "SimpleFileDownloadTask";
 	private String downloadUrl;

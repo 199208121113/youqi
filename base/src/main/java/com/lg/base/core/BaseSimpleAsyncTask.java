@@ -25,8 +25,8 @@ import com.lg.base.utils.ToastUtil;
 import java.util.concurrent.TimeUnit;
 
 
-public abstract class BaseRoboAsyncTask<T> extends RoboAsyncTask<T> {
-    private static final String TAG = BaseRoboAsyncTask.class.getSimpleName();
+public abstract class BaseSimpleAsyncTask<T> extends SimpleAsyncTask<T> {
+    private static final String TAG = BaseSimpleAsyncTask.class.getSimpleName();
     @SuppressWarnings("unused")
     public static final long MINUTES_1 = 1000 * 60;
 
@@ -59,7 +59,7 @@ public abstract class BaseRoboAsyncTask<T> extends RoboAsyncTask<T> {
     }
     private volatile Context ctx;
 
-    public BaseRoboAsyncTask() {
+    public BaseSimpleAsyncTask() {
         this.ctx = BaseApplication.getAppInstance();
     }
 
