@@ -4,7 +4,7 @@ import android.content.Context;
 import android.widget.Toast;
 
 import com.lg.base.core.BaseApplication;
-import com.lg.base.core.SimpleAsyncTask;
+import com.lg.base.core.AsyncTask;
 
 public class ToastUtil {
 
@@ -25,7 +25,7 @@ public class ToastUtil {
     };
 
     private static void showToast(Context mContext, String text,int mode) {
-        SimpleAsyncTask.getTaskHandler().removeCallbacks(mRunnable);
+        AsyncTask.getTaskHandler().removeCallbacks(mRunnable);
         if (mToast != null) {
             mToast.setText(text);
         } else {
@@ -35,7 +35,7 @@ public class ToastUtil {
         if (mode == Toast.LENGTH_LONG ) {
             duration = 3500;
         }
-        SimpleAsyncTask.getTaskHandler().postDelayed(mRunnable, duration);
+        AsyncTask.getTaskHandler().postDelayed(mRunnable, duration);
         mToast.show();
     }
 }

@@ -1,15 +1,16 @@
-package com.lg.base.task.upload;
+package com.lg.base.task.async;
 
-import com.lg.base.core.BaseSimpleAsyncTask;
+import com.lg.base.core.BaseAsyncTask;
 import com.lg.base.task.OnTaskRunningListener;
 import com.lg.base.task.Status;
+import com.lg.base.task.upload.FileUploadTask;
 
 import java.io.File;
 import java.util.Map;
 
 import okhttp3.Response;
 
-public class SimpleFileUploadTask extends BaseSimpleAsyncTask<String> implements OnTaskRunningListener{
+public class SimpleFileUploadTask extends BaseAsyncTask<String> implements OnTaskRunningListener{
 
 	final File uploadFile ;
 	final String uploadUrl ;

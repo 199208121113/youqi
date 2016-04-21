@@ -31,7 +31,7 @@ import com.lg.base.ui.dialog.LightProgressDialog;
  * @author liguo
  *
  */
-public abstract class BaseFragment extends Fragment implements EventHandListener,OnActionBarItemClickListener {
+public abstract class BaseFragment extends Fragment implements EventHandListener {
     protected final String TAG = this.getClass().getSimpleName();
     private final EventLocation from = new EventLocation(this.getClass().getName());
     protected abstract int getContentView();
@@ -100,12 +100,12 @@ public abstract class BaseFragment extends Fragment implements EventHandListener
     
  // ====================actionbar->begin=========================
 
- 	protected ActionBarMenu onActionBarCreate() {
+ 	protected BaseActivity.ActionBarMenu onActionBarCreate() {
  		return null;
  	}
 
  	protected ViewGroup mGlobalView = null;
- 	ActionBarMenu mActionBar = null;
+ 	BaseActivity.ActionBarMenu mActionBar = null;
  	View actionBarView = null;
 
  	private void initGlobalView() {
@@ -115,7 +115,6 @@ public abstract class BaseFragment extends Fragment implements EventHandListener
  		if (mActionBar != null) {
  			LinearLayout myLinearLayout = getLinearLayout();
  			actionBarView = inflateActionBarView();
- 			mActionBar.setViewAndListener(actionBarView, this);
  			myLinearLayout.addView(actionBarView);
  			
  			LayoutParams lp1 = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
@@ -153,12 +152,7 @@ public abstract class BaseFragment extends Fragment implements EventHandListener
  		return LayoutInflater.from(getActivity()).inflate(R.layout.layout_actionbar, null);
  	}
 
- 	@Override
- 	public void onActionBarClick(View v) {
-
- 	}
-
-	protected ActionBarMenu getActionBarMenu(){
+	protected BaseActivity.ActionBarMenu getActionBarMenu(){
 		return this.mActionBar;
 	}	
   	
@@ -209,5 +203,13 @@ public abstract class BaseFragment extends Fragment implements EventHandListener
 			return ;
 		networkDialog.dismiss();
 		networkDialog  = null;
+	}
+	public void setOnActionBarItemClickListener(BaseActivity.OnActionBarItemClickListener listener) {
+		if (listener == null)
+			return;
+		if (mActionBar == null || actionBarView == null) {
+			return;
+		}
+		mActionBar.setViewAndListener(actionBarView, listener);
 	}
 }

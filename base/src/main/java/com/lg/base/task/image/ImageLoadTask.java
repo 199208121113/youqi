@@ -3,7 +3,7 @@ package com.lg.base.task.image;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 
-import com.lg.base.core.BaseSimpleAsyncTask;
+import com.lg.base.core.BaseAsyncTask;
 import com.lg.base.http.HttpMethod;
 import com.lg.base.http.OKHttpUtil;
 import com.lg.base.task.download.FileDownloadTask;
@@ -19,7 +19,7 @@ import okhttp3.ResponseBody;
 
 
 @SuppressWarnings("javadoc")
-public class ImageLoadTask extends BaseSimpleAsyncTask<Bitmap> {
+public class ImageLoadTask extends BaseAsyncTask<Bitmap> {
 
     String url = null;
     String savePath = null;

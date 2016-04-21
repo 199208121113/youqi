@@ -2,12 +2,12 @@ package com.lg.test.account;
 
 import android.accounts.AccountManager;
 
-import com.lg.base.core.BaseSimpleAsyncTask;
+import com.lg.base.core.BaseAsyncTask;
 
 /**
  * Created by liguo on 2015/10/15.
  */
-public class UserLoginTask extends BaseSimpleAsyncTask<Boolean> {
+public class UserLoginTask extends BaseAsyncTask<Boolean> {
     private String username;
     private String pwd;
 

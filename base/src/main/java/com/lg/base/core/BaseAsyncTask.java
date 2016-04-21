@@ -25,8 +25,8 @@ import com.lg.base.utils.ToastUtil;
 import java.util.concurrent.TimeUnit;
 
 
-public abstract class BaseSimpleAsyncTask<T> extends SimpleAsyncTask<T> {
-    private static final String TAG = BaseSimpleAsyncTask.class.getSimpleName();
+public abstract class BaseAsyncTask<T> extends AsyncTask<T> {
+    private static final String TAG = BaseAsyncTask.class.getSimpleName();
     @SuppressWarnings("unused")
     public static final long MINUTES_1 = 1000 * 60;
 
@@ -59,7 +59,7 @@ public abstract class BaseSimpleAsyncTask<T> extends SimpleAsyncTask<T> {
     }
     private volatile Context ctx;
 
-    public BaseSimpleAsyncTask() {
+    public BaseAsyncTask() {
         this.ctx = BaseApplication.getAppInstance();
     }
 

@@ -10,7 +10,7 @@ import java.util.concurrent.FutureTask;
  *
  * Created by liguo on 2015/11/9.
  */
-public abstract class SimpleAsyncTask<T> implements Callable<T> {
+public abstract class AsyncTask<T> implements Callable<T> {
 
     protected abstract T doInBackground() throws Exception;
 
@@ -75,10 +75,10 @@ public abstract class SimpleAsyncTask<T> implements Callable<T> {
     private static class TaskCallback<T> implements Runnable{
         private T result;
         private Exception err;
-        private SimpleAsyncTask<T> task;
+        private AsyncTask<T> task;
         private int mode;
 
-        public TaskCallback(SimpleAsyncTask<T> task, int mode) {
+        public TaskCallback(AsyncTask<T> task, int mode) {
             this.task = task;
             this.mode = mode;
         }

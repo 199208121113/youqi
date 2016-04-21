@@ -1,16 +1,19 @@
-package com.lg.base.task.download;
+package com.lg.base.task.async;
 
-import com.lg.base.core.BaseSimpleAsyncTask;
+import com.lg.base.core.BaseAsyncTask;
 import com.lg.base.http.HttpConstant;
 import com.lg.base.task.OnTaskRunningListener;
 import com.lg.base.task.Status;
+import com.lg.base.task.download.FileDownloadTask;
+import com.lg.base.task.download.ProgressInfo;
+import com.lg.base.task.download.TaskFilter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SimpleFileDownloadTask extends BaseSimpleAsyncTask<String> implements OnTaskRunningListener {
+public class SimpleFileDownloadTask extends BaseAsyncTask<String> implements OnTaskRunningListener {
 
 	private static final String TAG = "SimpleFileDownloadTask";
 	private String downloadUrl;
