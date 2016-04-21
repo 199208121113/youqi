@@ -11,7 +11,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.lg.base.bus.EventBus;
-import com.lg.base.core.ActionBarMenu;
 import com.lg.base.core.InjectView;
 import com.lg.base.ui.recycle.RecyclerViewAdapter;
 import com.lg.base.ui.recycle.RecyclerViewHolder;

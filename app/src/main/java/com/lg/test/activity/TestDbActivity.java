@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.EditText;
 
-import com.lg.base.core.ActionBarMenu;
 import com.lg.base.utils.StringUtil;
 import com.lg.base.utils.ToastUtil;
 import com.lg.test.R;

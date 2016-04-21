@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
-import com.lg.base.core.ActionBarMenu;
 import com.lg.base.core.InjectView;
 import com.lg.base.utils.AES256Cipher;
 import com.lg.base.utils.StringUtil;

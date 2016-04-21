@@ -288,7 +288,7 @@ public abstract class BaseActivity extends FragmentActivity implements EventHand
         if (mActionBar != null) {
             LinearLayout myLinearLayout = getLinearLayout();
             actionBarView = inflateActionBarView();
-
+            mActionBar.setView(actionBarView);
             myLinearLayout.addView(actionBarView);
 
             LayoutParams lp1 = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
@@ -525,8 +525,7 @@ public abstract class BaseActivity extends FragmentActivity implements EventHand
         private LinearLayout itemLayout = null;
         private LinearLayout leftLayout = null;
 
-        void setViewAndListener(View v, OnActionBarItemClickListener listener) {
-            this.listener = listener;
+        void setView(View v) {
             this.viewGroup = (ViewGroup) v;
             if (this.bgResId > 0) {
                 this.viewGroup.setBackgroundResource(this.bgResId);
@@ -558,6 +557,10 @@ public abstract class BaseActivity extends FragmentActivity implements EventHand
                     addItemView(item);
                 }
             }
+        }
+
+        void setListener(OnActionBarItemClickListener listener){
+            this.listener = listener;
         }
 
         public View getChildItemView(int index) {
@@ -644,6 +647,6 @@ public abstract class BaseActivity extends FragmentActivity implements EventHand
         if (mActionBar == null || actionBarView == null) {
             return;
         }
-        mActionBar.setViewAndListener(actionBarView, listener);
+        mActionBar.setListener(listener);
     }
 }

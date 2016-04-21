@@ -115,6 +115,7 @@ public abstract class BaseFragment extends Fragment implements EventHandListener
  		if (mActionBar != null) {
  			LinearLayout myLinearLayout = getLinearLayout();
  			actionBarView = inflateActionBarView();
+			mActionBar.setView(actionBarView);
  			myLinearLayout.addView(actionBarView);
  			
  			LayoutParams lp1 = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
@@ -210,6 +211,6 @@ public abstract class BaseFragment extends Fragment implements EventHandListener
 		if (mActionBar == null || actionBarView == null) {
 			return;
 		}
-		mActionBar.setViewAndListener(actionBarView, listener);
+		mActionBar.setListener(listener);
 	}
 }

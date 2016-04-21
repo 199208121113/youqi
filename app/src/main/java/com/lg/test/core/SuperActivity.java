@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.lg.base.core.ActionBarMenu;
 import com.lg.base.core.BaseActivity;
 import com.lg.base.utils.ScreenUtil;
 import com.lg.test.R;
@@ -25,7 +24,7 @@ public abstract class SuperActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         //(1)http://p.codekk.com/detail/Android/hongyangAndroid/AndroidChangeSkin
-        SkinManager.getInstance().register(mGlobalView);
+        SkinManager.getInstance().register(getGlobalView());
 
         //(2)依懒注入
         ButterKnife.bind(this);
@@ -37,7 +36,7 @@ public abstract class SuperActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        SkinManager.getInstance().unregister(mGlobalView);
+        SkinManager.getInstance().unregister(getGlobalView());
         ButterKnife.unbind(this);
     }
 

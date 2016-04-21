@@ -12,7 +12,6 @@ import com.lg.base.bus.BaseEvent;
 import com.lg.base.bus.EventBus;
 import com.lg.base.bus.EventThread;
 import com.lg.base.bus.LogUtil;
-import com.lg.base.core.ActionBarMenu;
 import com.lg.base.core.InjectView;
 import com.lg.base.task.async.SimpleFileDownloadTask;
 import com.lg.base.task.async.SimpleFileUploadTask;
