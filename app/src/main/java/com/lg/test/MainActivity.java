@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Message;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -59,6 +61,21 @@ public class MainActivity extends SuperActivity implements FamiliarRecyclerView.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         frv.setOnItemClickListener(this);
+        RecyclerView.LayoutManager lm = frv.getLayoutManager();
+        if(lm instanceof GridLayoutManager){
+            GridLayoutManager gm = (GridLayoutManager) lm;
+            gm.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                @Override
+                public int getSpanSize(int position) {
+                    if(position == 9){
+                        return 3;
+                    }else{
+                        return 1;
+                    }
+                }
+            });
+        }
+
         mainAdapter = new MainAdapter(this);
         initAdapterData();
         frv.setAdapter(mainAdapter);
