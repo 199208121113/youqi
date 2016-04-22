@@ -65,6 +65,10 @@ public class EventBus {
         return eventHandListenerMap;
     }
 
+    private ConcurrentHashMap<String, List<Runnable>> getFutureMap(){
+        return futureMap;
+    }
+
     private boolean isValid(BaseEvent evt){
         if (evt == null || evt.getTo() == null) {
             LogUtil.e(TAG, "evt or evt.to is null");
@@ -203,9 +207,11 @@ public class EventBus {
             eventHandListenerMap.remove(key);
         }
         List<Runnable> rl = futureMap.get(key);
-        if(rl != null && rl.size() > 0){
-            for (Runnable rr : rl){
-                EventBus.get().getHandler().removeCallbacks(rr);
+        if(rl != null){
+            if(rl.size() > 0) {
+                for (Runnable rr : rl) {
+                    EventBus.get().getHandler().removeCallbacks(rr);
+                }
             }
             futureMap.remove(key);
         }
@@ -268,6 +274,10 @@ public class EventBus {
                 el.executeEvent(evt);
             }
         }
+
+        public BaseEvent getEvt() {
+            return evt;
+        }
     }
 
     private static class EventWorkerByUI extends EventWorker {
@@ -283,6 +293,10 @@ public class EventBus {
 
         @Override
         public void run() {
+            String to = getEvt().getTo().getUri();
+            if(!EventBus.get().getFutureMap().containsKey(to)){
+                return;
+            }
             if(mode == 1){
                 EventBus.get().getHandler().postDelayed(this, delay);
             }
